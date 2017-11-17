@@ -1,0 +1,8 @@
+# Compiled Python
+__pycache__/
+
+# JetBrains project specific
+.idea/
+
+# Database files
+*.sqlite3
