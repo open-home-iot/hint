@@ -26,10 +26,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'backend.api'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -112,8 +114,21 @@ STATIC_URL = '/static/'
 
 # REST FRAMEWORK
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.IsAdminUser'
     ],
     'PAGE_SIZE': 10
 }
+
+# CORS
+# Very important not to include protocol prefix, for example 'http://...', it
+# breaks this stupid fucking thing.
+CORS_ORIGIN_WHITELIST = [
+    'localhost:4200',
+]
+
+# In case of emergency
+# CORS_ORIGIN_ALLOW_ALL = True
