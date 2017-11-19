@@ -4,6 +4,10 @@ dist/
 tmp/
 out-tsc/
 
+# Collected staticfiles
+static/admin/
+static/rest_framework/
+
 # Node dependencies
 node_modules/
 

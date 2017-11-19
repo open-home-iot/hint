@@ -1,25 +1,8 @@
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<!--NOTE! Attempting to use the <p> tag for the ngFor did not turn out so great...-->
 <div>
-  <h2>Users</h2>
-  <div *ngFor="let user of users">
-    {{ user.username }}
-  </div>
+  <h1>{{ title }}</h1>
+  <img src="http://localhost:8000/static/images/angular_whiteTransparent.png" alt="Angular 4 logotype">
+  <img src="http://localhost:8000/static/images/django_logo.png" alt="Django rest framework logotype">
 </div>
 <div>
-  <h2>Groups</h2>
-  <div *ngFor="let group of groups">
-    {{ group.name }}
-  </div>
-</div>
-<div>
-  <h2>Info</h2>
-  <div *ngFor="let item of info">
-    Version: {{ item.version }} Message: {{ item.message }}
-  </div>
+  <router-outlet></router-outlet>
 </div>
