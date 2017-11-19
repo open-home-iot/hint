@@ -5,8 +5,8 @@ tmp/
 out-tsc/
 
 # Collected staticfiles
-static/admin/*
-static/rest_framework/*
+backend/static/admin
+backend/static/rest_framework
 
 # Node dependencies
 node_modules/
