@@ -1,8 +1,13 @@
-<div>
-  <h1>{{ title }}</h1>
+<header class="main-header">
   <img src="http://localhost:8000/static/images/angular_whiteTransparent.png" alt="Angular 4 logotype">
-  <img src="http://localhost:8000/static/images/django_logo.png" alt="Django rest framework logotype">
-</div>
-<div>
+  <img src="http://localhost:8000/static/images/django_logo.png" alt="Django logotype">
+  <h1>{{ title }}</h1>
+</header>
+<nav class="site-navigation">
+  <a routerLink="/">Home</a>
+  <a routerLink="/auth">Authentication</a>
+  <a routerLink="#">Example</a>
+</nav>
+<main>
   <router-outlet></router-outlet>
-</div>
+</main>
