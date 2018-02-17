@@ -13,7 +13,7 @@ export class AuthComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    const headers = new HttpHeaders().set('Authorization', 'Basic ' + btoa('admin:Horseseathay1'));
+    const headers = new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123'));
     // btoa() needs to be used since the Authorization header uses base64 encoding!
     // Without it, the request will fail with error code 401, unauthorized since it
     // cannot decode the request header.

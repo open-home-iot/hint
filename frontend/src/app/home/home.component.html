@@ -5,4 +5,8 @@
       Version: {{ item.version }} Note: {{ item.message }}
     </li>
   </ul>
+  <div>
+    <p *ngIf="alarmIndication">Alarm is raised</p>
+    <p *ngIf="!alarmIndication">Alarm is not raised</p>
+  </div>
 </div>

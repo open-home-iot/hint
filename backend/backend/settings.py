@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'channels',
+    'channels_redis',
     'backend.api'
 ]
 
@@ -59,8 +61,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.routing.application'
 
+WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -136,3 +139,14 @@ CORS_ORIGIN_WHITELIST = [
 
 # In case of emergency
 # CORS_ORIGIN_ALLOW_ALL = True
+
+# Channels + Redis configurations
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('localhost', 6379)],
+        },
+        'ROUTING': 'websocket_channels.routing.channel_routing',
+    }
+}

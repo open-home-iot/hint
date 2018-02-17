@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {EventHandlerService} from "./events/event-handler.service";
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,11 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'Longest web app title in the fucking universe';
 
-  constructor() {}
+  constructor(private eventHandler: EventHandlerService) {
+    eventHandler.events.subscribe(event => {
+      console.log("Event received: " + event);
+    });
+  }
 
   ngOnInit(): void {
   }

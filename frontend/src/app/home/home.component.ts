@@ -8,13 +8,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class HomeComponent implements OnInit {
   info: any;
+  alarmIndication: boolean;
 
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.http.get(
       'http://localhost:8000/api/info/',
-      { headers: new HttpHeaders().set('Authorization', 'Basic ' + btoa('admin:Horseseathay1')) }
+      { headers: new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123')) }
     ).subscribe(
       data => {
         console.log(data);
