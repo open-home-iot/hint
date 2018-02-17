@@ -10,6 +10,8 @@ backend/static/rest_framework
 
 # Node dependencies
 node_modules/
+frontend/package.json
+frontend/package-lock.json
 
 # IDEs and editors
 .idea/
