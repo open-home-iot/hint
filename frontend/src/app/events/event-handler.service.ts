@@ -3,11 +3,17 @@ import { Injectable } from '@angular/core';
 import { EventListenerService } from "./event-listener.service";
 import { Subject } from "rxjs/Subject";
 
+/*
+The echo URL is a way to verify that websocket messages are actually sent out and received as they should be.
+ */
 
-const WS_URL = 'ws://localhost:8000';
+//const WS_URL = 'ws://echo.websocket.org/';
+// Add whatever ws address should be used.
+const WS_URL = 'ws://localhost:8000/';
 
 export interface Event {
-  type: number,
+  type: string,
+  content: string
 }
 
 @Injectable()
@@ -20,7 +26,8 @@ export class EventHandlerService {
       .map((response: MessageEvent): Event => {
         let event = JSON.parse(response.data);
         return {
-          type: event.type
+          type: event.type,
+          content: event.content
         }
       });
   }

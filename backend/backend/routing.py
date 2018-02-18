@@ -1,13 +1,15 @@
-from channels.routing import ProtocolTypeRouter
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+from django.conf.urls import url
 
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
 
+from backend.events.consumers import EventConsumer
+
+# You can speficy HTTP handling here, if you do not it will use Django's default view system's ASGI interface.
 application = ProtocolTypeRouter({
-    # Empty for now
+    'websocket': AuthMiddlewareStack(
+        URLRouter([
+            url('^$', EventConsumer)
+        ])
+    ),
 })
-
-
-def send_to_group():
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)('events', {'type': 'event.alarm'})

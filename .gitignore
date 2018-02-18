@@ -29,6 +29,7 @@ node_modules/
 
 # Database files
 *.sqlite3
+*.rdb
 
 # misc
 .sass-cache/

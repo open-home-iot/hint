@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'channels',
     'channels_redis',
-    'backend.api'
+    'backend.api',
+    'backend.events'
 ]
 
 MIDDLEWARE = [
@@ -63,6 +64,7 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'backend.routing.application'
 
+# Since channels are used, it will now be an ASGI application running and not a WSGI.
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
@@ -141,12 +143,13 @@ CORS_ORIGIN_WHITELIST = [
 # CORS_ORIGIN_ALLOW_ALL = True
 
 # Channels + Redis configurations
+# NOTE! There is no need to specify the ROUTER field after channels 2. This is baked into the ASGI_APPLICATION field
+# above, since that already selects the application (router) anyway.
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             'hosts': [('localhost', 6379)],
         },
-        'ROUTING': 'websocket_channels.routing.channel_routing',
     }
 }
