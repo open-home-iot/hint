@@ -2,6 +2,8 @@ from channels.generic.websocket import JsonWebsocketConsumer
 
 from asgiref.sync import async_to_sync
 
+from backend.events.events import *
+
 """
 INFO
 
@@ -42,10 +44,10 @@ class EventConsumer(JsonWebsocketConsumer):
     # has to have a function event_alarm
     # ------------------------------------------------------------------------------------------------------------------
 
-    def events_alarm(self, event):
+    def event_alarm(self, event):
         self.send_json(
             {
-                'type': 'events.alarm',
+                'type': EVENT[PROXIMITY_ALARM],
                 'content': event['content']
             }
         )
