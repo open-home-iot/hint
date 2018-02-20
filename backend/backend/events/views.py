@@ -7,10 +7,11 @@ from asgiref.sync import async_to_sync
 from backend.events.events import *
 
 
-def alarm(req):
+def alarm(req, alarm):
+    print("Got the following alarm status: ", alarm)
     layer = get_channel_layer()
     async_to_sync(layer.group_send)('events', {
         'type': EVENT[PROXIMITY_ALARM],
-        'content': EVENT_SUB_CAUSE[ON]
+        'content': alarm
     })
     return HttpResponse('<p>Done</p>')

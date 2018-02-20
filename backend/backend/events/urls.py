@@ -4,5 +4,5 @@ from backend.events.views import alarm
 
 
 urlpatterns = [
-    url(r'alarm', alarm)
+    url(r'alarm/(?P<alarm>\w+)', alarm)
 ]

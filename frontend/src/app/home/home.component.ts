@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {EventListenerService} from "../events/event-listener.service";
-import {EventHandlerService} from "../events/event-handler.service";
+import {EventHandlerService, Event} from "../events/event-handler.service";
 
 @Component({
   selector: 'app-home',
@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private http: HttpClient, private eventHandler: EventHandlerService) {
     eventHandler.events.subscribe(event => {
-      console.log("Got an event type: " + event.type + "\nwith content: " + event.content);
+      this.updateAlarmStatus(event);
     });
   }
 
@@ -33,10 +33,7 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  getAlarmIndication() {
-    this.eventHandler.events.next({
-      type: 'events.alarm',
-      content: 'ok'
-    });
+  updateAlarmStatus(event: Event) {
+    this.alarmIndication = event.content !== 'off';
   }
 }
