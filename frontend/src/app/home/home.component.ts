@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {EventListenerService} from "../events/event-listener.service";
-import {EventHandlerService, Event} from "../events/event-handler.service";
+import {EventHandlerService, Event, EventStatus} from "../events/event-handler.service";
 
 @Component({
   selector: 'app-home',
@@ -20,13 +19,27 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+    const header: HttpHeaders = new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123'))
+
     this.http.get(
       'http://localhost:8000/api/info/',
-      { headers: new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123')) }
+      { headers: header }
     ).subscribe(
       data => {
         console.log(data);
         this.info = data;
+      },
+      err => {
+        console.log(err);
+      });
+
+    this.http.get<EventStatus>(
+      'http://localhost:8000/events/status',
+      { headers: header }
+    ).subscribe(
+      data => {
+        console.log(data);
+        this.alarmIndication = data.alarm;
       },
       err => {
         console.log(err);

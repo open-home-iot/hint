@@ -16,6 +16,10 @@ export interface Event {
   content: string
 }
 
+export interface EventStatus {
+  alarm: boolean;
+}
+
 @Injectable()
 export class EventHandlerService {
   public events : Subject<Event>;
