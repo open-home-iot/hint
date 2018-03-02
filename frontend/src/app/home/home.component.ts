@@ -19,10 +19,10 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    const header: HttpHeaders = new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123'))
+    const header: HttpHeaders = new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123'));
 
     this.http.get(
-      'http://localhost:8000/api/info/',
+      window.location.protocol + '//' + window.location.host + '/api/info/',
       { headers: header }
     ).subscribe(
       data => {
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
       });
 
     this.http.get<EventStatus>(
-      'http://localhost:8000/events/status',
+      window.location.protocol + '//' + window.location.host + '/events/status',
       { headers: header }
     ).subscribe(
       data => {
