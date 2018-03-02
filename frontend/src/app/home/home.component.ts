@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
     const header: HttpHeaders = new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123'));
 
     this.http.get(
-      'http://localhost:8000/api/info/',
+      'http://' + window.location.hostname + ':8000/api/info/',
       { headers: header }
     ).subscribe(
       data => {
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
       });
 
     this.http.get<EventStatus>(
-      'http://localhost:8000/events/status',
+      'http://' + window.location.hostname + ':8000/events/status',
       { headers: header }
     ).subscribe(
       data => {

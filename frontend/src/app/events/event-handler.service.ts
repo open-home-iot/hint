@@ -9,7 +9,7 @@ The echo URL is a way to verify that websocket messages are actually sent out an
 
 //const WS_URL = 'ws://echo.websocket.org/';
 // Add whatever ws address should be used.
-const WS_URL = 'ws://localhost:8000/';
+const WS_URL = 'ws://' + window.location.hostname + ':8000/';
 
 export interface Event {
   type: string,

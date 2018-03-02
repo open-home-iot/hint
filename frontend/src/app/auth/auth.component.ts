@@ -18,7 +18,7 @@ export class AuthComponent implements OnInit {
     // Without it, the request will fail with error code 401, unauthorized since it
     // cannot decode the request header.
     this.http.get(
-      'http://localhost:8000/api/users/',
+      'http://' + window.location.hostname + ':8000/api/users/',
       { headers: header }
     ).subscribe(
       data => {
@@ -30,7 +30,7 @@ export class AuthComponent implements OnInit {
       });
 
     this.http.get(
-      'http://localhost:8000/api/groups/',
+      'http://' + window.location.hostname + ':8000/api/groups/',
       { headers: header }
     ).subscribe(
       data => {
