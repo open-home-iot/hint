@@ -13,7 +13,7 @@ SECRET_KEY = '$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '192.168.0.3']
+ALLOWED_HOSTS = ['localhost', '192.168.0.3', '192.168.0.10']
 
 
 # Application definition
@@ -137,6 +137,7 @@ REST_FRAMEWORK = {
 # breaks this stupid fucking thing.
 CORS_ORIGIN_WHITELIST = [
     'localhost:4200',
+    '192.168.0.3:4200',
     '192.168.0.10:4200',
 ]
 
