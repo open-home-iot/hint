@@ -137,6 +137,7 @@ REST_FRAMEWORK = {
 # breaks this stupid fucking thing.
 CORS_ORIGIN_WHITELIST = [
     'localhost:4200',
+    '192.168.0.3',
 ]
 
 # In case of emergency
