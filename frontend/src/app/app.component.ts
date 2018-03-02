@@ -8,6 +8,8 @@ import {EventHandlerService} from "./events/event-handler.service";
 })
 export class AppComponent implements OnInit {
   title = 'Longest web app title in the fucking universe';
+  django_img_path = 'http://' + window.location.hostname + ':8000' + '/static/images/django_logo.png';
+  angular_img_path = 'http://' + window.location.hostname + ':8000' + '/static/images/angular_whiteTransparent.png';
 
   constructor(private eventHandler: EventHandlerService) {
     eventHandler.events.subscribe(event => {
