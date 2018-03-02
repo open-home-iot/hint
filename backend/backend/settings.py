@@ -13,7 +13,7 @@ SECRET_KEY = '$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.3', 'localhost']
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -140,7 +140,7 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 # In case of emergency
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 # Channels + Redis configurations
 # NOTE! There is no need to specify the ROUTER field after channels 2. This is baked into the ASGI_APPLICATION field
