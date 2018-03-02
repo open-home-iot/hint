@@ -140,7 +140,7 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 # In case of emergency
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Channels + Redis configurations
 # NOTE! There is no need to specify the ROUTER field after channels 2. This is baked into the ASGI_APPLICATION field
