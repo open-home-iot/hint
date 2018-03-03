@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Event, EventHandlerService} from "../events/event-handler.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {relative} from "path";
+
 
 export interface Pictures {
   pictures: string[];
@@ -38,13 +38,16 @@ export class SurveillanceComponent implements OnInit {
 
   newPicture(event: Event) {
     if (event.type === 'event.alarm' && event.content === 'on') {
-      setTimeout(this.http.get<Pictures>(
-        'http://' + window.location.hostname + ':8000/surveillance/pictures/'
-      ).subscribe(
-        data => {
-          console.log(data);
-          this.pictures = data.pictures;
-        }), 1000);
+      setTimeout(
+        () => {
+          this.http.get<Pictures>(
+          'http://' + window.location.hostname + ':8000/surveillance/pictures/'
+          ).subscribe(
+            data => {
+              console.log(data);
+              this.pictures = data.pictures;
+        })
+        }, 1000);
     }
   }
 
