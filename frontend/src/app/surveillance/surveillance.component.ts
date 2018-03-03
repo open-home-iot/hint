@@ -38,13 +38,13 @@ export class SurveillanceComponent implements OnInit {
 
   newPicture(event: Event) {
     if (event.type === 'event.alarm' && event.content === 'on') {
-      this.http.get<Pictures>(
+      setTimeout(this.http.get<Pictures>(
         'http://' + window.location.hostname + ':8000/surveillance/pictures/'
       ).subscribe(
         data => {
           console.log(data);
           this.pictures = data.pictures;
-        });
+        }), 1000);
     }
   }
 
