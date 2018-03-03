@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 from rest_framework import routers
 
 from backend.events import urls as event_urls
+from backend.surveillance import urls as surveillance_urls
 from backend.api import views
 
 router = routers.DefaultRouter()
@@ -17,5 +18,6 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^admin/', admin.site.urls),
-    url(r'^events/', include(event_urls))
+    url(r'^events/', include(event_urls)),
+    url(r'^surveillance/', include(surveillance_urls))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

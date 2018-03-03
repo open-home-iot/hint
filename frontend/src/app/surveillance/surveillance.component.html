@@ -1,0 +1,9 @@
+<div>
+  <h2>Surveillance</h2>
+  <a *ngFor="let picture of pictures" [routerLink]="['picture', picture]">
+      {{ picture }}
+  </a>
+  <div id="picture">
+    <router-outlet></router-outlet>
+  </div>
+</div>

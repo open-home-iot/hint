@@ -3,6 +3,8 @@ import {Routes, RouterModule} from '@angular/router';
 
 import {AuthComponent} from './auth/auth.component';
 import {HomeComponent} from './home/home.component';
+import {SurveillanceComponent} from "./surveillance/surveillance.component";
+import {PictureComponent} from "./surveillance/picture/picture.component";
 
 /*
 To add child routes of a parent path:
@@ -24,6 +26,9 @@ const appRoutes: Routes = [
   // Need to match full path of an empty path since it will match everything otherwise.
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'auth', component: AuthComponent },
+  { path: 'surveillance', component: SurveillanceComponent, children: [
+      { path: 'picture/:src', component: PictureComponent },
+    ] },
 ];
 
 @NgModule({

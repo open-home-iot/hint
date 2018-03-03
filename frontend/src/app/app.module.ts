@@ -10,13 +10,17 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuardService } from './auth-guard.service';
 import { EventListenerService } from "./events/event-listener.service";
 import { EventHandlerService } from "./events/event-handler.service";
+import { SurveillanceComponent } from './surveillance/surveillance.component';
+import { PictureComponent } from './surveillance/picture/picture.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
-    HomeComponent
+    HomeComponent,
+    SurveillanceComponent,
+    PictureComponent
   ],
   imports: [
     BrowserModule,

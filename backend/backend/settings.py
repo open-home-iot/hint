@@ -123,6 +123,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
     ('images', os.path.join(STATIC_ROOT, 'images')),
+    ('alarm_pictures', os.path.join(STATIC_ROOT, 'alarm_pictures')),
 ]
 
 # REST FRAMEWORK
