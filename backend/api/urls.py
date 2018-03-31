@@ -24,5 +24,5 @@ urlpatterns = [
 
     url(r'^surveillance/', ([
         url(r'^pictures$', views.list_pictures),
-    ], 'surveillance', 'survey')),
+    ], 'surveillance', 'media')),
 ] + router.urls

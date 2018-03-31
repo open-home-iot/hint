@@ -35,11 +35,11 @@ export class HomeComponent implements OnInit {
         console.log(err);
       });
 
-    this.requestService.get('http://' + window.location.hostname + ':8000/events/status')
+    this.requestService.get('http://' + window.location.hostname + ':8000/api/events/status')
       .subscribe(
       data => {
         console.log(data);
-        //this.alarmIndication = data.results[0];
+        this.alarmIndication = data.results[0];
       },
       err => {
         console.log(err);

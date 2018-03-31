@@ -83,7 +83,12 @@ def list_pictures(req):
 
     result = os.listdir(p)
 
-    return JsonResponse({'pictures': result})
+    return JsonResponse({
+            'count': len(result),
+            'next': 'N/A',
+            'previous': 'N/A',
+            'results': result
+    })
 
 
 @csrf_exempt

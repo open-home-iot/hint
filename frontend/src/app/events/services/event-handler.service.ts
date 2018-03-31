@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { EventListenerService } from "./event-listener.service";
-import { Subject } from "rxjs/Subject";
+import { EventListenerService } from './event-listener.service';
+import { Subject } from 'rxjs/Subject';
 
 /*
 The echo URL is a way to verify that websocket messages are actually sent out and received as they should be.
@@ -16,9 +16,6 @@ export interface Event {
   content: string
 }
 
-export interface EventStatus {
-  alarm: boolean;
-}
 
 @Injectable()
 export class EventHandlerService {
