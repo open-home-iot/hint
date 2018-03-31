@@ -131,10 +131,10 @@ STATICFILES_DIRS = [
 # REST FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAdminUser'
+        'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_PAGINATION_CLASS': [
         'rest_framework.pagination.LimitOffsetPagination'
@@ -147,9 +147,12 @@ REST_FRAMEWORK = {
 # breaks this stupid fucking thing.
 CORS_ORIGIN_WHITELIST = [
     'localhost:4200',
+    'localhost:8000',
     '192.168.0.3:4200',
     '192.168.0.10:4200',
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # In case of emergency
 # CORS_ORIGIN_ALLOW_ALL = True

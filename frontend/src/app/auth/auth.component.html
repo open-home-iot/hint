@@ -1,16 +1,23 @@
 <div>
-  <h2>Users</h2>
-  <ul>
-    <li *ngFor="let user of users">
-      {{ user.username }}
-    </li>
-  </ul>
-</div>
-<div>
-  <h2>Groups</h2>
-  <ul>
-    <li *ngFor="let group of groups">
-      {{ group.name }}
-    </li>
-  </ul>
+  <h2>Login</h2>
+  <form (ngSubmit)="onLogin(f)" #f="ngForm" *ngIf="!authenticated">
+    <div>
+      <label for="username">Username</label>
+      <input
+        id="username"
+        name="username"
+        type="email"
+        ngModel>
+    </div>
+    <div>
+      <label for="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        ngModel>
+    </div>
+    <button type="submit">Log in</button>
+  </form>
+  <button (click)="onLogout()" *ngIf="authenticated">Log out</button>
 </div>

@@ -1,45 +1,41 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+import { Subscription} from 'rxjs/Subscription';
+
+import { AuthService } from './services/auth.service';
+
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
-export class AuthComponent implements OnInit {
-  users: any;
-  groups: any;
+export class AuthComponent implements OnInit, OnDestroy {
+  authenticated: boolean;
+  authSubscription: Subscription;
 
-  constructor(private http: HttpClient) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
-    const header = new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123'));
-    // btoa() needs to be used since the Authorization header uses base64 encoding!
-    // Without it, the request will fail with error code 401, unauthorized since it
-    // cannot decode the request header.
-    this.http.get(
-      'http://' + window.location.hostname + ':8000/api/users/',
-      { headers: header }
-    ).subscribe(
-      data => {
-        console.log(data);
-        this.users = data;
-      },
-      err => {
-        console.log(err);
-      });
-
-    this.http.get(
-      'http://' + window.location.hostname + ':8000/api/groups/',
-      { headers: header }
-    ).subscribe(
-      data => {
-        console.log(data);
-        this.groups = data;
-      },
-      err => {
-        console.log(err);
-      });
+    this.authSubscription = this.authService.authSubject.subscribe(
+      next => {
+        this.authenticated = next;
+      }
+    );
   }
 
+  ngOnDestroy() {
+    this.authSubscription.unsubscribe();
+  }
+
+  onLogin(form: NgForm) {
+    const username = form.value.username;
+    const password = form.value.password;
+    this.authService.login(username, password);
+  }
+
+  onLogout() {
+    this.authService.logout();
+  }
 }

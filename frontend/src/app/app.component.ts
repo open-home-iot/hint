@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {EventHandlerService} from "./events/event-handler.service";
+import {EventHandlerService} from "./events/services/event-handler.service";
 
 @Component({
   selector: 'app-root',
