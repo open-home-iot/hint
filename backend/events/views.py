@@ -6,8 +6,8 @@ from channels.layers import get_channel_layer
 
 from asgiref.sync import async_to_sync
 
-from backend.events.events import *
-from backend.events.models import EventStatus
+from events.events import *
+from events.models import EventStatus
 
 
 def event_alarm(req, alarm):

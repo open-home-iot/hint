@@ -2,7 +2,8 @@ from channels.generic.websocket import JsonWebsocketConsumer
 
 from asgiref.sync import async_to_sync
 
-from backend.events.events import *
+from events.events import *
+
 
 """
 INFO

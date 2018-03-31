@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from backend.events.views import event_alarm, get_event_status
+from events.views import event_alarm, get_event_status
 
 
 urlpatterns = [

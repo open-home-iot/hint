@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from backend.surveillance.views import list_pictures
+from surveillance.views import list_pictures
 
 
 urlpatterns = [

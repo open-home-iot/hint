@@ -12,6 +12,7 @@ import { EventListenerService } from "./events/event-listener.service";
 import { EventHandlerService } from "./events/event-handler.service";
 import { SurveillanceComponent } from './surveillance/surveillance.component';
 import { PictureComponent } from './surveillance/picture/picture.component';
+import { StreamingComponent } from './surveillance/streaming/streaming.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { PictureComponent } from './surveillance/picture/picture.component';
     AuthComponent,
     HomeComponent,
     SurveillanceComponent,
-    PictureComponent
+    PictureComponent,
+    StreamingComponent
   ],
   imports: [
     BrowserModule,

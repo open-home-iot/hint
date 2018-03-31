@@ -37,6 +37,11 @@ export class SurveillanceComponent implements OnInit {
   }
 
   newPicture(event: Event) {
+    let fun;
+    fun = () => {
+
+    };
+    setTimeout(fun, 100);
     if (event.type === 'event.alarm' && event.content === 'on') {
       setTimeout(
         () => {
@@ -50,11 +55,4 @@ export class SurveillanceComponent implements OnInit {
         }, 1000);
     }
   }
-
-  enlargePicture(picture: string) {
-    this.router.navigate(['picture', picture], {
-      relativeTo: this.route
-    });
-  }
-
 }

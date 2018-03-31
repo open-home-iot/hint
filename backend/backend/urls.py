@@ -5,9 +5,11 @@ from django.conf.urls.static import static
 
 from rest_framework import routers
 
-from backend.events import urls as event_urls
-from backend.surveillance import urls as surveillance_urls
-from backend.api import views
+from events import urls as event_urls
+from surveillance import urls as surveillance_urls
+
+from api import views
+
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)

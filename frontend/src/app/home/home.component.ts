@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {EventHandlerService, Event, EventStatus} from "../events/event-handler.service";
+import { EventHandlerService, Event, EventStatus } from '../events/event-handler.service';
 
 @Component({
   selector: 'app-home',
