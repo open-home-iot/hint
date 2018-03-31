@@ -1,7 +1,9 @@
-import json, os
+import json
+import os
 
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.db.models import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
@@ -39,6 +41,7 @@ class InfoViewSet(viewsets.ModelViewSet):
     queryset = Info.objects.all()
     serializer_class = InfoSerializer
     pagination_class = pagination.LimitOffsetPagination
+    permission_classes = (permissions.BasePermission, )  # Able to view without auth.
 
 
 def event_alarm(req, alarm):
@@ -74,6 +77,7 @@ def get_event_status(req):
         })
 
 
+@login_required
 def list_pictures(req):
     user = os.getenv('DJANGO_STATIC_DIR', '~/')
     if user == '~/':
