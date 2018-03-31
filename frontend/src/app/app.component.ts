@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {EventHandlerService} from "./events/services/event-handler.service";
+
+import { AuthService } from './auth/services/auth.service';
+import { RequestService } from './api-interface/request.service';
 
 @Component({
   selector: 'app-root',
@@ -11,12 +13,15 @@ export class AppComponent implements OnInit {
   django_img_path = 'http://' + window.location.hostname + ':8000' + '/static/images/django_logo.png';
   angular_img_path = 'http://' + window.location.hostname + ':8000' + '/static/images/angular_whiteTransparent.png';
 
-  constructor(private eventHandler: EventHandlerService) {
-    eventHandler.events.subscribe(event => {
-      console.log("Event received: " + event);
-    });
-  }
+  constructor(private requestService: RequestService,
+              private authService: AuthService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.requestService.get('http://localhost:8000/api/csrf/')
+      .subscribe(
+        next => {
+          this.authService.login('', '');
+        }
+    );
   }
 }

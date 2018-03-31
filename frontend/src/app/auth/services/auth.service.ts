@@ -18,7 +18,6 @@ export class AuthService {
 
   constructor(private requestService: RequestService) {
     this.authSubject = new BehaviorSubject<boolean>(false);
-    this.login('', '');
   }
 
   login(username: string, password: string) {
