@@ -37,7 +37,7 @@ export class SurveillanceComponent implements OnInit {
     if (event.type === 'event.alarm' && event.content === 'on') {
       setTimeout(
         () => {
-          this.requestService.get('http://' + window.location.hostname + ':8000/api/surveillance/pictures/')
+          this.requestService.get('http://' + window.location.hostname + ':8000/api/surveillance/pictures')
             .subscribe(
             data => {
               console.log(data);
