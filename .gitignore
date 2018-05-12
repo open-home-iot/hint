@@ -9,7 +9,7 @@ backend/static/admin
 backend/static/rest_framework
 
 # Installation specific alarm pictures
-backend/static/alarm_pictures/*.jpg
+**/alarm_pictures/*/*.jpg
 
 # Node dependencies
 node_modules/
