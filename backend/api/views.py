@@ -13,7 +13,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 from rest_framework import viewsets, pagination, permissions, status
-from rest_framework.views import APIView, api_settings
+from rest_framework.views import APIView
 
 from backend import settings
 from api.pagination import PaginationMixin
@@ -84,6 +84,8 @@ class PictureList(APIView, PaginationMixin):
         year = request.query_params.get('year', None)
         month = request.query_params.get('month', None)
 
+        print(year, month)
+
         base_search_dir = '{}{}'.format(settings.STATIC_ROOT, '/alarm_pictures/')
 
         if year and month:
@@ -115,7 +117,6 @@ def get_csrf_token(request):
 
 def login_user(request):
     if request.user.is_authenticated:
-        print("User was already authenticated!")
         return HttpResponse(status=status.HTTP_200_OK)
 
     request_body = request.body.decode('utf-8')

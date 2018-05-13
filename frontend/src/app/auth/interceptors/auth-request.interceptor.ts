@@ -17,7 +17,6 @@ export class AuthRequestInterceptor implements HttpInterceptor {
       // not be set.
       withCredentials: true});
 
-
     return next.handle(clonedReq);
   }
 }

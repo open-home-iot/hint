@@ -30,8 +30,8 @@ export class RequestService {
    * Note that all observables returned by HTTP request functions need to be subscribed to in order to fire the request.
    */
 
-  get(url: string): Observable<ResultSet> {
-    return this.httpClient.get<ResultSet>(url);
+  get(url: string, options: {}): Observable<ResultSet> {
+    return this.httpClient.get<ResultSet>(url, options);
   }
 
   post(url: string, body: {}) {

@@ -25,24 +25,16 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     const header: HttpHeaders = new HttpHeaders().set('Authorization', 'Basic ' + btoa('mth:password123'));
 
-    this.requestService.get('http://' + window.location.hostname + ':8000/api/info/')
+    this.requestService.get('http://' + window.location.hostname + ':8000/api/info/', {})
       .subscribe(
       data => {
-        console.log(data);
         this.info = data.results;
-      },
-      err => {
-        console.log(err);
       });
 
-    this.requestService.get('http://' + window.location.hostname + ':8000/api/events/status')
+    this.requestService.get('http://' + window.location.hostname + ':8000/api/events/status', {})
       .subscribe(
       data => {
-        console.log(data);
         this.alarmIndication = data.results[0];
-      },
-      err => {
-        console.log(err);
       });
   }
 

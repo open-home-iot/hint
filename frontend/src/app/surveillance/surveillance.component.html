@@ -1,8 +1,21 @@
 <div>
   <h2>Surveillance</h2>
-  <a *ngFor="let picture of pictures" [routerLink]="['picture', picture]">
-      {{ picture }}
-  </a>
+  <input type="button" value="Previous" (click)="stepPictureList(false)">
+   {{ currentDisplayDate | date: 'yyyy MMMM' }}
+  <input type="button" value="Next" (click)="stepPictureList(true)">
+
+  <input *ngIf="previous" type="button" value="Show more results" (click)="showOtherResults(previous)">
+
+  <ul>
+    <li *ngFor="let picture of pictures">
+      <a [routerLink]="['picture', picture]">
+        {{ picture }}
+      </a>
+    </li>
+  </ul>
+
+  <input *ngIf="next" type="button" value="Show more results" (click)="showOtherResults(next)">
+
   <div id="picture">
     <router-outlet></router-outlet>
   </div>
