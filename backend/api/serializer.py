@@ -24,3 +24,8 @@ class InfoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Info
         fields = ('url', 'version', 'message')
+
+
+class PictureSerializer(serializers.Serializer):
+
+    picture_name = serializers.CharField(max_length=50)

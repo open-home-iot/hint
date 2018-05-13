@@ -1,28 +1,32 @@
-from django.conf.urls import url
+from django.urls import path, include
 
 from rest_framework import routers
 
 from api import views
 
+# Note that it is important as of now to append a final slash to each URL!
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'info', views.InfoViewSet)
 
+surveillance_urlpatterns = [
+    path('pictures/', views.PictureList.as_view()),
+]
+
+event_urlpatterns = [
+    path('alarm/<str:alarm>', views.event_alarm),
+    path('status/', views.get_event_status)
+]
 
 urlpatterns = [
-    url(r'csrf', views.get_csrf_token),
+    path('csrf/', views.get_csrf_token),
 
-    url(r'login', views.login_user),
-    url(r'logout', views.logout_user),
+    path('login/', views.login_user),
+    path('logout/', views.logout_user),
 
-    url(r'^events/', ([
-        url(r'^alarm/(?P<alarm>\w+)$', views.event_alarm),
-        url(r'^status$', views.get_event_status),
-    ], 'events', 'alarms')),
+    path('surveillance/', include(surveillance_urlpatterns)),
 
-    url(r'^surveillance/', ([
-        url(r'^pictures$', views.list_pictures),
-    ], 'surveillance', 'media')),
+    path('events/', include(event_urlpatterns)),
 ] + router.urls

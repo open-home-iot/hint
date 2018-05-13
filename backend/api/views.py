@@ -1,9 +1,9 @@
 import json
 import os
+from datetime import datetime
 
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.db.models import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
@@ -13,21 +13,23 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 from rest_framework import viewsets, pagination, permissions, status
+from rest_framework.views import APIView, api_settings
+
+from backend import settings
+from api.pagination import PaginationMixin
 
 from api.models import Info
+from api.serializer import UserSerializer, GroupSerializer, InfoSerializer
+
 from events.models import EventStatus
 from events.events import *
-from api.serializer import UserSerializer, GroupSerializer, InfoSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     pagination_class = pagination.LimitOffsetPagination
-# To specify specific permission and authentication classes for different
-# viewsets, uncomment the lines below and add the appropriate imports.
     permission_classes = (permissions.IsAuthenticated, )
-#    authentication_classes = (BasicAuthentication, )
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -45,7 +47,6 @@ class InfoViewSet(viewsets.ModelViewSet):
 
 
 def event_alarm(req, alarm):
-    print("Got the following alarm status: ", alarm)
     try:
         event_status = EventStatus.objects.get(pk=1)
         event_status.alarm = alarm == 'on'
@@ -77,22 +78,33 @@ def get_event_status(req):
         })
 
 
-@login_required
-def list_pictures(req):
-    user = os.getenv('DJANGO_STATIC_DIR', '~/')
-    if user == '~/':
-        raise EnvironmentError('You do not seem to have installed the project correctly, environment variable missing.')
+class PictureList(APIView, PaginationMixin):
 
-    p = os.path.expanduser(user) + '/alarm_pictures/'
+    def get(self, request, format=None):
+        year = request.query_params.get('year', None)
+        month = request.query_params.get('month', None)
 
-    result = os.listdir(p)
+        base_search_dir = '{}{}'.format(settings.STATIC_ROOT, '/alarm_pictures/')
 
-    return JsonResponse({
-            'count': len(result),
-            'next': 'N/A',
-            'previous': 'N/A',
-            'results': result
-    })
+        if year and month:
+            search_dir = '{}{}/'.format(base_search_dir,
+                                        str(year) + '_' + str(month))
+        else:
+            search_dir = '{}{}/'.format(base_search_dir,
+                                        datetime.now().strftime('%Y_%m'))
+
+        print(search_dir)
+
+        if os.path.exists(search_dir):
+            results = os.listdir(search_dir)
+        else:
+            results = []
+
+        # Set iterates over the result set, but on a C level which makes it a hell of a lot faster.
+        sorted_results = sorted(set(results))
+        print(sorted_results)
+
+        return self.paginate_response(sorted_results, request)
 
 
 @csrf_exempt
