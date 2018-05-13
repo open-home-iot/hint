@@ -47,7 +47,7 @@ export class SurveillanceComponent implements OnInit {
   }
 
   showOtherResults(url: string) {
-
+    // Add stepping pagination result
   }
 
   formatPictureList(pictureResultSet: ResultSet) {

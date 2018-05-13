@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
               private authService: AuthService) {}
 
   ngOnInit() {
-    this.requestService.get('http://' + window.location.hostname + ':8000/api/csrf/')
+    this.requestService.get('http://' + window.location.hostname + ':8000/api/csrf/', {})
       .subscribe(
         next => {
           this.authService.login('', '');

@@ -4,6 +4,7 @@
    {{ currentDisplayDate | date: 'yyyy MMMM' }}
   <input type="button" value="Next" (click)="stepPictureList(true)">
 
+  <!--If handles null returns for no additional results-->
   <input *ngIf="previous" type="button" value="Show more results" (click)="showOtherResults(previous)">
 
   <ul>
@@ -14,6 +15,7 @@
     </li>
   </ul>
 
+  <!--If handles null returns for no additional results-->
   <input *ngIf="next" type="button" value="Show more results" (click)="showOtherResults(next)">
 
   <div id="picture">
