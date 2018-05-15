@@ -84,8 +84,6 @@ class PictureList(APIView, PaginationMixin):
         year = request.query_params.get('year', None)
         month = request.query_params.get('month', None)
 
-        print(year, month)
-
         base_search_dir = '{}{}'.format(settings.STATIC_ROOT, '/alarm_pictures/')
 
         if year and month:
@@ -95,8 +93,6 @@ class PictureList(APIView, PaginationMixin):
             search_dir = '{}{}/'.format(base_search_dir,
                                         datetime.now().strftime('%Y_%m'))
 
-        print(search_dir)
-
         if os.path.exists(search_dir):
             results = os.listdir(search_dir)
         else:
@@ -104,7 +100,6 @@ class PictureList(APIView, PaginationMixin):
 
         # Set iterates over the result set, but on a C level which makes it a hell of a lot faster.
         sorted_results = sorted(set(results))
-        print(sorted_results)
 
         return self.paginate_response(sorted_results, request)
 
