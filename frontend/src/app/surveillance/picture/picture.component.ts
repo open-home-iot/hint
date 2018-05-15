@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 
 
@@ -15,7 +15,9 @@ export class PictureComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.imageSrc = this.staticUrl + params['src'];
+      let month = params['src'].substr(0, 7); // Substring out yyyy_mm
+
+      this.imageSrc = this.staticUrl + month + '/' + params['src'];
     })
   }
 

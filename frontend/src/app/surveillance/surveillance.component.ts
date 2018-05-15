@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 import { RequestService } from '../api-interface/request.service';
 import { ResultSet } from "../api-interface/result-set.interface";
-import {HttpParams} from "@angular/common/http";
+import { HttpParams } from "@angular/common/http";
 
 
 const PICTURE_URL = 'http://' + window.location.hostname + ':8000/api/surveillance/pictures/';
@@ -57,7 +57,7 @@ export class SurveillanceComponent implements OnInit {
       let keyVal = queryString.split('=');
       queryParams = queryParams.set(keyVal[0], keyVal[1]);
     }
-    
+
     this.requestPictureList(url,{ params: queryParams});
   }
 

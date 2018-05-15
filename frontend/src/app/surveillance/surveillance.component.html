@@ -19,7 +19,6 @@
   <!--If handles null returns for no additional results-->
   <input *ngIf="next" type="button" value="Show more results" (click)="showOtherResults(next)">
 
-  <div id="picture">
-    <router-outlet></router-outlet>
-  </div>
+  <router-outlet></router-outlet>
+
 </div>
