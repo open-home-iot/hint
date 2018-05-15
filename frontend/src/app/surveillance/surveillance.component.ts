@@ -34,7 +34,7 @@ export class SurveillanceComponent implements OnInit {
     this.currentDisplayDate = new Date(this.currentDisplayDate);
 
     // All months below 10 must be prepended with 0.
-    const newMonth = this.currentDisplayDate.getMonth() > 8 ?
+    const newMonth = this.currentDisplayDate.getMonth() > 8 ? // Because months range from 0 to 11
       (this.currentDisplayDate.getMonth() + 1).toString() :
       '0' + (this.currentDisplayDate.getMonth() + 1).toString();
 
@@ -47,22 +47,33 @@ export class SurveillanceComponent implements OnInit {
   }
 
   showOtherResults(url: string) {
-    // Add stepping pagination result
-  }
+    // extract query params from URL string
+    const filteredUrl = url.substr(url.indexOf('?') + 1, url.length);
+    const queryParamStrings = filteredUrl.split('&');
 
-  formatPictureList(pictureResultSet: ResultSet) {
-    this.next = pictureResultSet.next;
-    this.previous = pictureResultSet.previous;
+    let queryParams = new HttpParams();
 
-    this.pictures = pictureResultSet.results.slice();
+    for (let queryString of queryParamStrings) {
+      let keyVal = queryString.split('=');
+      queryParams = queryParams.set(keyVal[0], keyVal[1]);
+    }
+    
+    this.requestPictureList(url,{ params: queryParams});
   }
 
   requestPictureList(url: string, options: {}) {
     this.requestService.get(PICTURE_URL, options)
       .subscribe(
       data => {
-        this.formatPictureList(data);
+        this.handleResultSet(data);
       }
     );
+  }
+
+  handleResultSet(pictureResultSet: ResultSet) {
+    this.next = pictureResultSet.next;
+    this.previous = pictureResultSet.previous;
+
+    this.pictures = pictureResultSet.results.slice();
   }
 }
