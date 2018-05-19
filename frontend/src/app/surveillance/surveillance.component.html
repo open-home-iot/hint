@@ -1,24 +1,31 @@
 <div>
   <h2>Surveillance</h2>
-  <input type="button" value="Previous" (click)="stepPictureList(false)">
-   {{ currentDisplayDate | date: 'yyyy MMMM' }}
-  <input type="button" value="Next" (click)="stepPictureList(true)">
+  <div>
+    <h3>Alarm indication</h3>
+    <p *ngIf="alarmRaised">Alarm raised!</p>
+  </div>
+  <div>
+    <h3>Pictures</h3>
+    <input type="button" value="Previous" (click)="stepPictureList(false)">
+     {{ currentDisplayDate | date: 'yyyy MMMM' }}
+    <input type="button" value="Next" (click)="stepPictureList(true)">
 
-  <br/>
-  <!--If handles null returns for no additional results-->
-  <input *ngIf="previous" type="button" value="Show more results" (click)="showOtherResults(previous)">
+    <br/>
+    <!--If handles null returns for no additional results-->
+    <input *ngIf="previous" type="button" value="Show more results" (click)="showOtherResults(previous)">
 
-  <ul>
-    <li *ngFor="let picture of pictures">
-      <a [routerLink]="['picture', picture]">
-        {{ picture }}
-      </a>
-    </li>
-  </ul>
+    <ul>
+      <li *ngFor="let picture of pictures">
+        <a [routerLink]="['picture', picture]">
+          {{ picture }}
+        </a>
+      </li>
+    </ul>
 
-  <!--If handles null returns for no additional results-->
-  <input *ngIf="next" type="button" value="Show more results" (click)="showOtherResults(next)">
+    <!--If handles null returns for no additional results-->
+    <input *ngIf="next" type="button" value="Show more results" (click)="showOtherResults(next)">
 
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
+  </div>
 
 </div>

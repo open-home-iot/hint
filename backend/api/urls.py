@@ -10,14 +10,10 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'info', views.InfoViewSet)
+router.register(r'alarm_history', views.AlarmHistoryList, base_name='alarm_history')
 
 surveillance_urlpatterns = [
     path('pictures/', views.PictureList.as_view()),
-]
-
-event_urlpatterns = [
-    path('alarm/<str:alarm>', views.event_alarm),
-    path('status/', views.get_event_status)
 ]
 
 urlpatterns = [
@@ -27,6 +23,4 @@ urlpatterns = [
     path('logout/', views.logout_user),
 
     path('surveillance/', include(surveillance_urlpatterns)),
-
-    path('events/', include(event_urlpatterns)),
 ] + router.urls

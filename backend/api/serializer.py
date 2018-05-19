@@ -4,6 +4,8 @@ from rest_framework import serializers
 
 from api.models import Info
 
+from surveillance.models import AlarmHistory
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -26,6 +28,8 @@ class InfoSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'version', 'message')
 
 
-class PictureSerializer(serializers.Serializer):
+class AlarmHistorySerializer(serializers.HyperlinkedModelSerializer):
 
-    picture_name = serializers.CharField(max_length=50)
+    class Meta:
+        model = AlarmHistory
+        fields = ('date',)

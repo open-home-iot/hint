@@ -4,13 +4,8 @@ from datetime import datetime
 
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, JsonResponse
-from django.db.models import ObjectDoesNotExist
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-
-from channels.layers import get_channel_layer
-
-from asgiref.sync import async_to_sync
 
 from rest_framework import viewsets, pagination, permissions, status
 from rest_framework.views import APIView
@@ -19,10 +14,9 @@ from backend import settings
 from api.pagination import PaginationMixin
 
 from api.models import Info
-from api.serializer import UserSerializer, GroupSerializer, InfoSerializer
+from api.serializer import *
 
-from events.models import EventStatus
-from events.events import *
+from surveillance.models import AlarmHistory
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -44,38 +38,6 @@ class InfoViewSet(viewsets.ModelViewSet):
     serializer_class = InfoSerializer
     pagination_class = pagination.LimitOffsetPagination
     permission_classes = (permissions.BasePermission, )  # Able to view without auth.
-
-
-def event_alarm(req, alarm):
-    try:
-        event_status = EventStatus.objects.get(pk=1)
-        event_status.alarm = alarm == 'on'
-        event_status.save()
-    except ObjectDoesNotExist:
-        EventStatus.objects.create(alarm=alarm == 'on')
-
-    layer = get_channel_layer()
-    async_to_sync(layer.group_send)('events', {
-        'type': EVENT[PROXIMITY_ALARM],
-        'content': alarm
-    })
-    return HttpResponse()
-
-
-def get_event_status(req):
-    alarm_status = False
-    try:
-        event_status = EventStatus.objects.get(pk=1)
-        alarm_status = event_status.alarm
-    except ObjectDoesNotExist:
-        pass
-    finally:
-        return JsonResponse({
-            'count': 1,
-            'next': 'N/A',
-            'previous': 'N/A',
-            'results': [alarm_status]
-        })
 
 
 class PictureList(APIView, PaginationMixin):
@@ -102,6 +64,25 @@ class PictureList(APIView, PaginationMixin):
         sorted_results = sorted(set(results))
 
         return self.paginate_response(sorted_results, request)
+
+
+class AlarmHistoryList(viewsets.ModelViewSet):
+    serializer_class = AlarmHistorySerializer
+    pagination_class = pagination.LimitOffsetPagination
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get_queryset(self):
+
+        year = self.request.query_params.get('year', None)
+        month = self.request.query_params.get('month', None)
+
+        if year and month:
+            queryset = AlarmHistory.objects.filter(date__year=year, date__month=month)
+        else:
+            now = datetime.now()
+            queryset = AlarmHistory.objects.filter(date__year=now.year, date__month=now.month)
+
+        return queryset
 
 
 @csrf_exempt

@@ -13,6 +13,8 @@ const PICTURE_URL = 'http://' + window.location.hostname + ':8000/api/surveillan
   styleUrls: ['./surveillance.component.css']
 })
 export class SurveillanceComponent implements OnInit {
+  alarmRaised: boolean;
+
   currentDisplayDate: Date;
 
   pictures: string[];
@@ -22,6 +24,7 @@ export class SurveillanceComponent implements OnInit {
   constructor(private requestService: RequestService) {}
 
   ngOnInit() {
+    this.alarmRaised = false;
     this.currentDisplayDate = new Date();
 
     this.requestPictureList(PICTURE_URL, {}); // No extension gets the current dates pictures

@@ -2,8 +2,6 @@ from channels.generic.websocket import JsonWebsocketConsumer
 
 from asgiref.sync import async_to_sync
 
-from events.events import *
-
 
 """
 INFO
@@ -46,9 +44,4 @@ class EventConsumer(JsonWebsocketConsumer):
     # ------------------------------------------------------------------------------------------------------------------
 
     def event_alarm(self, event):
-        self.send_json(
-            {
-                'type': EVENT[PROXIMITY_ALARM],
-                'content': event['content']
-            }
-        )
+        self.send_json(event)
