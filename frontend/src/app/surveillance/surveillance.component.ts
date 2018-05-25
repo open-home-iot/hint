@@ -1,11 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { RequestService } from '../api-interface/request.service';
 import { ResultSet } from "../api-interface/result-set.interface";
 import { HttpParams } from "@angular/common/http";
+import {SurveillanceService} from "./services/surveillance.service";
+import {Subscription} from "rxjs/Subscription";
 
 
 const PICTURE_URL = 'http://' + window.location.hostname + ':8000/api/surveillance/pictures/';
+const ALARM_HISTORY_URL = 'http://' + window.location.hostname + ':8000/api/alarm_history/';
 
 @Component({
   selector: 'app-surveillance',
@@ -14,23 +17,37 @@ const PICTURE_URL = 'http://' + window.location.hostname + ':8000/api/surveillan
 })
 export class SurveillanceComponent implements OnInit {
   alarmRaised: boolean;
+  alarmSubscription: Subscription;
 
   currentDisplayDate: Date;
 
   pictures: string[];
-  next: string;
-  previous: string;
+  nextPictures: string;
+  previousPictures: string;
 
-  constructor(private requestService: RequestService) {}
+  alarmHistory: string[];
+  nextHistory: string;
+  previousHistory: string;
+
+
+  constructor(private requestService: RequestService,
+              private surveillanceService: SurveillanceService) {}
 
   ngOnInit() {
     this.alarmRaised = false;
     this.currentDisplayDate = new Date();
 
+    this.alarmSubscription = this.surveillanceService.alarmSubject.subscribe(
+      next => {
+        this.alarmRaised = next;
+      }
+    );
+
     this.requestPictureList(PICTURE_URL, {}); // No extension gets the current dates pictures
+    this.requestAlarmHistory(ALARM_HISTORY_URL, {});
   }
 
-  stepPictureList(forward: boolean) {
+  stepDate(forward: boolean) {
     const monthChange = forward ? 1 : -1;
     this.currentDisplayDate.setMonth(this.currentDisplayDate.getMonth() + (monthChange));
     // New date creation since pipes do not update on object change but on reassignment (cloning)
@@ -46,10 +63,11 @@ export class SurveillanceComponent implements OnInit {
       .set('year', this.currentDisplayDate.getFullYear().toString())
       .set('month', newMonth);
 
-    this.requestPictureList(PICTURE_URL, { params: queryParams })
+    this.requestPictureList(PICTURE_URL, { params: queryParams });
+    this.requestAlarmHistory(ALARM_HISTORY_URL, { params: queryParams });
   }
 
-  showOtherResults(url: string) {
+  showOtherPictures(url: string) {
     // extract query params from URL string
     const filteredUrl = url.substr(url.indexOf('?') + 1, url.length);
     const queryParamStrings = filteredUrl.split('&');
@@ -64,19 +82,50 @@ export class SurveillanceComponent implements OnInit {
     this.requestPictureList(url,{ params: queryParams});
   }
 
+  showOtherAlarmHistory(url: string) {
+    // extract query params from URL string
+    const filteredUrl = url.substr(url.indexOf('?') + 1, url.length);
+    const queryParamStrings = filteredUrl.split('&');
+
+    let queryParams = new HttpParams();
+
+    for (let queryString of queryParamStrings) {
+      let keyVal = queryString.split('=');
+      queryParams = queryParams.set(keyVal[0], keyVal[1]);
+    }
+
+    this.requestAlarmHistory(url, { params: queryParams});
+  }
+
   requestPictureList(url: string, options: {}) {
-    this.requestService.get(PICTURE_URL, options)
+    this.requestService.get(url, options)
       .subscribe(
       data => {
-        this.handleResultSet(data);
+        this.handlePictureResultSet(data);
       }
     );
   }
 
-  handleResultSet(pictureResultSet: ResultSet) {
-    this.next = pictureResultSet.next;
-    this.previous = pictureResultSet.previous;
+  requestAlarmHistory(url: string, options: {}) {
+    this.requestService.get(url, options)
+      .subscribe(
+      data => {
+        this.handleAlarmHistoryResultSet(data);
+      }
+    );
+  }
+
+  handlePictureResultSet(pictureResultSet: ResultSet) {
+    this.nextPictures = pictureResultSet.next;
+    this.previousPictures = pictureResultSet.previous;
 
     this.pictures = pictureResultSet.results.slice();
+  }
+
+  handleAlarmHistoryResultSet(alarmHistoryResultSet: ResultSet) {
+    this.nextHistory = alarmHistoryResultSet.next;
+    this.previousHistory = alarmHistoryResultSet.previous;
+
+    this.alarmHistory = alarmHistoryResultSet.results.slice();
   }
 }

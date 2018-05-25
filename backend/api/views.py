@@ -16,7 +16,7 @@ from api.pagination import PaginationMixin
 from api.models import Info
 from api.serializer import *
 
-from surveillance.models import AlarmHistory
+from surveillance.models import AlarmHistory, SurvConfiguration
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -61,7 +61,7 @@ class PictureList(APIView, PaginationMixin):
             results = []
 
         # Set iterates over the result set, but on a C level which makes it a hell of a lot faster.
-        sorted_results = sorted(set(results))
+        sorted_results = sorted(set(results), reverse=True)
 
         return self.paginate_response(sorted_results, request)
 
@@ -83,6 +83,13 @@ class AlarmHistoryList(viewsets.ModelViewSet):
             queryset = AlarmHistory.objects.filter(date__year=now.year, date__month=now.month)
 
         return queryset
+
+
+class SurvConfiguration(viewsets.ModelViewSet):
+    queryset = SurvConfiguration.objects.all()
+    serializer_class = SurvConfigurationSerializer
+    pagination_class = pagination.LimitOffsetPagination
+    permission_classes = (permissions.IsAuthenticated, )
 
 
 @csrf_exempt

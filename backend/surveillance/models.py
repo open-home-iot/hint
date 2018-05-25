@@ -4,7 +4,7 @@ from django.db import models
 
 
 class SurvConfiguration(models.Model):
-    alarm = models.BooleanField(default=True)
+    alarm_state = models.BooleanField(default=True)
     picture_mode = models.BooleanField(default=True)
 
 

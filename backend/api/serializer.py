@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from api.models import Info
 
-from surveillance.models import AlarmHistory
+from surveillance.models import AlarmHistory, SurvConfiguration
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,6 +26,13 @@ class InfoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Info
         fields = ('url', 'version', 'message')
+
+
+class SurvConfigurationSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = SurvConfiguration
+        fields = ('alarm_state', 'picture_mode')
 
 
 class AlarmHistorySerializer(serializers.HyperlinkedModelSerializer):

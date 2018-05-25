@@ -19,6 +19,7 @@ import { AuthService } from './auth/services/auth.service';
 import { RequestService } from './api-interface/request.service';
 import { EventHandlerService } from './events/services/event-handler.service';
 import { EventListenerService } from './events/services/event-listener.service';
+import { SurveillanceService } from "./surveillance/services/surveillance.service";
 
 // My guards
 import { AuthGuardService } from './auth/guards/auth-guard.service';
@@ -51,6 +52,7 @@ import { AuthResponseInterceptor } from './auth/interceptors/auth-response.inter
     RequestService,
     EventListenerService,
     EventHandlerService,
+    SurveillanceService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthRequestInterceptor,

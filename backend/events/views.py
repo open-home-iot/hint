@@ -23,6 +23,6 @@ def alarm_on(req, date):
     layer = get_channel_layer()
     async_to_sync(layer.group_send)('events', {
         'type': 'event.alarm',
-        'state': 'on'
+        'content': 'on'
     })
     return HttpResponse()
