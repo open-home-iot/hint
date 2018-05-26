@@ -91,7 +91,7 @@ class AlarmHistoryList(viewsets.ModelViewSet):
 
 # TODO this does not need to be paginated, detail view?
 class SurvConfigurationDetail(viewsets.ModelViewSet):
-    queryset = SurvConfiguration.objects.all()
+    queryset = SurvConfiguration.objects.filter(pk=1)
     serializer_class = SurvConfigurationSerializer
     pagination_class = pagination.LimitOffsetPagination
     permission_classes = (permissions.IsAuthenticated, )
