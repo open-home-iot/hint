@@ -71,6 +71,10 @@ class AlarmHistoryList(viewsets.ModelViewSet):
     pagination_class = pagination.LimitOffsetPagination
     permission_classes = (permissions.IsAuthenticated, )
 
+    def filter_queryset(self, queryset):
+        queryset = super(AlarmHistoryList, self).filter_queryset(queryset)
+        return queryset.order_by('-date')
+
     def get_queryset(self):
 
         year = self.request.query_params.get('year', None)
