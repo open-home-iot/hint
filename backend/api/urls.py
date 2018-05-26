@@ -12,15 +12,11 @@ router.register(r'groups', views.GroupViewSet)
 router.register(r'info', views.InfoViewSet)
 router.register(r'alarm_history', views.AlarmHistoryList, base_name='alarm_history')
 
-surveillance_urlpatterns = [
-    path('pictures/', views.PictureList.as_view()),
-]
-
 urlpatterns = [
     path('csrf/', views.get_csrf_token),
 
     path('login/', views.login_user),
     path('logout/', views.logout_user),
 
-    path('surveillance/', include(surveillance_urlpatterns)),
+    path('surveillance_pictures/', views.PictureList.as_view()),
 ] + router.urls

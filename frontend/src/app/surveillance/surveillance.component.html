@@ -2,14 +2,18 @@
   <h2>Surveillance</h2>
   <div>
     <h3>Configuration</h3>
-    <input type="checkbox" value="Alarm on"/>
-    <input type="checkbox" value="Picture mode"/>
+    <label for="alarm_on">Alarm on</label>
+    <input id="alarm_on" type="checkbox"/>
+    <label for="picture_mode">Picture mode</label>
+    <input id="picture_mode" type="checkbox"/>
   </div>
 
   <div>
     <h3>Alarm indication</h3>
-    <p *ngIf="alarmRaised">Alarm raised!</p>
+    <p *ngIf="alarmRaised; else no_alarm">Alarm raised!</p>
+    <ng-template #no_alarm>No alarm</ng-template>
   </div>
+
   <div>
     <h3>Pictures</h3>
     <input type="button" value="Previous" (click)="stepDate(false)">
@@ -18,7 +22,7 @@
 
     <br/>
     <!--If handles null returns for no additional results-->
-    <input *ngIf="previousPictures" type="button" value="Show more results" (click)="showOtherPictures(previousPictures)">
+    <input type="button" value="Show more results" (click)="stepPictures(false)">
 
     <ul>
       <li *ngFor="let picture of pictures">
@@ -29,24 +33,24 @@
     </ul>
 
     <!--If handles null returns for no additional results-->
-    <input *ngIf="nextPictures" type="button" value="Show more results" (click)="showOtherPictures(nextPictures)">
+    <input type="button" value="Show more results" (click)="stepPictures(true)">
 
     <router-outlet></router-outlet>
 
     <h3>Alarm history</h3>
 
     <!--If handles null returns for no additional results-->
-    <input *ngIf="previousHistory" type="button" value="Show more results" (click)="showOtherAlarmHistory(previousHistory)">
+    <input type="button" value="Show more results" (click)="stepHistory(false)">
 
 
     <ul>
       <li *ngFor="let history of alarmHistory">
-        {{ history.date }}
+        {{ history }}
       </li>
     </ul>
 
     <!--If handles null returns for no additional results-->
-    <input *ngIf="nextHistory" type="button" value="Show more results" (click)="showOtherAlarmHistory(nextHistory)">
+    <input type="button" value="Show more results" (click)="stepHistory(true)">
 
   </div>
 

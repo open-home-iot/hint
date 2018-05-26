@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { RequestService } from '../api-interface/request.service';
-import { ResultSet } from "../api-interface/result-set.interface";
-import { HttpParams } from "@angular/common/http";
-import {SurveillanceService} from "./services/surveillance.service";
-import {Subscription} from "rxjs/Subscription";
+import { SurveillanceService } from "./services/surveillance.service";
+import { Subscription } from "rxjs/Subscription";
 
-
-const PICTURE_URL = 'http://' + window.location.hostname + ':8000/api/surveillance/pictures/';
-const ALARM_HISTORY_URL = 'http://' + window.location.hostname + ':8000/api/alarm_history/';
 
 @Component({
   selector: 'app-surveillance',
@@ -22,110 +17,46 @@ export class SurveillanceComponent implements OnInit {
   currentDisplayDate: Date;
 
   pictures: string[];
-  nextPictures: string;
-  previousPictures: string;
-
-  alarmHistory: string[];
-  nextHistory: string;
-  previousHistory: string;
+  alarmHistory: string[]; // format: {date: date}
 
 
   constructor(private requestService: RequestService,
               private surveillanceService: SurveillanceService) {}
 
   ngOnInit() {
-    this.alarmRaised = false;
-    this.currentDisplayDate = new Date();
-
+    console.log("Initiated surveillance component");
     this.alarmSubscription = this.surveillanceService.alarmSubject.subscribe(
       next => {
         this.alarmRaised = next;
       }
     );
+    this.initServiceData();
+  }
 
-    this.requestPictureList(PICTURE_URL, {}); // No extension gets the current dates pictures
-    this.requestAlarmHistory(ALARM_HISTORY_URL, {});
+  initServiceData() {
+    // Get initial date
+    this.currentDisplayDate = this.surveillanceService.date;
+
+    // bindings
+    this.pictures = this.surveillanceService.pictures;
+    this.alarmHistory = this.surveillanceService.alarmHistory;
   }
 
   stepDate(forward: boolean) {
     const monthChange = forward ? 1 : -1;
-    this.currentDisplayDate.setMonth(this.currentDisplayDate.getMonth() + (monthChange));
-    // New date creation since pipes do not update on object change but on reassignment (cloning)
-    this.currentDisplayDate = new Date(this.currentDisplayDate);
 
-    // All months below 10 must be prepended with 0.
-    const newMonth = this.currentDisplayDate.getMonth() > 8 ? // Because months range from 0 to 11
-      (this.currentDisplayDate.getMonth() + 1).toString() :
-      '0' + (this.currentDisplayDate.getMonth() + 1).toString();
+    let newDate = new Date(this.currentDisplayDate);
+    newDate.setMonth(newDate.getMonth() + (monthChange));
+    this.currentDisplayDate = newDate;
 
-    // Important to keep queryparams as constants.
-    const queryParams = new HttpParams()
-      .set('year', this.currentDisplayDate.getFullYear().toString())
-      .set('month', newMonth);
-
-    this.requestPictureList(PICTURE_URL, { params: queryParams });
-    this.requestAlarmHistory(ALARM_HISTORY_URL, { params: queryParams });
+    this.surveillanceService.stepDate(newDate);
   }
 
-  showOtherPictures(url: string) {
-    // extract query params from URL string
-    const filteredUrl = url.substr(url.indexOf('?') + 1, url.length);
-    const queryParamStrings = filteredUrl.split('&');
-
-    let queryParams = new HttpParams();
-
-    for (let queryString of queryParamStrings) {
-      let keyVal = queryString.split('=');
-      queryParams = queryParams.set(keyVal[0], keyVal[1]);
-    }
-
-    this.requestPictureList(url,{ params: queryParams});
+  stepPictures(forward: boolean) {
+    this.surveillanceService.stepPictures(forward)
   }
 
-  showOtherAlarmHistory(url: string) {
-    // extract query params from URL string
-    const filteredUrl = url.substr(url.indexOf('?') + 1, url.length);
-    const queryParamStrings = filteredUrl.split('&');
-
-    let queryParams = new HttpParams();
-
-    for (let queryString of queryParamStrings) {
-      let keyVal = queryString.split('=');
-      queryParams = queryParams.set(keyVal[0], keyVal[1]);
-    }
-
-    this.requestAlarmHistory(url, { params: queryParams});
-  }
-
-  requestPictureList(url: string, options: {}) {
-    this.requestService.get(url, options)
-      .subscribe(
-      data => {
-        this.handlePictureResultSet(data);
-      }
-    );
-  }
-
-  requestAlarmHistory(url: string, options: {}) {
-    this.requestService.get(url, options)
-      .subscribe(
-      data => {
-        this.handleAlarmHistoryResultSet(data);
-      }
-    );
-  }
-
-  handlePictureResultSet(pictureResultSet: ResultSet) {
-    this.nextPictures = pictureResultSet.next;
-    this.previousPictures = pictureResultSet.previous;
-
-    this.pictures = pictureResultSet.results.slice();
-  }
-
-  handleAlarmHistoryResultSet(alarmHistoryResultSet: ResultSet) {
-    this.nextHistory = alarmHistoryResultSet.next;
-    this.previousHistory = alarmHistoryResultSet.previous;
-
-    this.alarmHistory = alarmHistoryResultSet.results.slice();
+  stepHistory(forward: boolean) {
+    this.surveillanceService.stepHistory(forward);
   }
 }
