@@ -34,6 +34,16 @@ class SurvConfigurationSerializer(serializers.HyperlinkedModelSerializer):
         model = SurvConfiguration
         fields = ('alarm_state', 'picture_mode')
 
+    def create(self, validated_data):
+        print(validated_data)
+        answer, created = SurvConfiguration.objects.update_or_create(
+            pk=1, # TODO exchange for user reference
+            defaults={'alarm_state': validated_data.get('alarm_state', True),
+                      'picture_mode': validated_data.get('picture_mode', True)}
+        )
+
+        return answer
+
 
 class AlarmHistorySerializer(serializers.HyperlinkedModelSerializer):
 

@@ -6,11 +6,13 @@ import { Event, EventHandlerService } from "../../events/services/event-handler.
 import { RequestService } from "../../api-interface/request.service";
 import {HttpParams} from "@angular/common/http";
 import {ResultSet} from "../../api-interface/result-set.interface";
+import {SurveillanceConfiguration} from "../configuration/survconfiguration.component";
 
 
 const BASE_URL = 'http://' + window.location.hostname + ':8000/api/';
 
-const CONFIG_URL = BASE_URL + 'surveillance_configuration/';
+const CONFIG_URL = BASE_URL + 'surveillance_configuration/1/';
+const CONFIG_POST_URL = BASE_URL + 'surveillance_configuration/';
 const PICTURE_URL = BASE_URL + 'surveillance_pictures/';
 const HISTORY_URL = BASE_URL + 'alarm_history/';
 
@@ -18,6 +20,8 @@ const HISTORY_URL = BASE_URL + 'alarm_history/';
 @Injectable()
 export class SurveillanceService {
   alarmSubject: BehaviorSubject<boolean>;
+
+  configurationSubject: BehaviorSubject<SurveillanceConfiguration>;
 
   date: Date;
 
@@ -32,22 +36,19 @@ export class SurveillanceService {
 
   constructor(private requestService: RequestService,
               private eventListener: EventHandlerService) {
-    console.log("Initiated surveillance service");
 
     this.alarmSubject = new BehaviorSubject<boolean>(false);
+    this.configurationSubject = new BehaviorSubject<SurveillanceConfiguration>({ alarmState: false, pictureMode: false });
 
     this.date = new Date();
-
-    this.nextPictures = "hi";
-    this.nextHistory = "hi";
-    this.previousHistory = "hi";
-    this.previousPictures = "hi";
 
     this.pictures = [];
     this.alarmHistory = [];
 
     this.sendRequest(PICTURE_URL, this.handlePictureResultSet);
     this.sendRequest(HISTORY_URL, this.handleHistoryResultSet);
+
+    this.sendRequest(CONFIG_URL, this.handleConfigurationResultSet);
 
     eventListener.events.subscribe(
       (event: Event) => {
@@ -62,7 +63,6 @@ export class SurveillanceService {
           }
       }
     );
-
   }
 
   sendRequest(url: string, callback: (resultSet: ResultSet) => void) {
@@ -107,6 +107,23 @@ export class SurveillanceService {
       this.alarmHistory.push(item);
     }
   };
+
+  handleConfigurationResultSet = (data): void => {
+    this.configurationSubject.next({ alarmState: data.alarm_state, pictureMode: data.picture_mode });
+  };
+
+  configurationChanged(newConfiguration: SurveillanceConfiguration) {
+    this.requestService.post(CONFIG_POST_URL, {
+      alarm_state: newConfiguration.alarmState,
+      picture_mode: newConfiguration.pictureMode,
+      pk: 1
+    })
+      .subscribe(
+        data => {
+          this.handleConfigurationResultSet(data);
+        }
+      );
+  }
 
   stepDate(newDate: Date) {
     this.date = new Date(newDate);

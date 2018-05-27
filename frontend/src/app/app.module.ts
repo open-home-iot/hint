@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { AuthComponent } from './auth/auth.component';
 import { HomeComponent } from './home/home.component';
 import { SurveillanceComponent } from './surveillance/surveillance.component';
+import { SurvconfigurationComponent } from "./surveillance/configuration/survconfiguration.component";
 import { StreamingComponent } from './surveillance/streaming/streaming.component';
 import { PictureComponent } from './surveillance/picture/picture.component';
 
@@ -35,8 +36,9 @@ import { AuthResponseInterceptor } from './auth/interceptors/auth-response.inter
     AuthComponent,
     HomeComponent,
     SurveillanceComponent,
+    SurvconfigurationComponent,
     PictureComponent,
-    StreamingComponent
+    StreamingComponent,
   ],
   imports: [
     BrowserModule,

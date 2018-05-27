@@ -2,7 +2,6 @@ import json
 import os
 from datetime import datetime
 
-from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
@@ -13,7 +12,6 @@ from rest_framework.views import APIView
 from backend import settings
 from api.pagination import PaginationMixin
 
-from api.models import Info
 from api.serializer import *
 
 from surveillance.models import AlarmHistory, SurvConfiguration
@@ -40,7 +38,7 @@ class InfoViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.BasePermission, )  # Able to view without auth.
 
 
-class PictureList(APIView, PaginationMixin):
+class PictureViewSet(APIView, PaginationMixin):
 
     def get(self, request, format=None):
         year = request.query_params.get('year', None)
@@ -66,13 +64,13 @@ class PictureList(APIView, PaginationMixin):
         return self.paginate_response(sorted_results, request)
 
 
-class AlarmHistoryList(viewsets.ModelViewSet):
+class AlarmHistoryViewSet(viewsets.ModelViewSet):
     serializer_class = AlarmHistorySerializer
     pagination_class = pagination.LimitOffsetPagination
     permission_classes = (permissions.IsAuthenticated, )
 
     def filter_queryset(self, queryset):
-        queryset = super(AlarmHistoryList, self).filter_queryset(queryset)
+        queryset = super(AlarmHistoryViewSet, self).filter_queryset(queryset)
         return queryset.order_by('-date')
 
     def get_queryset(self):
@@ -90,11 +88,13 @@ class AlarmHistoryList(viewsets.ModelViewSet):
 
 
 # TODO this does not need to be paginated, detail view?
-class SurvConfigurationDetail(viewsets.ModelViewSet):
-    queryset = SurvConfiguration.objects.filter(pk=1)
+class SurvConfigurationViewSet(viewsets.ModelViewSet):
+    queryset = SurvConfiguration.objects.all()
     serializer_class = SurvConfigurationSerializer
     pagination_class = pagination.LimitOffsetPagination
-    permission_classes = (permissions.IsAuthenticated, )
+
+    # TODO add security and session authentication to SEALS
+    permission_classes = (permissions.AllowAny, )
 
 
 @csrf_exempt

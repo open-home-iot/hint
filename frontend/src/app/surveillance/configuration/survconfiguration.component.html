@@ -1,0 +1,7 @@
+<div>
+  <h3>Surveillance configurations</h3>
+  <label for="alarm_state">Alarm on/off</label>
+  <input [(ngModel)]="configuration.alarmState" id="alarm_state" type="checkbox" (change)="onChange()">
+  <label for="picture_mode">Picture mode</label>
+  <input [(ngModel)]="configuration.pictureMode" id="picture_mode" type="checkbox" (change)="onChange()">
+</div>

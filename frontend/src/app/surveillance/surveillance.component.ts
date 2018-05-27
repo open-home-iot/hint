@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import { RequestService } from '../api-interface/request.service';
 import { SurveillanceService } from "./services/surveillance.service";
@@ -10,7 +10,7 @@ import { Subscription } from "rxjs/Subscription";
   templateUrl: './surveillance.component.html',
   styleUrls: ['./surveillance.component.css']
 })
-export class SurveillanceComponent implements OnInit {
+export class SurveillanceComponent implements OnInit, OnDestroy {
   alarmRaised: boolean;
   alarmSubscription: Subscription;
 
@@ -24,13 +24,16 @@ export class SurveillanceComponent implements OnInit {
               private surveillanceService: SurveillanceService) {}
 
   ngOnInit() {
-    console.log("Initiated surveillance component");
     this.alarmSubscription = this.surveillanceService.alarmSubject.subscribe(
       next => {
         this.alarmRaised = next;
       }
     );
     this.initServiceData();
+  }
+
+  ngOnDestroy() {
+    this.alarmSubscription.unsubscribe();
   }
 
   initServiceData() {
