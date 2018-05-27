@@ -1,3 +1,5 @@
+import requests
+
 from django.contrib.auth.models import User, Group
 
 from rest_framework import serializers
@@ -35,12 +37,19 @@ class SurvConfigurationSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('alarm_state', 'picture_mode')
 
     def create(self, validated_data):
-        print(validated_data)
+        alarm_state = validated_data.get('alarm_state', True)
+        picture_mode = validated_data.get('picture_mode', True)
         answer, created = SurvConfiguration.objects.update_or_create(
-            pk=1, # TODO exchange for user reference
-            defaults={'alarm_state': validated_data.get('alarm_state', True),
-                      'picture_mode': validated_data.get('picture_mode', True)}
+            pk=1,  # TODO exchange for user reference
+            defaults={'alarm_state': alarm_state,
+                      'picture_mode': picture_mode}
         )
+
+        # It likes to crash.
+        try:
+            requests.get('http://localhost:8080/configuration_change', params={'alarm_state': alarm_state, 'picture_mode': picture_mode})
+        except:
+            pass
 
         return answer
 
