@@ -46,6 +46,7 @@ class SurvConfigurationSerializer(serializers.HyperlinkedModelSerializer):
         )
 
         # It likes to crash.
+        # TODO move this to view
         try:
             requests.get('http://localhost:8080/configuration_change', params={'alarm_state': alarm_state, 'picture_mode': picture_mode})
         except:
