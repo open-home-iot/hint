@@ -1,5 +1,7 @@
-import json
 import os
+import json
+import requests
+
 from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
@@ -87,7 +89,6 @@ class AlarmHistoryViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-# TODO this does not need to be paginated, detail view?
 class SurvConfigurationViewSet(viewsets.ModelViewSet):
     queryset = SurvConfiguration.objects.all()
     serializer_class = SurvConfigurationSerializer
@@ -95,6 +96,12 @@ class SurvConfigurationViewSet(viewsets.ModelViewSet):
 
     # TODO add security and session authentication to SEALS
     permission_classes = (permissions.AllowAny, )
+
+
+def alarm_status(request):
+    response = requests.get('http://localhost:8080/get_alarm_state')
+
+    return HttpResponse(response.text, status=status.HTTP_200_OK, content_type="application/json")
 
 
 @csrf_exempt

@@ -15,6 +15,7 @@ const CONFIG_URL = BASE_URL + 'surveillance_configuration/1/';
 const CONFIG_POST_URL = BASE_URL + 'surveillance_configuration/';
 const PICTURE_URL = BASE_URL + 'surveillance_pictures/';
 const HISTORY_URL = BASE_URL + 'alarm_history/';
+const STATUS_URL = BASE_URL + 'alarm_status/';
 
 
 @Injectable()
@@ -49,6 +50,13 @@ export class SurveillanceService {
     this.sendRequest(HISTORY_URL, this.handleHistoryResultSet);
 
     this.sendRequest(CONFIG_URL, this.handleConfigurationResultSet);
+
+    this.requestService.get(STATUS_URL,{})
+      .subscribe(
+        data => {
+          this.alarmSubject.next(data.alarm_state);
+        }
+      );
 
     eventListener.events.subscribe(
       (event: Event) => {

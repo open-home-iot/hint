@@ -20,4 +20,5 @@ urlpatterns = [
     path('logout/', views.logout_user),
 
     path('surveillance_pictures/', views.PictureViewSet.as_view()),
+    path('alarm_status/', views.alarm_status)
 ] + router.urls
