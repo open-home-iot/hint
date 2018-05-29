@@ -51,9 +51,9 @@ export class SurveillanceService {
 
     this.sendRequest(CONFIG_URL, this.handleConfigurationResultSet);
 
-    this.requestService.get(STATUS_URL,{})
+    this.requestService.genericGet(STATUS_URL,{})
       .subscribe(
-        data => {
+        (data: {alarm_state: boolean}) => {
           this.alarmSubject.next(data.alarm_state);
         }
       );

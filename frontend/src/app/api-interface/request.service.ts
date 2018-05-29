@@ -25,13 +25,28 @@ export class RequestService {
   }
 
   /**
-   * HTTP REQUESTS
+   * GET request for DRF paginated responses.
    *
-   * Note that all observables returned by HTTP request functions need to be subscribed to in order to fire the request.
+   * @param {string} url
+   * @param {{}} options
+   * @returns {Observable<ResultSet>}
    */
 
   get(url: string, options: {}): Observable<ResultSet> {
     return this.httpClient.get<ResultSet>(url, options);
+  }
+
+  /**
+   * Generic get function for if result set is not a paginated one with the standard count, next, previous and results
+   * fields.
+   *
+   * @param {string} url
+   * @param {{}} options
+   * @returns {Observable<{}>}
+   */
+
+  genericGet(url: string, options: {}): Observable<{}> {
+    return this.httpClient.get<{}>(url, options);
   }
 
   post(url: string, body: {}) {
