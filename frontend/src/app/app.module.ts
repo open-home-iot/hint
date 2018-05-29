@@ -28,6 +28,7 @@ import { AuthGuardService } from './auth/guards/auth-guard.service';
 // Interceptors
 import { AuthRequestInterceptor } from './auth/interceptors/auth-request.interceptor';
 import { AuthResponseInterceptor } from './auth/interceptors/auth-response.interceptor';
+import {HeaderComponent} from "./header/header.component";
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { AuthResponseInterceptor } from './auth/interceptors/auth-response.inter
     SurvconfigurationComponent,
     PictureComponent,
     StreamingComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
