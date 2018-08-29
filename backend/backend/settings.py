@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'channels_redis',
     'api',
     'events',
-    'surveillance',
+    'hume',
+    'device',
 ]
 
 MIDDLEWARE = [
