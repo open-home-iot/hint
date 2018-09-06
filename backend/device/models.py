@@ -8,7 +8,7 @@ from hume.models import Hume
 
 # Create your models here.
 class Device(models.Model):
-    hume = models.OneToOneField(Hume, on_delete=models.SET_NULL, primary_key=False)
+    hume = models.OneToOneField(Hume, null=True, on_delete=models.SET_NULL, primary_key=False)
 
     name = models.CharField(null=True, blank=True, max_length=100)
 
@@ -25,4 +25,4 @@ class DeviceConfiguration(models.Model):
     configuration = JSONField()
 
     last_update = models.DateTimeField(auto_now=True, null=False, blank=False)
-    updated_by = models.OneToOneField(auth_models.User, on_delete=models.SET_NULL, primary_key=False)
+    updated_by = models.OneToOneField(auth_models.User, null=True, on_delete=models.SET_NULL, primary_key=False)
