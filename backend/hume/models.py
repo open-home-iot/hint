@@ -9,10 +9,10 @@ class Hume(models.Model):
     name = models.CharField(null=True, blank=True, max_length=100)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
-    is_paired = models.BooleanField(null=False, blank=False, default=False)
-    is_dummy = models.BooleanField(null=False, blank=False, default=False)
+    is_paired = models.BooleanField(default=False)
+    is_dummy = models.BooleanField(default=False)
 
-    heartbeat = models.DateTimeField(null=True, blank=True)
+    heartbeat = models.DateTimeField(auto_now_add=True)
 
 
 class HumeUser(auth_models.User):
