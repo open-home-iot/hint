@@ -8,7 +8,7 @@ from hume.models import Hume
 
 # Create your models here.
 class Device(models.Model):
-    hume = models.OneToOneField(Hume, on_delete=models.CASCADE, primary_key=False)
+    hume = models.ForeignKey(Hume, on_delete=models.CASCADE, primary_key=False)
 
     name = models.CharField(null=True, blank=True, max_length=100)
 
@@ -19,14 +19,10 @@ class Device(models.Model):
     heartbeat = models.DateTimeField(auto_now_add=True)
 
 
-def pre_delete(sender, **kwargs):
-    print("DEVICE: Delete happened")
-
-
 class DeviceConfiguration(models.Model):
     device = models.OneToOneField(Device, on_delete=models.CASCADE, primary_key=True)
 
     configuration = JSONField()
 
     last_update = models.DateTimeField(auto_now=True)
-    updated_by = models.OneToOneField(auth_models.User, null=True, on_delete=models.SET_NULL, primary_key=False)
+    updated_by = models.ForeignKey(auth_models.User, null=True, on_delete=models.SET_NULL, primary_key=False)

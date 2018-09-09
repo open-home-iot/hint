@@ -5,7 +5,7 @@ from device.models import Device
 
 # Create your models here.
 class Log(models.Model):
-    device = models.OneToOneField(Device, on_delete=models.CASCADE, primary_key=False)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, primary_key=False)
 
     timestamp = models.DateTimeField(editable=False, auto_now_add=True)
 
