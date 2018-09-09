@@ -18,11 +18,14 @@ class Delete(TestCase):
 
     def tearDown(self):
         """Clear all created data from setUp()."""
-        if Hume.objects.filter(pk=1).exists():
-            Hume.objects.get(pk=1).delete()
+        for user in auth_models.User.objects.all():
+            user.delete()
 
-        if Device.objects.filter(pk=1).exists():
-            Device.objects.get(pk=1).delete()
+        for hume in Hume.objects.all():
+            hume.delete()
+
+        for device in Device.objects.all():
+            device.delete()
 
     def test_hume_deleted(self):
         """Associated devices get deleted when the HUME is deleted."""
@@ -42,11 +45,17 @@ class Delete(TestCase):
 
     def test_user_deleted(self):
         """A device configuration does not get deleted when the last updating user gets deleted."""
-        device = Device.objects.get(pk=1)
-
-        user = auth_models.User(pk=1)
+        user = auth_models.User(pk=1, username='Klaus')
         user.save()
+        user_two = auth_models.User(pk=2, username='Moike')
+        user_two.save()
 
+        # Add two users not to trigger a delete of the HUME when the user is cleared.
+        hume = Hume.objects.get(pk=1)
+        hume.users.add(user)
+        hume.users.add(user_two)
+
+        device = Device.objects.get(pk=1)
         DeviceConfiguration.objects.create(updated_by=user, device=device, configuration={'1': 1})
 
         device_config = DeviceConfiguration.objects.get(pk=device.pk)

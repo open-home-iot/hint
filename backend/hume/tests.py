@@ -6,7 +6,6 @@ from django.contrib.auth import models as auth_models
 from psycopg2 import IntegrityError as PIntegrityError
 
 from hume.models import Hume, HumeUser
-from device.models import Device
 
 
 # Create your tests here.
@@ -68,18 +67,22 @@ class Delete(TestCase):
 
     def tearDown(self):
         """Clear all created data from setUp()."""
+        for user in auth_models.User.objects.all():
+            user.delete()
+
         for hume in Hume.objects.all():
             hume.delete()
 
         for hume_user in HumeUser.objects.all():
             hume_user.delete()
 
-        for user in auth_models.User.objects.all():
-            user.delete()
-
     def test_hume_deleted(self):
         """If a HUME is deleted the HUME user related to that HUME should be deleted as well, but no others."""
         hume_two = Hume.objects.create(pk=2)
+        # If a HUME does not have a user when the deletion of a user is triggered, this HUME will dissapear as well.
+        # Since below a HUME User is deleted (triggered by the HUME being deleted) a User model deletion signal is sent
+        # and would clear this HUME from the DB, unless a User is associated with it.
+        hume_two.users.add(auth_models.User.objects.create(pk=2, username='Mitty'))
         HumeUser.objects.create(related_hume=hume_two, username='Milly')
 
         hume = Hume.objects.get(pk=1)
@@ -105,10 +108,17 @@ class Delete(TestCase):
         """Deleting all associated users should also delete the HUME."""
         hume = Hume.objects.get(pk=1)
 
-        users = hume.users.all()
+        user_two = auth_models.User.objects.create(username='MongoDB')
+        user_two.save()
 
-        for user in users:
-            user.delete()
+        hume.users.add(user_two)
 
-        if Hume.objects.all().exists():
-            self.fail('HUME was not deleted when all users were!')
+        [user, user_two] = hume.users.all()
+
+        user.delete()
+
+        self.assertEqual(1, len(Hume.objects.all()))
+
+        user_two.delete()
+
+        self.assertEqual(0, len(Hume.objects.all()))
