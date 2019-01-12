@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import path, include
 
-from api.views import index
+from hume import urls as hume_urls
+from device import urls as device_urls
 
 
 urlpatterns = [
-    path("", index)
+    path("hume/", include(hume_urls)),
 ]

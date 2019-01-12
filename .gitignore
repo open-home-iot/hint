@@ -1,18 +1,22 @@
+# Local Django settings
+local.py
+
+
 # Compiled Python
 __pycache__/
 dist/
 tmp/
 out-tsc/
 
+
 # Collected staticfiles
 backend/static/admin
 backend/static/rest_framework
 
-# Installation specific alarm pictures
-**/alarm_pictures/*/*.jpg
 
 # Node dependencies
 node_modules/
+
 
 # IDEs and editors
 .idea/
@@ -23,6 +27,7 @@ node_modules/
 .settings/
 *.sublime-workspace
 
+
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json
@@ -30,9 +35,11 @@ node_modules/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+
 # Database files
 *.sqlite3
 *.rdb
+
 
 # misc
 .sass-cache/
@@ -43,6 +50,7 @@ npm-debug.log
 testem.log
 typings/
 .DS_Store
+
 
 # e2e
 e2e/*.js

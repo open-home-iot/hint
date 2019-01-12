@@ -30,10 +30,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'corsheaders',
-    'channels',
-    'channels_redis',
     'api',
     'events',
     'hume',
@@ -41,7 +37,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,22 +64,16 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'backend.routing.application'
-
-# Since channels are used, it will now be an ASGI application running and not a WSGI.
 WSGI_APPLICATION = 'backend.wsgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'hint',
-        'USER': 'home',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
     }
 }
 
@@ -124,6 +113,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -132,44 +122,3 @@ STATICFILES_DIRS = [
     ('images', os.path.join(STATIC_ROOT, 'images')),
     ('alarm_pictures', os.path.join(STATIC_ROOT, 'alarm_pictures')),
 ]
-
-# REST FRAMEWORK
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
-    ],
-    'DEFAULT_PAGINATION_CLASS': [
-        'rest_framework.pagination.LimitOffsetPagination'
-    ],
-    'PAGE_SIZE': 10
-}
-
-# CORS
-# Very important not to include protocol prefix, for example 'http://...', it
-# breaks this stupid fucking thing.
-CORS_ORIGIN_WHITELIST = [
-    'localhost:4200',
-    'localhost:8000',
-    '192.168.0.3:4200',
-    '192.168.0.10:4200',
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-# In case of emergency
-# CORS_ORIGIN_ALLOW_ALL = True
-
-# Channels + Redis configurations
-# NOTE! There is no need to specify the ROUTER field after channels 2. This is baked into the ASGI_APPLICATION field
-# above, since that already selects the application (router) anyway.
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('localhost', 6379)],
-        },
-    }
-}
