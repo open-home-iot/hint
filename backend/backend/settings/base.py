@@ -14,12 +14,7 @@ SECRET_KEY = '$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '192.168.0.3',
-    '192.168.0.10',
-]
-
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -30,7 +25,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Custom
     'api',
+    'app',
     'events',
     'hume',
     'device',

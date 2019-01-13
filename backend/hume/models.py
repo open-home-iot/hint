@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth import models as auth_models
 
 
-# Create your models here.
 class Hume(models.Model):
     users = models.ManyToManyField(auth_models.User)
 
