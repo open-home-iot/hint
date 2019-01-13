@@ -1,12 +1,13 @@
 from django.http import HttpResponse
 
-from json.decoder import JSONDecodeError
-from util.json_handling import extract_request_fields
 
-from .models import Hume
+def attach(request, request_fields):
+    return HttpResponse(status=200)
 
 
-def attach(request):
-    request_fields = extract_request_fields(request)
+def authentication(request, request_fields):
+    return HttpResponse(status=200)
 
+
+def token_update(request, request_fields):
     return HttpResponse(status=200)

@@ -1,25 +1,33 @@
+from importlib import import_module
+
 from django.http import HttpResponse
 
 from util.json_handling import extract_request_fields
 
+from .views import heartbeat
 
-def handle_incoming_request(request):
+
+def handle_incoming_request(request, path=None):
     request_fields = extract_request_fields(request)
 
-    print("checking request fields...")
-
     if not request_fields:
-        stop()
+        return HttpResponse(status=400)
     else:
-        resolve_url(request, request_fields)
+        return resolve_url(request, request_fields, path)
 
 
-def stop():
-    return HttpResponse(status=400)
+def resolve_url(request, request_fields, path):
+    # Every path has two components
+    (main, sub,) = path
 
+    # Procedure to call
+    procedure = None
 
-def resolve_url(request, request_fields):
-    url_path_parts = request.path.split('/')
-    print(url_path_parts)
+    if main == 'heartbeat':
+        procedure = heartbeat
+    else:
+        # Import the views of the procedure module
+        module = import_module(main + '.views')
+        procedure = getattr(module, sub)
 
-    return HttpResponse(status=400)
+    return procedure(request, request_fields)
