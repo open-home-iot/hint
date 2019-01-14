@@ -4,8 +4,14 @@ from json.decoder import JSONDecodeError
 
 
 def extract_request_fields(request):
+    decoded_data = {}
+
     try:
         decoded_data = json.loads(request.body)
-        return decoded_data
     except JSONDecodeError:
+        pass
+
+    if isinstance(decoded_data, dict):
+        return decoded_data
+    else:
         return {}
