@@ -1,6 +1,8 @@
 from django.urls import path, include
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .request_handling import handle_incoming_request
+from .views import info
 
 
 hume_patterns = [
@@ -24,4 +26,7 @@ urlpatterns = [
     # Generic for both devices and HUMEs
     path("heartbeat", handle_incoming_request,
          {'path': ('heartbeat', '',)}),
+
+    # API info
+    path("info", ensure_csrf_cookie(info)),
 ]
