@@ -30,9 +30,9 @@ def attach(request, request_fields=None):
     return HttpResponse(status=status_code)
 
 
-def authentication(request, request_fields):
+def authentication(request, request_fields=None):
     return HttpResponse(status=200)
 
 
-def token_update(request, request_fields):
+def token_update(request, request_fields=None):
     return HttpResponse(status=200)

@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from .request_validation import validate_request_fields
 
 
-def heartbeat(request, request_fields):
+def heartbeat(request, request_fields=None):
     """Call both device and HUME procedure modules to handle the information"""
 
     return HttpResponse(status=200)
