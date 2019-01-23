@@ -6,7 +6,7 @@ from .models import Hume
 from api.request_validation import validate_request_fields
 
 
-def attach(request, request_fields):
+def attach(request, request_fields=None):
     required_fields = ('hume_id',)
 
     valid = validate_request_fields(required_fields=required_fields,
