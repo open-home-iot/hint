@@ -35,6 +35,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # Django MIDDLEWARE
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -123,3 +124,14 @@ STATICFILES_DIRS = [
     ('images', os.path.join(STATIC_ROOT, 'images')),
     ('alarm_pictures', os.path.join(STATIC_ROOT, 'alarm_pictures')),
 ]
+
+
+# Celery settings
+
+BROKER_URL = 'amqp://localhost'
+
+
+# HUME settings
+
+HUME_PREFFERED_PROTOCOL = 'http://'  # http | https, remember :// at end
+HUME_PREFFERED_PORT = ':8001'  # Remember ':' before port

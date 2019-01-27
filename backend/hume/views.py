@@ -3,7 +3,7 @@ from django.db.models import Q
 
 from .models import Hume
 
-from api.request_validation import validate_request_fields
+from api.request_handling import validate_request_fields
 
 
 def attach(request, request_fields=None):

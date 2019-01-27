@@ -8,9 +8,6 @@ class Hume(models.Model):
     name = models.CharField(null=True, blank=True, max_length=100)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
-    token = models.CharField(max_length=100)
-    is_dummy = models.BooleanField(default=False)
-
     heartbeat = models.DateTimeField(auto_now_add=True)
 
 

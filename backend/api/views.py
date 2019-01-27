@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 
-from .request_validation import validate_request_fields
+from .request_handling import validate_request_fields
 
 
 def heartbeat(request, request_fields=None):

@@ -14,8 +14,6 @@ class Device(models.Model):
 
     type = models.IntegerField(editable=False)
 
-    is_dummy = models.BooleanField(default=False)
-
     heartbeat = models.DateTimeField(auto_now_add=True)
 
 

@@ -15,3 +15,7 @@ def extract_request_fields(request):
         return decoded_data
     else:
         return {}
+
+
+def pack_request_fields(payload):
+    return json.dumps(payload)
