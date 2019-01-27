@@ -1,4 +1,12 @@
-from channels.routing import ProtocolTypeRouter
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+
+from .urls import websocket_urlpatterns
 
 
-application = ProtocolTypeRouter({})
+application = ProtocolTypeRouter({
+    # HTTP is handled by Django by default.
+    'websocket': AuthMiddlewareStack(
+        URLRouter(websocket_urlpatterns)
+    ),
+})

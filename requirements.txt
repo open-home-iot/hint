@@ -1,3 +1,4 @@
+aioredis==1.2.0
 amqp==2.4.0
 asgiref==2.3.2
 async-timeout==3.0.1
@@ -8,14 +9,17 @@ billiard==3.5.0.5
 celery==4.2.1
 certifi==2018.11.29
 channels==2.1.6
+channels-redis==2.3.3
 chardet==3.0.4
 constantly==15.1.0
 daphne==2.2.4
 Django==2.1.5
+hiredis==1.0.0
 hyperlink==18.0.0
 idna==2.8
 incremental==17.5.0
 kombu==4.2.2.post1
+msgpack==0.6.1
 psycopg2-binary==2.7.6.1
 PyHamcrest==1.9.0
 pytz==2018.9
