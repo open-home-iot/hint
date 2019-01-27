@@ -33,5 +33,8 @@ def identification_request_async(hume_id, username, password):
                           (hume.ip_address, EXTENSION,),
                           payload=payload)
     response = request.send()
-    
-    # TODO: Notify frontend
+
+    if response.status_code == 200:
+        pass
+    else:
+        pass

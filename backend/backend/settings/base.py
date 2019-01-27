@@ -32,6 +32,9 @@ INSTALLED_APPS = [
     'events',
     'hume',
     'device',
+
+    # Third party
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -66,7 +69,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+
+# Channels settings
+
+ASGI_APPLICATION = 'backend.routing.application'  # With channels enabled, we
+                                                  # are now running an ASGI
+                                                  # application.
+# WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 # Database
