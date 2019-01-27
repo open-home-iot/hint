@@ -4,10 +4,6 @@ from django.conf import settings
 
 
 class HttpRequest:
-
-    class ValidationException(Exception):
-        pass
-
     POST = 1
     GET = 2
 
@@ -46,8 +42,6 @@ def validate_request_fields(required_fields=[],
         for key in required_fields:
             keys.remove(key)
     except ValueError:
-        # Invalid since it did not have some required field
-        print("Failed validation due to missing required field")
         return False
 
     # Pop all optional fields and ensure no leftover trash is left in
