@@ -11,7 +11,7 @@ urlpatterns = [
     path("app", include(app_urls)),
     path("api/", include(api_urls)),
     path("admin", admin.site.urls),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
 
 # TODO fill in
 # Websocket URLs are routed to through the root routing.py

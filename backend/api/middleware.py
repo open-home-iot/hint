@@ -2,13 +2,12 @@ from util.json_handling import extract_request_fields
 
 
 class RequestFieldMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        response = self.get_response(request)
-
-        return response
+    """
+    To use the decorator decorator_from_middleware, we need to use the
+    1.9 django style of middleware classes, excluding the __init__.
+    __init__ in django 1.9 does not accept any arguments, while > 2 does
+    expect get_response.
+    """
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         view_kwargs['request_fields'] = extract_request_fields(request)
