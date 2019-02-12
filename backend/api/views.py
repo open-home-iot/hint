@@ -8,6 +8,7 @@ from .middleware import RequestFieldMiddleware
 @decorator_from_middleware(RequestFieldMiddleware)
 def heartbeat(request, request_fields=None):
     """Call both device and HUME procedure modules to handle the information"""
+    print(request_fields)
 
     return HttpResponse(status=200)
 

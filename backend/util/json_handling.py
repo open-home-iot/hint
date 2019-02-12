@@ -4,7 +4,7 @@ from json.decoder import JSONDecodeError
 
 
 def extract_request_fields(request):
-    decoded_data = {}
+    decoded_data = None
 
     try:
         decoded_data = json.loads(request.body)

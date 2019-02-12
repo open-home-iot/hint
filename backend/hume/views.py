@@ -35,9 +35,13 @@ def attach(request, request_fields=None):
 
 @decorator_from_middleware(RequestFieldMiddleware)
 def authentication(request, request_fields=None):
+    print(request_fields)
+
     return HttpResponse(status=200)
 
 
 @decorator_from_middleware(RequestFieldMiddleware)
 def token_update(request, request_fields=None):
+    print(request_fields)
+
     return HttpResponse(status=200)
