@@ -2,7 +2,10 @@ import os
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Normally, the final os.path uses abspath(), we use dirname() here instead
+# since we want the top level to be the root.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -136,13 +139,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 STATICFILES_DIRS = [
-    ('images', os.path.join(STATIC_ROOT, 'images')),
-    ('alarm_pictures', os.path.join(STATIC_ROOT, 'alarm_pictures')),
+    os.path.join(BASE_DIR, "static"),
 ]
-
 
 # Celery settings
 

@@ -1,0 +1,14 @@
+body {
+  margin: 0 auto;
+  width: 60%;
+}
+
+div.wrapper {
+  width: 100%;
+}
+
+div {
+  box-sizing: border-box;
+  float: left;
+  width: 33%;
+}

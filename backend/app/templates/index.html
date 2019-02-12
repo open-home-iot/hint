@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>HINT</title>
+
+  {% load static %}
+
+  <script type="text/javascript" src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+  <link rel="stylesheet" href="{% static "css/styles.css" %}">
+</head>
+<body>
+  <header>
+    <h1>HINT</h1>
+  </header>
+
+  <div class="wrapper">
+    <div>
+      <h3>App-specific static file serving status</h3>
+      <img width="50px" height="50px" src="{% static "img/smiley.jpg" %}" alt="There is an issue with django-app served static files"/>
+    </div>
+
+    <div>
+      <h3>General static file serving status</h3>
+      <img width="50px" height="50px" src="{% static "img/red_smiley.jpg" %}" alt="There is an issue with general served static files"/>
+    </div>
+
+    <div>
+      <h3>jQuery status</h3>
+      <p id="jquery_test">
+        There is a problem with jQuery.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div>
+      <h2>Request testing</h2>
+    </div>
+
+    <div>
+      <h2>Websocket testing</h2>
+    </div>
+  </div>
+
+
+  <script>
+    $(function() {
+      $("#jquery_test").text("jQuery works!");
+    }); // end ready
+  </script>
+</body>
+</html>

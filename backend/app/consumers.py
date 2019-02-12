@@ -3,20 +3,6 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync
 
 
-"""
-INFO
-
-* self.scope will contain much the same information as that you can find in a request object in a Django view.
-* connect can raise AcceptConnection or DenyConnection exceptions
-* In order to use groups for multicast messages you have to add a channel backend that is able to handle it. 
-  RedisChannelLayer is one such handler, add it as BACKEND in settings.py in the var 
-  CHANNEL_LAYERS['default']['BACKEND'].
-* You can make a consumer automatically join a group upon connection by specifying the class variable groups. Groups
-  has to be an iterable. The group will also be automatically dropped on disconnection.
-
-"""
-
-
 class EventConsumer(JsonWebsocketConsumer):
 
     def connect(self):

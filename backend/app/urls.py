@@ -1,10 +1,8 @@
 from django.urls import path
 
-from .views import index
-
-from api import urls as api_urls
+from .views import AppView
 
 
 urlpatterns = [
-    path("", index),
+    path("", AppView.as_view(), name='index'),
 ]
