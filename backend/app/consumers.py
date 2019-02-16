@@ -3,6 +3,18 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync
 
 
+class HumeConsumer(JsonWebsocketConsumer):
+
+    def connect(self):
+        self.accept()
+
+    def disconnect(self):
+        pass
+
+    def receive(self, data):
+        self.send(data=data)
+
+
 class EventConsumer(JsonWebsocketConsumer):
 
     def connect(self):

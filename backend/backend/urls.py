@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 
 from app import urls as app_urls
 from api import urls as api_urls
+from app.urls import websocket_urlpatterns as app_ws_urlpatterns
 
 
 urlpatterns = [
@@ -15,7 +16,4 @@ urlpatterns = [
 
 # TODO fill in
 # Websocket URLs are routed to through the root routing.py
-websocket_urlpatterns = [
-    # re_path(regex, consumer, name=)
-    # re_path(regex, consumer, name=)
-]
+websocket_urlpatterns = app_ws_urlpatterns
