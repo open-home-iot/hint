@@ -10,6 +10,7 @@ from app.urls import websocket_urlpatterns as app_ws_urlpatterns
 
 urlpatterns = [
     path("app", include(app_urls)),
+    path("app/", include(app_urls)),
     path("api/", include(api_urls)),
     path("admin", admin.site.urls),
 ]

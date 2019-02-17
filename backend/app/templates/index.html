@@ -49,6 +49,8 @@
 
   <script>
     $(function() {
+      $("#jquery_test").text("jQuery works!");
+
       var webSocket = new WebSocket('ws://' + window.location.host + '/ws/hume/3');
 
       webSocket.onmessage = function(e) {
