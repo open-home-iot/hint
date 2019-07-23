@@ -1,8 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 
-from api.request_handling import HttpRequest
-from hume.models import Hume
+from backend.api.request_handling import HttpRequest
+from .models import Hume
 
 
 """

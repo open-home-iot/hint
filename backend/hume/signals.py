@@ -2,7 +2,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.contrib.auth import models as auth_models
 
-from hume.models import Hume
+from .models import Hume
 
 
 @receiver(post_delete, sender=auth_models.User, dispatch_uid='user_deleted')

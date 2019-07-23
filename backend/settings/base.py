@@ -30,11 +30,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
-    'api',
-    'app',
-    'events',
-    'hume',
-    'device',
+    'backend.api',
+    'backend.app',
+    'backend.device',
+    'backend.events',
+    'backend.hume',
 
     # Third party
     'channels'
@@ -51,13 +51,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'backend/templates')],
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -72,7 +72,7 @@ TEMPLATES = [
 
 # Channels settings
 
-ASGI_APPLICATION = 'routing.application'  # With channels enabled, we
+ASGI_APPLICATION = 'backend.routing.application'  # With channels enabled, we
                                                   # are now running an ASGI
                                                   # application.
 # WSGI_APPLICATION = 'backend.wsgi.application'
@@ -93,7 +93,7 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'hint',
+        'NAME': 'hint.sqlite3',
     }
 }
 
@@ -137,7 +137,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "backend/static"),
 ]
 
 # Celery settings

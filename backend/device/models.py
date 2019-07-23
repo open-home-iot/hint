@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.contrib.auth import models as auth_models
 
-from hume.models import Hume
+from backend.hume.models import Hume
 
 
 # Create your models here.

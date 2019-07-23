@@ -5,7 +5,7 @@ from django.contrib.auth import models as auth_models
 
 from psycopg2 import IntegrityError as PIntegrityError
 
-from hume.models import Hume, HumeUser
+from .models import Hume, HumeUser
 
 
 # Create your tests here.

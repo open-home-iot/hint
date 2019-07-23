@@ -4,8 +4,8 @@ from django.utils.decorators import decorator_from_middleware
 
 from .models import Hume
 
-from api.request_handling import validate_request_fields
-from api.middleware import RequestFieldMiddleware
+from backend.api.request_handling import validate_request_fields
+from backend.api.middleware import RequestFieldMiddleware
 
 
 @decorator_from_middleware(RequestFieldMiddleware)

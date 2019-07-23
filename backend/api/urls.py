@@ -2,8 +2,8 @@ from django.urls import path, include
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .views import info, heartbeat
-from hume.views import attach, authentication, token_update
-from events.views import event
+from backend.hume.views import attach, authentication, token_update
+from backend.events.views import event
 
 
 hume_patterns = [

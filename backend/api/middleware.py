@@ -1,4 +1,4 @@
-from util.json_handling import extract_request_fields
+from backend.util.json_handling import extract_request_fields
 
 
 class RequestFieldMiddleware:

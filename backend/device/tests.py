@@ -5,8 +5,8 @@ from django.db.utils import IntegrityError
 
 from psycopg2 import IntegrityError as PIntegrityError
 
-from hume.models import Hume
-from device.models import DeviceConfiguration, Device
+from backend.hume.models import Hume
+from backend.device.models import DeviceConfiguration, Device
 
 
 # Create your tests here.

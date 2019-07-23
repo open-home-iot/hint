@@ -1,8 +1,8 @@
 from django.test import TestCase
 
-from hume.models import Hume
-from device.models import Device
-from events.models import Log
+from backend.hume.models import Hume
+from backend.device.models import Device
+from backend.events.models import Log
 
 
 # Create your tests here.
