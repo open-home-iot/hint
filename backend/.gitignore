@@ -1,2 +1,5 @@
 # local django settings
 settings/local.py
+
+# pycache
+__pycache__/
