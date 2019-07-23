@@ -10,3 +10,6 @@
 # Database files
 *.sqlite3
 *.rdb
+
+# Mac crap
+.DS_Store
