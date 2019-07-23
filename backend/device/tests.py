@@ -12,7 +12,10 @@ from backend.device.models import DeviceConfiguration, Device
 # Create your tests here.
 class Delete(TestCase):
     def setUp(self):
-        """Create shared test case data, what's created here needs to be torn down in tearDown()."""
+        """
+        Create shared test case data, what's created here needs to be torn down
+        in tearDown().
+        """
         hume = Hume.objects.create(pk=1)
         Device.objects.create(pk=1, hume=hume, type=1)
 
@@ -37,26 +40,34 @@ class Delete(TestCase):
     def test_device_deleted(self):
         """A device configuration gets deleted when the device is deleted."""
         device = Device.objects.get(pk=1)
-        DeviceConfiguration.objects.create(pk=1, device=device, configuration={'1': 1})
+        DeviceConfiguration.objects.create(pk=1,
+                                           device=device,
+                                           configuration={'1': 1})
 
         device.delete()
 
         self.assertEqual(0, len(DeviceConfiguration.objects.all()))
 
     def test_user_deleted(self):
-        """A device configuration does not get deleted when the last updating user gets deleted."""
+        """
+        A device configuration does not get deleted when the last updating user
+        gets deleted.
+        """
         user = auth_models.User(pk=1, username='Klaus')
         user.save()
         user_two = auth_models.User(pk=2, username='Moike')
         user_two.save()
 
-        # Add two users not to trigger a delete of the HUME when the user is cleared.
+        # Add two users not to trigger a delete of the HUME when the user is
+        # cleared.
         hume = Hume.objects.get(pk=1)
         hume.users.add(user)
         hume.users.add(user_two)
 
         device = Device.objects.get(pk=1)
-        DeviceConfiguration.objects.create(updated_by=user, device=device, configuration={'1': 1})
+        DeviceConfiguration.objects.create(updated_by=user,
+                                           device=device,
+                                           configuration={'1': 1})
 
         device_config = DeviceConfiguration.objects.get(pk=device.pk)
         device_config.updated_by = user
@@ -70,7 +81,10 @@ class Delete(TestCase):
 
 class Create(TestCase):
     def setUp(self):
-        """Create shared test case data, what's created here needs to be torn down in tearDown()."""
+        """
+        Create shared test case data, what's created here needs to be torn down
+        in tearDown().
+        """
         hume = Hume.objects.create(pk=1)
         Device.objects.create(pk=1, hume=hume, type=1)
 
@@ -97,12 +111,15 @@ class Create(TestCase):
     def test_multiple_configurations_for_one_device(self):
         device = Device.objects.get(pk=1)
 
-        DeviceConfiguration.objects.create(device=device, configuration={'1': 1})
+        DeviceConfiguration.objects.create(device=device,
+                                           configuration={'1': 1})
 
-        # Django + the unittest module does not like exceptions during transactions.
+        # Django + the unittest module does not like exceptions during
+        # transactions.
         with transaction.atomic():
             try:
-                DeviceConfiguration.objects.create(device=device, configuration={'1': 1})
+                DeviceConfiguration.objects.create(device=device,
+                                                   configuration={'1': 1})
                 self.fail('Duplicate configurations were allowed!')
 
             # Not sure which bloody error it was...
@@ -110,7 +127,10 @@ class Create(TestCase):
                 pass
 
     def test_adding_a_second_device_and_config(self):
-        """Test that relations between configurations and devices as well as users work."""
+        """
+        Test that relations between configurations and devices as well as users
+        work.
+        """
         hume = Hume.objects.get(pk=1)
         user = auth_models.User.objects.create(pk=1)
 
@@ -119,7 +139,11 @@ class Create(TestCase):
         device_two = Device.objects.create(pk=2, hume=hume, type=1)
 
         # Same user for both configurations.
-        DeviceConfiguration.objects.create(updated_by=user, device=device, configuration={'1': 1})
-        DeviceConfiguration.objects.create(updated_by=user, device=device_two, configuration={'1': 1})
+        DeviceConfiguration.objects.create(updated_by=user,
+                                           device=device,
+                                           configuration={'1': 1})
+        DeviceConfiguration.objects.create(updated_by=user,
+                                           device=device_two,
+                                           configuration={'1': 1})
 
         self.assertEqual(2, len(DeviceConfiguration.objects.all()))

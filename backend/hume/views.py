@@ -21,7 +21,8 @@ def attach(request, request_fields=None):
         ip_address = request.META.get('REMOTE_ADDR')
         hume_id = request_fields.get('hume_id')
 
-        if Hume.objects.filter(Q(id=hume_id) | Q(ip_address=ip_address)).exists():
+        if Hume.objects.filter(Q(id=hume_id) |
+                               Q(ip_address=ip_address)).exists():
             status_code = 409  # Conflict
         else:
             Hume.objects.create(id=hume_id, ip_address=ip_address)

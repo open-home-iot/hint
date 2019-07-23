@@ -3,3 +3,6 @@ settings/local.py
 
 # pycache
 __pycache__/
+
+# logs
+*.log

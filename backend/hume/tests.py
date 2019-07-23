@@ -11,7 +11,10 @@ from .models import Hume, HumeUser
 # Create your tests here.
 class Create(TestCase):
     def setUp(self):
-        """Create shared test case data, what's created here needs to be torn down in tearDown()."""
+        """
+        Create shared test case data, what's created here needs to be torn
+        down in tearDown().
+        """
         hume = Hume.objects.create(pk=1)
 
         user = auth_models.User.objects.create(username='Mike')
@@ -31,7 +34,9 @@ class Create(TestCase):
             user.delete()
 
     def test_create_additional_hume_user(self):
-        """It should not be possible to have two HUME users for the same HUME."""
+        """
+        It should not be possible to have two HUME users for the same HUME.
+        """
         hume = Hume.objects.get(pk=1)
 
         with transaction.atomic():
@@ -57,7 +62,10 @@ class Create(TestCase):
 
 class Delete(TestCase):
     def setUp(self):
-        """Create shared test case data, what's created here needs to be torn down in tearDown()."""
+        """
+        Create shared test case data, what's created here needs to be torn down
+        in tearDown().
+        """
         hume = Hume.objects.create(pk=1)
 
         user = auth_models.User.objects.create(username='Mike')
@@ -77,12 +85,18 @@ class Delete(TestCase):
             hume_user.delete()
 
     def test_hume_deleted(self):
-        """If a HUME is deleted the HUME user related to that HUME should be deleted as well, but no others."""
+        """
+        If a HUME is deleted the HUME user related to that HUME should be
+        deleted as well, but no others.
+        """
         hume_two = Hume.objects.create(pk=2)
-        # If a HUME does not have a user when the deletion of a user is triggered, this HUME will dissapear as well.
-        # Since below a HUME User is deleted (triggered by the HUME being deleted) a User model deletion signal is sent
-        # and would clear this HUME from the DB, unless a User is associated with it.
-        hume_two.users.add(auth_models.User.objects.create(pk=2, username='Mitty'))
+        # If a HUME does not have a user when the deletion of a user is
+        # triggered, this HUME will dissapear as well.
+        # Since below a HUME User is deleted (triggered by the HUME being
+        # deleted) a User model deletion signal is sent and would clear this
+        # HUME from the DB, unless a User is associated with it.
+        hume_two.users.add(auth_models.User.objects.create(pk=2,
+                                                           username='Mitty'))
         HumeUser.objects.create(related_hume=hume_two, username='Milly')
 
         hume = Hume.objects.get(pk=1)

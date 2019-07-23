@@ -12,6 +12,8 @@ class Hume(models.Model):
 
 
 class HumeUser(auth_models.User):
-    related_hume = models.OneToOneField(Hume, on_delete=models.CASCADE, primary_key=True)
+    related_hume = models.OneToOneField(Hume,
+                                        on_delete=models.CASCADE,
+                                        primary_key=True)
 
     hume_auth_token = models.CharField(null=True, blank=True, max_length=100)
