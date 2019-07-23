@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'backend.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -72,7 +72,7 @@ TEMPLATES = [
 
 # Channels settings
 
-ASGI_APPLICATION = 'backend.routing.application'  # With channels enabled, we
+ASGI_APPLICATION = 'routing.application'  # With channels enabled, we
                                                   # are now running an ASGI
                                                   # application.
 # WSGI_APPLICATION = 'backend.wsgi.application'

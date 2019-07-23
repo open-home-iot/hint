@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.utils.decorators import decorator_from_middleware
 
 from .request_handling import validate_request_fields
