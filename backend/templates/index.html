@@ -1,0 +1,22 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <base href="/">
+
+    <link rel="stylesheet" href="{% static 'ang/styles.css' %}">
+</head>
+<body>
+
+    <app-root></app-root>
+    <script src="{% runtime.js %}" type="module"></script>
+    <script src="{% polyfills.js %}" type="module"></script>
+    <script src="{% styles.js %}" type="module"></script>
+    <script src="{% vendor.js %}" type="module"></script>
+    <script src="{% main.js %}" type="module"></script>
+
+</body>
+</html>
