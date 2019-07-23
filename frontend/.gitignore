@@ -3,3 +3,6 @@
 
 # dependencies
 /node_modules
+
+# generated front end code
+static/ang/*
