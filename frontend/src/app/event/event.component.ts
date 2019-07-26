@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { EventService } from './event.service';
+
 @Component({
   selector: 'app-event',
   templateUrl: './event.component.html',
@@ -7,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventComponent implements OnInit {
 
-  constructor() { }
+  constructor(private eventService: EventService) { }
 
   ngOnInit() {
   }
