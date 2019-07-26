@@ -11,6 +11,9 @@ import { EventComponent } from './event/event.component';
 import { HttpComponent } from './http/http.component';
 import { HeaderComponent } from './header/header.component';
 import { StartComponent } from './start/start.component';
+import { DeviceListComponent } from './device/device-list/device-list.component';
+import { HumeListComponent } from './hume/hume-list/hume-list.component';
+import { AreaListComponent } from './area/area-list/area-list.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,10 @@ import { StartComponent } from './start/start.component';
     EventComponent,
     HttpComponent,
     HeaderComponent,
-    StartComponent
+    StartComponent,
+    DeviceListComponent,
+    HumeListComponent,
+    AreaListComponent
   ],
   imports: [
     BrowserModule,
