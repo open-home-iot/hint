@@ -16,7 +16,7 @@ import { HumeRoutingModule } from './hume-routing.module';
     CommonModule
   ],
   exports: [
-    
+
   ]
 })
-export class DeviceModule {}
+export class HumeModule {}

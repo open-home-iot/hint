@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [
+import { HumeComponent } from './hume.component';
 
+const routes: Routes = [
+  { path: 'hume', component: HumeComponent }
 ];
 
 @NgModule({

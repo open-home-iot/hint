@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [
+import { DeviceComponent } from './device.component';
 
+const routes: Routes = [
+  { path: 'device', component: DeviceComponent }
 ];
 
 @NgModule({
