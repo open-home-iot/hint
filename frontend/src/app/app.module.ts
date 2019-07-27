@@ -11,8 +11,8 @@ import { AuthComponent } from './auth/auth.component';
 
 import { EventComponent } from './event/event.component';
 
-import { AreaComponent } from './area/area.component';
-import { AreaListComponent } from './area/area-list/area-list.component';
+import { HomeComponent } from './home/home.component';
+import { HomeListComponent } from './home/home-list/home-list.component';
 
 import { HumeComponent } from './hume/hume.component';
 import { HumeListComponent } from './hume/hume-list/hume-list.component';
@@ -34,8 +34,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 
     EventComponent,
 
-    AreaComponent,
-    AreaListComponent,
+    HomeComponent,
+    HomeListComponent,
 
     HumeComponent,
     HumeListComponent,
