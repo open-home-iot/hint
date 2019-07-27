@@ -1,1 +1,5 @@
 <p>home works!</p>
+<button (click)="addHome('Home')">Add home</button>
+<p *ngFor="let home of homes">
+  {{ home }}
+</p>

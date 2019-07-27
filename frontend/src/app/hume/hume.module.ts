@@ -1,9 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// COMPONENTS
 import { HumeComponent } from './hume.component';
 import { HumeListComponent } from './hume-list/hume-list.component';
 
+// SERVICES
+import { HumeService } from './hume.service';
+
+// MODULES
 import { HumeRoutingModule } from './hume-routing.module';
 
 @NgModule({
@@ -17,6 +22,7 @@ import { HumeRoutingModule } from './hume-routing.module';
   ],
   exports: [
 
-  ]
+  ],
+  providers: [HumeService]
 })
 export class HumeModule {}
