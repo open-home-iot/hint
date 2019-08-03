@@ -85,7 +85,23 @@ $ pip install -r requirements.txt
 ```
 And that's it, all Python dependencies are now installed into the project's virtual Python environment and will not affect any other project on your system!
 
-### Installing frontend dependencies
+### Frontend dependencies
 The frontend part of this project is build with Angular. To use Angular we opted to use their Command Line Interface (Angular CLI). The Angular CLI is nice to use since it does a lot for you and is necessary to, upon code changes, immediately see the changes in the browser. It can also quickly create bare-bones Angular files for you.
 
-To install the Angular CLI, you will first need to install both `node` and `npm`. In particular, `npm` is used as the package manager for all things Angular.
+To install the Angular CLI, you will first need to install both `node` and `npm`. In particular, `npm` is used as the package manager for all things Angular. By installing `node`, you'll by default also get `npm`. Install `node` by going [here](https://nodejs.org/en/) or some other way I don't know about.
+
+### Installing the Angular CLI
+Instructions taken from [here](https://angular.io/cli).
+
+When you have `npm`, install the Angular CLI globally on your system.
+
+```
+$ npm install -g @angular/cli
+```
+
+Now, having the Angular CLI, you should be able to use the `ng` command to access its utility functions.
+
+### Installing project frontend dependencies
+To install the project's frontend dependencies, navigate to the `frontend/` directory to place yourself in the root of the frontend part of the project. From here run `npm install` to install all dependencies, the installed packages will end up under `frontend/node_modules/` if you want to have a look. `node_modules/` will contain both dependencies stated by the `frontend/package.json` and any other dependencies of those dependencies and so on, which is why `node_modules/` tends to get extremely large.
+
+## Running the project
