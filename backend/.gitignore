@@ -6,6 +6,3 @@ __pycache__/
 
 # logs
 *.log
-
-# generated front end code
-static/ang/*
