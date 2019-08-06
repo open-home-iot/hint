@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 
-from backend.api.request_handling import HttpRequest
+from backend.api_external.request_handling import HttpRequest
 from .models import Hume
 
 

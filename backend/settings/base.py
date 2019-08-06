@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
-    'backend.api',
+    'backend.api_external',
+    'backend.api_internal',
     'backend.app',
     'backend.device',
     'backend.events',

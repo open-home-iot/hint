@@ -1,12 +1,13 @@
 from django.urls import path, include
 
 from backend.app import urls as app_urls
-from backend.api import urls as api_urls
+from backend.api_external import urls as api_ext_urls
+from backend.api_internal import urls as api_int_urls
 from backend.app.urls import websocket_urlpatterns as app_ws_urlpatterns
 
 
 urlpatterns = [
-    path("api/", include(api_urls)),
+    path("api/ext/", include(api_ext_urls)),
 
     # Empty path will forward to front end Angular application.
     path("", include(app_urls)),
