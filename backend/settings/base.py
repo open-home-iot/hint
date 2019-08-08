@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     # Custom
     'backend.hume',
     'backend.api',
-    'backend.app',
+    'backend.webapp',
     'backend.device',
     'backend.events',
 

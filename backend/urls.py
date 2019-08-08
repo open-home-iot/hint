@@ -1,8 +1,8 @@
 from django.urls import path, include
 
-from backend.app import urls as app_urls
+from backend.webapp import urls as app_urls
 from backend.api import urls as api_urls
-from backend.app.urls import websocket_urlpatterns as app_ws_urlpatterns
+from backend.webapp.urls import websocket_urlpatterns as app_ws_urlpatterns
 
 
 urlpatterns = [
