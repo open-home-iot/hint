@@ -13,3 +13,6 @@
 
 # Mac crap
 .DS_Store
+
+# Compiled Python
+__pycache__/

@@ -1,6 +1,5 @@
 import os
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
 # Normally, the final os.path uses abspath(), we use dirname() here instead
@@ -30,12 +29,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
-    'backend.api_external',
-    'backend.api_internal',
+    'backend.hume',
+    'backend.api',
     'backend.app',
     'backend.device',
     'backend.events',
-    'backend.hume',
 
     # Third party
     'channels'

@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.utils.decorators import decorator_from_middleware
 
-from backend.api_external.middleware import RequestFieldMiddleware
+from backend.api.middleware import RequestFieldMiddleware
 
 
 @decorator_from_middleware(RequestFieldMiddleware)

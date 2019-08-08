@@ -5,7 +5,7 @@ from django.contrib.auth import models as auth_models
 
 from psycopg2 import IntegrityError as PIntegrityError
 
-from .models import Hume, HumeUser
+from backend.hume.models import Hume, HumeUser
 
 
 # Create your tests here.
@@ -130,9 +130,7 @@ class Delete(TestCase):
         [user, user_two] = hume.users.all()
 
         user.delete()
-
         self.assertEqual(1, len(Hume.objects.all()))
 
         user_two.delete()
-
         self.assertEqual(0, len(Hume.objects.all()))
