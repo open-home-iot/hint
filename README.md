@@ -79,11 +79,56 @@ Assuming that the virtual environment related to this project is active (through
 
 ```
 # NOTE! Inside your virtual environment 'pip' will point to the Python version in use for this environment, so you do not have to
-# use 'pip3'. Both 'pip' and 'pip3' should yield the same output.
+# Both 'pip' and 'pip3' should yield the same output.
 
 $ pip install -r requirements.txt
 ```
 And that's it, all Python dependencies are now installed into the project's virtual Python environment and will not affect any other project on your system!
+
+### Installing Postgres as the backend database
+From installing the project requirements with `pip install -r requirements.txt` you now have support for Python to interact with Postgres databases.
+
+First, install Postgres on your system. Next, create the database which you will be developing against:
+
+```
+$ psql
+psql (10.9)
+Type "help" for help.
+
+user=# CREATE DATABASE hint;
+CREATE DATABASE
+
+# Ctrl-D to exit
+```
+
+Now, create a Postgres user which Django can use to authenticate with the database.
+
+```
+# Installing Postgres should yield you the 'createuser' command in your terminal!
+
+$ createuser --interactive --pwprompt
+```
+Just follow the instructions and remember both the username and password you supplied during the setup. Make sure to create a super-user!
+
+Now, you will need to instruct Django that this new database is to be used, which will require a few steps. First, create a new Python file under `backend/settings/`, and call it `local.py`. 
+
+`settings/` is a directory intended to keep all settings for the project, but it by default only contains the `base.py` and `__init__.py` files. `base.py` contains base settings, which you can override easily with your own, local, settings by simply re-defining fields in the separate file `local.py`. This works by the `settings/` directory actually being a Python package, you can see that by the `__init__.py` file, which indicates that the folder is to be treated as a Python package. The `__init__.py` file contains only one line: `from .local import *  # noqa`. This import ensures that all settings in `local.py` gets imported as soon as Django starts up. Django is pre-configured to, upon startup, import the `settings` Python module, which triggers the import in the `__init__.py` file. The comment `# noqa` is used to ignore the line (which is normally flagged as 'unused' by most static analysis tools/IDEs).
+
+Create the `local.py` file inside the `settings/` directory and insert the following:
+
+```
+from .base import *  # noqa
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'hint',
+        'USER': '<the username you specified when creating the postgres user>',
+        'PASSWORD': '<the password you specified when creating the postgres user>'
+    }
+}
+```
+The first line ensures that all settings defined in `base.py` get activated as well. `local.py` can now be used to both extend `base.py`, or to re-define settings specific to *your* development environment. The `DATABASES` dictionary contains connection information to the database that Django uses. You will need to input the username and password that you chose for the Postgres user you created above. `django.db.backends.postgresql_psycopg2` refers to that Django will use the `psycopg2` Python package to communicate with the Postgres database, this package is installed in your virtual environment after you installed the project's dependencies in a previous step using `pip install -r requirements.txt`. If you look in the `requirements.txt` you will see an entry stating `psycopg2=<current version of psycopg2 used>`.
 
 ### Frontend dependencies
 The frontend part of this project is build with Angular. To use Angular we opted to use their Command Line Interface (Angular CLI). The Angular CLI is nice to use since it does a lot for you and is necessary to, upon code changes, immediately see the changes in the browser. It can also quickly create bare-bones Angular files for you.
