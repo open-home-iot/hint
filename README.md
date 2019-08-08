@@ -105,3 +105,26 @@ Now, having the Angular CLI, you should be able to use the `ng` command to acces
 To install the project's frontend dependencies, navigate to the `frontend/` directory to place yourself in the root of the frontend part of the project. From here run `npm install` to install all dependencies, the installed packages will end up under `frontend/node_modules/` if you want to have a look. `node_modules/` will contain both dependencies stated by the `frontend/package.json` and any other dependencies of those dependencies and so on, which is why `node_modules/` tends to get extremely large.
 
 ## Running the project
+In order to run the development servers needed to work on this project, both the Django development server needs to be run and the Angular code needs to be set up to be automatically compiled upon code changes.
+
+### Running the Django development server
+To start the Django development server, locate the `manage.py` file which is used to command the start of the server. `manage.py` is located at the very root of the hint project. Execute the following command while *inside* the virtual Python environment you created in the previous installation steps, this is important since your Python environment must recognize that there is a version of Django installed.
+
+```
+$ python manage.py runserver
+```
+
+Running this command should start the Django development server, maybe with a few errors complaining that there are 'unapplied migrations'. The server can be reached at localhost:8000.
+
+### Setting up automatic re-compilation for Angular code
+The automatic re-compilation command needs to be run from inside the Angular project structure (frontend/ or below that is), otherwise the command will complain that is needs to be run from inside an Angular project. Note that the directories pointed out here do depend on where you have cloned this project on your file system.
+
+```
+# --watch=true will ensure that re-compilation occurs on code change.
+
+$ ng build --watch=true --outputPath=<ABSOLUTE PATH TO GIT PROJECT>/hint/backend/static/ang
+```
+
+It is *important* that an absolute path is pointed out and supplied as an argument to the `--outputPath` flag. If you supply a relative path (including `..` to navigate to another directory) this will not work and will crash with an extremely terrible "informative" message. Start the path with `/` to ensure it is an absolute path, and supply the entire chain of directories to the hint project and finally into `backend/static/ang`. For example `/Users/mike/my_git_projects/hint/backend/static/ang`. Note that the `ang/` directory does not exist by default, which is fine. It will be created by the above command.
+
+That should do it!
