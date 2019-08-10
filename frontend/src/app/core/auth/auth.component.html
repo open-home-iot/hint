@@ -1,1 +1,16 @@
-<p>auth works!</p>
+<form (ngSubmit)="login(f)" #f="ngForm" *ngIf="!authenticated">
+  <label for="username">Username</label>
+  <input
+    id="username"
+    name="username"
+    type="email"
+    ngModel>
+  <label for="password">Password</label>
+  <input
+    id="password"
+    name="password"
+    type="password"
+    ngModel>
+  <button type="submit">Log in</button>
+</form>
+<button (click)="logout()" *ngIf="authenticated">Log out</button>

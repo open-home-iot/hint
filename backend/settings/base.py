@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'backend.webapp',
     'backend.device',
     'backend.events',
+    'backend.user',
 
     # Third party
     'channels'

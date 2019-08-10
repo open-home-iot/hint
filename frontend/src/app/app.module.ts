@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 // ROUTING
 import { AppRoutingModule } from './app-routing.module';
@@ -21,6 +23,7 @@ import { DashboardModule } from './features/dashboard/dashboard.module';
 import { StatisticsModule } from './features/statistics/statistics.module';
 import { UserModule } from './features/user/user.module';
 import { EventModule } from './features/event/event.module';
+import {AuthRequestInterceptor} from './core/auth/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -34,6 +37,8 @@ import { EventModule } from './features/event/event.module';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    HttpClientModule,
 
     HomeModule,
     HumeModule,
@@ -47,7 +52,13 @@ import { EventModule } from './features/event/event.module';
     AppRoutingModule
     // NEEDS TO DECLARED LAST OR CATCH ALL ROUTE REGISTERS BEFORE CHILD ROUTES!
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthRequestInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
