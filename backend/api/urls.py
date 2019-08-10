@@ -1,5 +1,4 @@
 from django.urls import path, include
-from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .views import info, heartbeat
 from backend.hume.views import attach, authentication, token_update
@@ -24,5 +23,5 @@ urlpatterns = [
     path("heartbeat", heartbeat),
 
     # API info
-    path("info", ensure_csrf_cookie(info)),
+    path("info", info),
 ]
