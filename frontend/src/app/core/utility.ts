@@ -11,7 +11,7 @@ export class Utility {
         break;
       }
     }
-    console.log("Got CSRF Token: ", csrfToken);
+    //console.log("Got CSRF Token: ", csrfToken);
 
     return csrfToken;
   }

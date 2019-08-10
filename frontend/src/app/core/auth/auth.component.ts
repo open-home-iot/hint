@@ -11,7 +11,8 @@ import { Subscription } from 'rxjs';
 })
 export class AuthComponent implements OnInit, OnDestroy {
   authenticated: boolean;
-  authSubscription: Subscription;
+
+  private authSubscription: Subscription;
 
   constructor(private authService: AuthService) { }
 

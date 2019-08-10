@@ -10,6 +10,7 @@ export class HttpService {
   constructor(private httpClient: HttpClient) { }
 
   post(url: string, data: {}) {
+    console.log("Sending HTTP POST request");
     return this.httpClient.post(url, data);
   }
 }
