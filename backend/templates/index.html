@@ -5,13 +5,34 @@
     <title>Title</title>
     <base href="/">
 
+    <!--VERY IMPORTANT TO KEEP!-->
+    <!--
+    This Django template tag ensures that the Django static resources can be referenced in this HTML template. Below
+    you will see {% static 'Django static resource' %} a lot, which is what this template tag enables.
+    -->
     {% load static %}
+    <!--VERY IMPORTANT TO KEEP!-->
 
     <link rel="stylesheet" href="{% static 'ang/assets/icons/material-icons.css' %}" />
     <link rel="icon" type="image/x-icon" href="{% static 'ang/favicon.ico' %}" />
 </head>
 <body>
+    <!--VERY IMPORTANT TO KEEP!-->
+    <!--
+    This is another Django template tag which is important since it makes sure that the CSRF cookie is set for
+    frontend users. CSRF is a security feature, and on each outgoing HTTP request frontend makes to the backend, this
+    cookie is to be included in the X-CSRFToken HTTP request header. Read more about CSRF here:
+    https://docs.djangoproject.com/en/2.2/ref/csrf/
+    -->
+    {% csrf_token %}
+    <!--VERY IMPORTANT TO KEEP!-->
 
+    <!--
+    The below code is static and should never be touched. It makes sure that the Angular application gets injected here
+    by the <app-root> tag, which can be found in the frontend/ project under frontend/src/app/app.component.ts. The
+    ROOT application Angular component has the set template tag <app-root>. Loading the five javascript modules here is
+    what makes the DOM able to recognize what tag <app-root> actually is.
+    -->
     <app-root></app-root>
 
     <script src="{% static 'ang/runtime.js' %}" type="module"></script>
@@ -19,6 +40,5 @@
     <script src="{% static 'ang/styles.js' %}" type="module"></script>
     <script src="{% static 'ang/vendor.js' %}" type="module"></script>
     <script src="{% static 'ang/main.js' %}" type="module"></script>
-
 </body>
 </html>
