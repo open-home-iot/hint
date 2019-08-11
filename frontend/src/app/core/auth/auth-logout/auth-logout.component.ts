@@ -1,15 +1,14 @@
 import { Component, OnDestroy, OnInit} from '@angular/core';
-import { NgForm} from '@angular/forms';
 
-import { AuthService } from './auth.service'
+import { AuthService } from '../auth.service'
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.scss']
+  selector: 'app-auth-logout',
+  templateUrl: './auth-logout.component.html',
+  styleUrls: ['./auth-logout.component.scss']
 })
-export class AuthComponent implements OnInit, OnDestroy {
+export class AuthLogoutComponent implements OnInit, OnDestroy {
   authenticated: boolean;
 
   private authSubscription: Subscription;
@@ -26,13 +25,6 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.authSubscription.unsubscribe();
-  }
-
-  login(form: NgForm) {
-    const username = form.value.username;
-    const password = form.value.password;
-
-    this.authService.login(username, password);
   }
 
   logout() {

@@ -21,7 +21,7 @@ import { StatisticsTrendComponent } from './statistics-trend/statistics-trend.co
     CommonModule
   ],
   exports: [
-
+    StatisticsOverviewComponent
   ],
   providers: [StatisticsService]
 })

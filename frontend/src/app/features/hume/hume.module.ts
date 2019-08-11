@@ -23,7 +23,7 @@ import { HumeRoutingModule } from './hume-routing.module';
     CommonModule
   ],
   exports: [
-
+    HumeOverviewComponent
   ],
   providers: [HumeService]
 })

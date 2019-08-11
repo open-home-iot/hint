@@ -9,5 +9,8 @@
 
   <app-event-overview></app-event-overview>
 
-  <app-auth></app-auth>
+  <div *ngIf="authenticated" (mouseover)="showAccountInfo=true" (mouseleave)="showAccountInfo=false">
+    <i class="material-icons">account_circle</i>
+    <app-auth-logout *ngIf="showAccountInfo"></app-auth-logout>
+  </div>
 </div>

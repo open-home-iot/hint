@@ -23,7 +23,7 @@ import { HomeRoutingModule } from './home-routing.module';
     CommonModule
   ],
   exports: [
-
+    HomeOverviewComponent
   ],
   providers: [HomeService]
 })
