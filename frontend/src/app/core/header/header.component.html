@@ -7,10 +7,20 @@
     <a routerLink="/hume">Hume</a>
   </nav>
 
-  <app-event-overview></app-event-overview>
+  <div *ngIf="authenticated; else elseBlock"
+       (mouseover)="showAccountInfo=true"
+       (mouseleave)="showAccountInfo=false"
+       id="authenticated">
 
-  <div *ngIf="authenticated" (mouseover)="showAccountInfo=true" (mouseleave)="showAccountInfo=false">
+    <app-event-overview></app-event-overview>
     <i class="material-icons">account_circle</i>
     <app-auth-logout *ngIf="showAccountInfo"></app-auth-logout>
+
   </div>
+  <ng-template #elseBlock
+               id="unauthenticated">
+
+    <app-auth-sign-up></app-auth-sign-up>
+
+  </ng-template>
 </div>

@@ -27,6 +27,7 @@ import { DashboardModule } from './features/dashboard/dashboard.module';
 import { StatisticsModule } from './features/statistics/statistics.module';
 import { UserModule } from './features/user/user.module';
 import { EventModule } from './features/event/event.module';
+import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { EventModule } from './features/event/event.module';
     PageNotFoundComponent,
     FooterComponent,
     AuthLoginComponent,
-    AuthLogoutComponent
+    AuthLogoutComponent,
+    AuthSignUpComponent
   ],
   imports: [
     // ANGULAR IMPORTS
