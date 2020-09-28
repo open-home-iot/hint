@@ -1,26 +1,43 @@
 <div id="header">
+
   <nav id="main_navigation">
-    <a routerLink="/">Start</a>
+
+    <a routerLink="/"><h1 id=the_home_logo>HOME</h1></a>
     <a routerLink="/does-not-exist">Does not exist</a>
-    <a routerLink="/device">Device</a>
-    <a routerLink="/home">Home</a>
-    <a routerLink="/hume">Hume</a>
+
   </nav>
 
   <div *ngIf="authenticated; else elseBlock"
-       (mouseover)="showAccountInfo=true"
-       (mouseleave)="showAccountInfo=false"
        id="authenticated">
 
-    <app-event-overview></app-event-overview>
-    <i class="material-icons">account_circle</i>
-    <app-auth-logout *ngIf="showAccountInfo"></app-auth-logout>
+    <div class="auth_container">
+
+      <app-event-overview class="event_overview"></app-event-overview>
+      <div>
+
+        <div (mouseover)="showAccountInfo=true"
+             (mouseleave)="showAccountInfo=true"
+             class="account_dropdown">
+
+          <i class="material-icons">account_circle</i>
+          <div *ngIf="showAccountInfo" class="dropdown_content">
+
+            <button routerLink="/account">Account</button>
+            <app-auth-logout></app-auth-logout>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
-  <ng-template #elseBlock
-               id="unauthenticated">
 
-    <app-auth-sign-up></app-auth-sign-up>
+  <ng-template #elseBlock>
+
+    <app-auth-sign-up id="unauthenticated"></app-auth-sign-up>
 
   </ng-template>
 </div>

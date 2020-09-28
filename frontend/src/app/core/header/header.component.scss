@@ -2,9 +2,41 @@
   a {
     margin: 0 1em 0 0;
   }
-  display: inline;
+  display: inline-block;
+  width: 40%;
 }
 
-app-event {
-  float: right;
+#authenticated {
+  display: inline-block;
+  width: 40%;
+}
+
+#unauthenticated {
+  display: inline-block;
+  width: 40%;
+}
+
+.auth_container {
+  display: block;
+}
+
+.account_dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown_content {
+  position: absolute;
+}
+
+.dropdown_content button {
+  min-width: 160px;
+  display: block;
+  z-index: 1;
+  text-decoration: none;
+}
+
+.event_overview {
+  display: inline-block;
+  width: 40%;
 }
