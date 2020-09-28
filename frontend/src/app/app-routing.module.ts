@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { StartComponent } from './core/start/start.component';
+import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.component';
 import { PageNotFoundComponent } from './core/page-not-found/page-not-found.component'
 
 /*
@@ -19,6 +20,7 @@ NOTE! canDeactivate can be used to prevent navigation before saving changes.
 
 const routes: Routes = [
   { path: '', component: StartComponent },
+  { path: 'sign-up', component: AuthSignUpComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 
