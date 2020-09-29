@@ -1,42 +1,57 @@
+:host {
+  display: block;
+  height: 50%;
+}
+
+#header {
+  height: 100%;
+}
+
+#logo_box {
+  display: inline-block;
+  width: 50%;
+  vertical-align: middle;
+}
+
 #main_navigation {
   a {
     margin: 0 1em 0 0;
   }
-  display: inline-block;
-  width: 40%;
+  width: 100%;
 }
 
 #authenticated {
   display: inline-block;
-  width: 40%;
+  width: 50%;
 }
 
 #unauthenticated {
   display: inline-block;
-  width: 40%;
+  width: 50%;
 }
 
 .auth_container {
   display: block;
-}
 
-.account_dropdown {
-  position: relative;
-  display: inline-block;
-}
+  .event_overview {
+    display: block;
+    width: 100%;
+  }
 
-.dropdown_content {
-  position: absolute;
-}
+  .account_dropdown {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
 
-.dropdown_content button {
-  min-width: 160px;
-  display: block;
-  z-index: 1;
-  text-decoration: none;
-}
+  .dropdown_content {
+    position: absolute;
 
-.event_overview {
-  display: inline-block;
-  width: 40%;
+    button {
+      min-width: 160px;
+      display: block;
+      z-index: 1;
+      text-decoration: none;
+    }
+  }
 }
