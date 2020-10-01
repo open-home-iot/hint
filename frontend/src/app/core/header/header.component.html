@@ -2,28 +2,23 @@
 
   <div id="logo_box">
 
-    <a routerLink="/"><h1 id=the_home_logo>HOME</h1></a>
+    <h1 routerLink="/">HOME</h1>
 
   </div>
 
 
   <div *ngIf="authenticated; else unauthenticated"
-       id="authenticated">
+       id="authenticated"
+       class="auth_container">
 
-    <div class="auth_container">
+    <app-event-overview class="event_overview"></app-event-overview>
+    <div class="account_dropdown">
 
-      <app-event-overview class="event_overview"></app-event-overview>
-      <div (mouseover)="showAccountInfo=true"
-           (mouseleave)="showAccountInfo=false"
-           class="account_dropdown">
+      <i class="material-icons">account_circle</i>
+      <div class="dropdown_content">
 
-        <i class="material-icons">account_circle</i>
-        <div *ngIf="showAccountInfo" class="dropdown_content">
-
-          <button routerLink="/account">Account</button>
-          <app-auth-logout></app-auth-logout>
-
-        </div>
+        <button routerLink="/account">Account</button>
+        <app-auth-logout></app-auth-logout>
 
       </div>
 
@@ -34,7 +29,7 @@
 
   <ng-template #unauthenticated>
 
-    <div id="unauthenticated">
+    <div id="unauthenticated" class="auth_container">
 
       <button routerLink="/sign-up">Sign up</button>
 
@@ -45,6 +40,10 @@
 
   <nav id="main_navigation">
 
+      <a routerLink="/does-not-exist">Does not exist</a>
+      <a routerLink="/does-not-exist">Does not exist</a>
+      <a routerLink="/does-not-exist">Does not exist</a>
+      <a routerLink="/does-not-exist">Does not exist</a>
       <a routerLink="/does-not-exist">Does not exist</a>
 
   </nav>

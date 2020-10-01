@@ -1,57 +1,62 @@
 :host {
   display: block;
-  height: 50%;
+  height: 12%;
 }
 
 #header {
+  display: block;
   height: 100%;
-}
+  margin: auto;
 
-#logo_box {
-  display: inline-block;
-  width: 50%;
-  vertical-align: middle;
-}
-
-#main_navigation {
-  a {
-    margin: 0 1em 0 0;
+  #logo_box {
+    display: inline-block;
+    background-color: rgb(97, 97, 97);
+    width: 50%;
+    height: 70%;
+    margin: auto;
   }
-  width: 100%;
-}
 
-#authenticated {
-  display: inline-block;
-  width: 50%;
-}
+  #authenticated {
 
-#unauthenticated {
-  display: inline-block;
-  width: 50%;
+    .event_overview {
+      display: block;
+      width: 100%;
+    }
+
+    .account_dropdown {
+      position: relative;
+      display: block;
+      width: 100%;
+
+      .dropdown_content {
+        position: absolute;
+        display: none;
+
+        button {
+          min-width: 160px;
+          display: block;
+          z-index: 1;
+          text-decoration: none;
+        }
+      }
+    }
+
+    .account_dropdown:hover .dropdown_content {
+      display: block;
+    }
+  }
+
+  #main_navigation {
+    background-color: rgb(237, 237, 237);
+    width: 100%;
+    height: 30%;
+  }
 }
 
 .auth_container {
-  display: block;
-
-  .event_overview {
-    display: block;
-    width: 100%;
-  }
-
-  .account_dropdown {
-    position: relative;
-    display: block;
-    width: 100%;
-  }
-
-  .dropdown_content {
-    position: absolute;
-
-    button {
-      min-width: 160px;
-      display: block;
-      z-index: 1;
-      text-decoration: none;
-    }
-  }
+  display: inline-block;
+  background-color: rgb(255, 162, 205);
+  width: 50%;
+  height: 70%;
+  float: right;
 }

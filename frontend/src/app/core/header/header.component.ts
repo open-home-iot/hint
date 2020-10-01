@@ -9,7 +9,6 @@ import { AuthService } from '../auth/auth.service';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   private authenticated: boolean = false;
-  private showAccountInfo: boolean = false;
 
   private authSubscription: Subscription;
 
