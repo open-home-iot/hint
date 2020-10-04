@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'backend.user',
 
     # Third party
-    'channels'
+    'channels',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'backend/templates')],
-        'APP_DIRS': False,
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -96,7 +97,9 @@ DATABASES = {
     }
 }
 
+
 # Authentication
+
 AUTH_USER_MODEL = 'user.User'
 
 
