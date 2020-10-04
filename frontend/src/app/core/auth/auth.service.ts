@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { HttpService } from '../http/http.service';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 
 const LOGIN_URL = window.location.origin + "/api/user/login";
 const LOGOUT_URL = window.location.origin + "/api/user/logout";
@@ -30,10 +30,10 @@ export class AuthService {
   login(username: string, password: string) {
     this.httpService.post(LOGIN_URL, { username: username, password: password })
       .subscribe(
-      next => {
-          console.log("Success logging in!");
-          this.updateAuthService(true);
-        },
+        next => {
+            console.log("Success logging in!");
+            this.updateAuthService(true);
+          },
         error => {
           console.log("Failed to log in");
           this.updateAuthService(false);
