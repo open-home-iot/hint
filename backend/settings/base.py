@@ -72,9 +72,8 @@ TEMPLATES = [
 
 # Channels settings
 
-ASGI_APPLICATION = 'backend.routing.application'  # With channels enabled, we
-                                                  # are now running an ASGI
-                                                  # application.
+# With channels enabled, we are now running an ASGI application.
+ASGI_APPLICATION = 'backend.routing.application'
 # WSGI_APPLICATION = 'backend.wsgi.application'
 
 CHANNEL_LAYERS = {
@@ -96,6 +95,9 @@ DATABASES = {
         'NAME': 'hint.sqlite3',
     }
 }
+
+# Authentication
+AUTH_USER_MODEL = 'user.User'
 
 
 # Password validation
@@ -139,13 +141,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "backend/static"),
 ]
-
-# Celery settings
-
-BROKER_URL = 'amqp://localhost'
-
-
-# HUME settings
-
-HUME_PREFFERED_PROTOCOL = 'http://'  # http | https, remember :// at end
-HUME_PREFFERED_PORT = ':8001'  # Remember ':' before port

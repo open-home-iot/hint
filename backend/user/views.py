@@ -1,7 +1,19 @@
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+
 from json import loads
+
+from .serializers import UserSerializer
+from .models import User
+
+
+class CreateUser(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (AllowAny, )
 
 
 def login_user(request):
