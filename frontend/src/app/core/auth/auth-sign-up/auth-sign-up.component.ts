@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { HttpService } from '../../http/http.service';
+
+import { passwordValidator } from '../../directives/validators/confirm-password.directive';
 
 const SIGN_UP_URL = window.location.origin + "/api/user/sign-up"
 
@@ -12,37 +16,57 @@ const SIGN_UP_URL = window.location.origin + "/api/user/sign-up"
 })
 export class AuthSignUpComponent implements OnInit {
 
-  constructor(private httpService: HttpService) { }
+  signUpForm: FormGroup;
+  apiEmailError: boolean = false;
+  apiEmailErrorMessages: [] = [];
+
+  constructor(private router: Router,
+              private httpService: HttpService,
+              private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.signUpForm = this.formBuilder.group({
+      auth: this.formBuilder.group({
+        email: ['', Validators.required],
+        password: ['', Validators.required],
+        confirmPassword: ['', Validators.required]
+      }),
+      personalInfo: this.formBuilder.group({
+        firstName: [''],
+        lastName: ['']
+      })
+    },
+    { validators: passwordValidator });
   }
 
-  signUp(form: NgForm) {
-    console.log(window.location.origin);
+  get email() { return this.signUpForm.get('auth.email'); }
+  get password() { return this.signUpForm.get('auth.password'); }
+  get confirmPassword() { return this.signUpForm.get('auth.confirmPassword'); }
+  get firstName() { return this.signUpForm.get('personalInfo.firstName'); }
+  get lastName() { return this.signUpForm.get('personalInfo.lastName'); }
 
-    const email = form.value.email;
-    const firstName = form.value.first_name;
-    const lastName = form.value.last_name;
-    const password = form.value.password;
-    const confirm_password = form.value.confirm_password;
-
-    console.log("Email: " + email);
-    console.log("First name: " + firstName);
-    console.log("Last name: " + lastName);
-    console.log("Password: " + password);
-    console.log("Confirm password: " + confirm_password);
+  signUp() {
+    console.log(this.signUpForm.value);
 
     this.httpService.post(
       SIGN_UP_URL,
-      { email: email, first_name: firstName, last_name: lastName,
-        password: password })
-        .subscribe(
-          next => {
-            console.log("Sign up successful!");
-          },
-          error => {
-            console.log("Sign up failed!");
+      { email: this.email.value,
+        first_name: this.firstName.value,
+        last_name: this.lastName.value,
+        password: this.password.value
+      })
+      .subscribe(
+        response => {
+          console.log("Sign up succeeded!");
+          this.router.navigate(['/']);
+        },
+        (error: HttpErrorResponse) => {
+          this.apiEmailError = false;
+          if (error.error.email) {
+            this.apiEmailError = true;
+            this.apiEmailErrorMessages = Object.assign([], error.error.email);
           }
-        );
+        }
+      );
   }
 }

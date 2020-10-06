@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 // ROUTING
@@ -45,6 +46,7 @@ import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.compo
     // ANGULAR IMPORTS
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
 
     // FEATURE MODULE IMPORTS

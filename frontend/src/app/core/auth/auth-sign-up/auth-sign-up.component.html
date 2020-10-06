@@ -1,55 +1,83 @@
 <form id="sign_up_form"
-      (ngSubmit)="signUp(f)"
-      #f="ngForm"
-      *ngIf="!authenticated">
+      (ngSubmit)="signUp()"
+      [formGroup]="signUpForm">
   <div class="sign_up_form_wrapper">
-    <div class="label_input_pair">
-      <label for="email">Email</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        required
-        ngModel>
+
+    <div formGroupName="auth">
+      <h3>Authentication</h3>
+
+      <div class="label_input_pair">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          formControlName="email">
+      </div>
+      <div *ngIf="email.touched && email.errors?.required"
+           class="form_error">
+        You need to provide an email address.
+      </div>
+      <div *ngIf="apiEmailError">
+        <div *ngFor="let errorMsg of apiEmailErrorMessages"
+             class="form_error">
+          {{ errorMsg }}
+        </div>
+      </div>
+
+      <div class="label_input_pair">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          formControlName="password">
+      </div>
+      <div *ngIf="password.touched && password.errors?.required"
+           class="form_error">
+        You need to provide a password.
+      </div>
+
+      <div class="label_input_pair">
+        <label for="confirm_password">Confirm password</label>
+        <input
+          id="confirm_password"
+          name="confirm_password"
+          type="password"
+          formControlName="confirmPassword">
+      </div>
+      <div *ngIf="confirmPassword.touched && confirmPassword.errors?.required"
+           class="form_error">
+        You need to confirm your chosen password.
+      </div>
+      <div *ngIf="password.touched && confirmPassword.touched && signUpForm.errors?.noMatch"
+           class="form_error">
+        Passwords do not match.
+      </div>
     </div>
 
-    <div class="label_input_pair">
-      <label for="first_name">First name</label>
-      <input
-        id="first_name"
-        name="first_name"
-        type="text"
-        ngModel>
+    <div formGroupName="personalInfo">
+      <h3>Personal information</h3>
+
+      <div class="label_input_pair">
+        <label for="first_name">First name</label>
+        <input
+          id="first_name"
+          name="first_name"
+          type="text"
+          formControlName="firstName">
+      </div>
+
+      <div class="label_input_pair">
+        <label for="last_name">Last name</label>
+        <input
+          id="last_name"
+          name="last_name"
+          type="text"
+          formControlName="lastName">
+      </div>
     </div>
 
-    <div class="label_input_pair">
-      <label for="last_name">Last name</label>
-      <input
-        id="last_name"
-        name="last_name"
-        type="text"
-        ngModel>
-    </div>
-
-    <div class="label_input_pair">
-      <label for="password">Password</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        required
-        ngModel>
-    </div>
-
-    <div class="label_input_pair">
-      <label for="confirm_password">Confirm password</label>
-      <input
-        id="confirm_password"
-        name="confirm_password"
-        type="password"
-        required
-        ngModel>
-    </div>
-    <button id="sign_up_submit" type="submit">Register</button>
+    <button id="sign_up_submit" [disabled]="!signUpForm.valid" type="submit">Register</button>
   </div>
 </form>
