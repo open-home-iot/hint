@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
@@ -32,7 +32,8 @@ def login_user(request):
         login(request, user)
         return HttpResponse(status=200)
     else:
-        response = HttpResponse(status=401)
+        response = JsonResponse({'auth': ['Invalid credentials']},
+                                status=401)
         response['WWW-Authenticate'] = 'Invalid username or password'
         return response
 

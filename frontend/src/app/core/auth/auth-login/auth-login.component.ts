@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit} from '@angular/core';
 import { NgForm} from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../auth.service'
 import { Subscription } from 'rxjs';
@@ -11,6 +12,9 @@ import { Subscription } from 'rxjs';
 })
 export class AuthLoginComponent implements OnInit, OnDestroy {
   authenticated: boolean;
+
+  apiLoginError: boolean = false;
+  apiLoginErrorMessages: [] = [];
 
   private authSubscription: Subscription;
 
@@ -32,6 +36,15 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
     const username = form.value.username;
     const password = form.value.password;
 
-    this.authService.login(username, password);
+    this.authService.loginWithPromise(username, password)
+      .then(() => {
+        console.log("Manual login succeeded!");
+        this.apiLoginError = false;
+      },
+      (error: HttpErrorResponse) => {
+        console.log("Manual login failed!")
+        this.apiLoginError = true;
+        this.apiLoginErrorMessages = Object.assign([], error.error.auth);
+      });
   }
 }

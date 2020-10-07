@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { HttpService } from '../http/http.service';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const LOGIN_URL = window.location.origin + "/api/user/login";
 const LOGOUT_URL = window.location.origin + "/api/user/logout";
@@ -27,18 +28,46 @@ export class AuthService {
     this.login("", "");
   }
 
+  sendLoginRequest(username: string, password: string) {
+    return this.httpService.post(LOGIN_URL, { username: username, password: password })
+
+  }
+
   login(username: string, password: string) {
-    this.httpService.post(LOGIN_URL, { username: username, password: password })
-      .subscribe(
-        next => {
+    var observable = this.sendLoginRequest(username, password);
+
+    observable.subscribe(
+      next => {
+        console.log("Success logging in!");
+        this.updateAuthService(true);
+      },
+      (error: HttpErrorResponse) => {
+        console.log("Failed to log in");
+        console.log(error);
+        this.updateAuthService(false);
+      }
+    );
+  }
+
+  loginWithPromise(username: string, password: string) {
+    var promise = new Promise((resolve, reject) => {
+      this.sendLoginRequest(username, password)
+        .subscribe(
+          next => {
             console.log("Success logging in!");
             this.updateAuthService(true);
+            resolve();
           },
-        error => {
-          console.log("Failed to log in");
-          this.updateAuthService(false);
-        }
-      );
+          (error: HttpErrorResponse) => {
+            console.log("Failed to log in");
+            console.log(error);
+            this.updateAuthService(false);
+            reject(error);
+          }
+        );
+    });
+
+    return promise;
   }
 
   logout() {
