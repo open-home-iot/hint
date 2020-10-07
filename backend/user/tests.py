@@ -60,8 +60,6 @@ class UserApi(TestCase):
         Create shared test case data, what's created here needs to be torn
         down in tearDown().
         """
-        # CSRF checks need to be explicitly enforced on the request factory or
-        # it will not be carried out.
         self.client = APIClient(enforce_csrf_checks=True)
 
     def tearDown(self):
