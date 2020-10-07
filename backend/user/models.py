@@ -9,7 +9,6 @@ class CustomUserManager(BaseUserManager):
                     password=None,
                     first_name=None,
                     last_name=None):
-        print("Creating user!")
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
@@ -51,4 +50,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = []
