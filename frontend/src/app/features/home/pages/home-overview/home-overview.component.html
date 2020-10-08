@@ -1,1 +1,7 @@
-<p>home-overview works!</p>
+<div id="add_home">
+  <button (click)="displayAddHomeForm()" type="button" name="button">
+    Add HOME
+  </button>
+  <app-home-add *ngIf="showAddHomeForm"></app-home-add>
+</div>
+<app-home-list></app-home-list>

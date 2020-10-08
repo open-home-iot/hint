@@ -1,0 +1,15 @@
+<form id="add_home_form"
+      (ngSubmit)="createHome()"
+      [formGroup]="addHomeForm">
+  <div class="label_input_pair">
+    <label for="name">Name</label>
+    <input id="name"
+           name="name"
+           type="text"
+           formControlName="name">
+  </div>
+  <div *ngIf="name.touched && name.errors?.required"
+       class="form_error">
+    You must provide a name for the HOME.
+  </div>
+</form>

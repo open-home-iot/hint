@@ -7,9 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeOverviewComponent implements OnInit {
 
+  showAddHomeForm: boolean = false;
+
   constructor() { }
 
   ngOnInit() {
   }
+
+  displayAddHomeForm() { this.showAddHomeForm = !this.showAddHomeForm; }
 
 }

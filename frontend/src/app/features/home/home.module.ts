@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 // COMPONENTS
+import { HomeAddComponent } from './home-add/home-add.component';
 import { HomeListComponent } from './home-list/home-list.component';
-import { HomeDetailComponent } from './home-detail/home-detail.component';
+
+// PAGES
 import { HomeOverviewComponent } from './pages/home-overview/home-overview.component';
 
 // SERVICES
@@ -14,13 +17,14 @@ import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({
   declarations: [
-    HomeListComponent,
-    HomeDetailComponent,
-    HomeOverviewComponent
+    HomeOverviewComponent,
+    HomeAddComponent,
+    HomeListComponent
   ],
   imports: [
     HomeRoutingModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ],
   exports: [
     HomeOverviewComponent
