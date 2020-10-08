@@ -67,6 +67,10 @@
           type="text"
           formControlName="firstName">
       </div>
+      <div *ngIf="firstName.touched && firstName.errors?.maxlength"
+           class="form_error">
+        Cannot exceed 50 characters.
+      </div>
 
       <div class="label_input_pair">
         <label for="last_name">Last name</label>
@@ -75,6 +79,10 @@
           name="last_name"
           type="text"
           formControlName="lastName">
+      </div>
+      <div *ngIf="lastName.touched && lastName.errors?.maxlength"
+           class="form_error">
+        Cannot exceed 50 characters.
       </div>
     </div>
 

@@ -130,7 +130,7 @@ class UserApi(TestCase):
 
     def test_api_create_user_fail_email_already_exists(self):
         """
-        Verify a user cannot be created if no password is supplied.
+        Verify a user cannot be created if email already exists.
         """
         User.objects.create(email="t@t.se")
 
@@ -139,3 +139,21 @@ class UserApi(TestCase):
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data,
                          {'email': ['user with this email already exists.']})
+
+    def test_api_create_user_fail_first_and_last_name_too_long(self):
+        """
+        Verify a user cannot be created if first and last name exceed character
+        limit.
+        """
+        long_name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+
+        ret = self.client.post('/api/user/sign-up',
+                               {'email': 't@t.se', 'password': 'pw',
+                                'first_name': long_name,
+                                'last_name': long_name})
+        self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
+        expected_error_msg = \
+            'Ensure this field has no more than 50 characters.'
+        self.assertEqual(ret.data,
+                         {'first_name': [expected_error_msg],
+                          'last_name': [expected_error_msg]})

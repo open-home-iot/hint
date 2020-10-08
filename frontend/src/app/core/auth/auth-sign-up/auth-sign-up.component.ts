@@ -32,8 +32,8 @@ export class AuthSignUpComponent implements OnInit {
         confirmPassword: ['', Validators.required]
       }),
       personalInfo: this.formBuilder.group({
-        firstName: [''],
-        lastName: ['']
+        firstName: ['', Validators.maxLength(50)],
+        lastName: ['', Validators.maxLength(50)]
       })
     },
     { validators: passwordValidator });
