@@ -1,16 +1,25 @@
-<form (ngSubmit)="login(f)" #f="ngForm" *ngIf="!authenticated">
-  <label for="username">Username</label>
-  <input
-    id="username"
-    name="username"
-    type="email"
-    ngModel>
-  <label for="password">Password</label>
-  <input
-    id="password"
-    name="password"
-    type="password"
-    ngModel>
+<form (ngSubmit)="login()"
+      *ngIf="!authenticated"
+      [formGroup]="loginForm">
+
+  <div class="">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      formControlName="email">
+  </div>
+
+  <div class="">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      formControlName="password">
+  </div>
+
   <button type="submit">Log in</button>
   <div *ngIf="apiLoginError">
     <div *ngFor="let error of apiLoginErrorMessages"

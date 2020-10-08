@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit} from '@angular/core';
-import { NgForm} from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../auth.service'
@@ -16,9 +16,12 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
   apiLoginError: boolean = false;
   apiLoginErrorMessages: [] = [];
 
+  loginForm: FormGroup;
+
   private authSubscription: Subscription;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+              private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.authSubscription = this.authService.authSubject.subscribe(
@@ -26,17 +29,25 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
         this.authenticated = next;
       }
     );
+
+    this.loginForm = this.formBuilder.group({
+      email: [''],
+      password: ['']
+    });
   }
 
   ngOnDestroy() {
     this.authSubscription.unsubscribe();
   }
 
-  login(form: NgForm) {
-    const username = form.value.username;
-    const password = form.value.password;
+  get email() { return this.loginForm.get('email') }
+  get password() { return this.loginForm.get('password') }
 
-    this.authService.loginWithPromise(username, password)
+  login() {
+    const email = this.email.value;
+    const password = this.password.value;
+
+    this.authService.loginWithPromise(email, password)
       .then(() => {
         console.log("Manual login succeeded!");
         this.apiLoginError = false;
