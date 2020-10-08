@@ -38,13 +38,10 @@
   </ng-template>
 
 
-  <nav id="main_navigation">
+  <nav *ngIf="authenticated"
+       id="main_navigation">
 
-      <a routerLink="/does-not-exist">Does not exist</a>
-      <a routerLink="/does-not-exist">Does not exist</a>
-      <a routerLink="/does-not-exist">Does not exist</a>
-      <a routerLink="/does-not-exist">Does not exist</a>
-      <a routerLink="/does-not-exist">Does not exist</a>
+      <a routerLink="/home">HOMEs</a>
 
   </nav>
 

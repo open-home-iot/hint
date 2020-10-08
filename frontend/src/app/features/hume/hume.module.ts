@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // COMPONENTS
-import { HumeListComponent } from './hume-list/hume-list.component';
-import { HumeDetailComponent } from './hume-detail/hume-detail.component';
+
+// PAGES
 import { HumeOverviewComponent } from './pages/hume-overview/hume-overview.component';
 
 // SERVICES
@@ -14,8 +14,6 @@ import { HumeRoutingModule } from './hume-routing.module';
 
 @NgModule({
   declarations: [
-    HumeListComponent,
-    HumeDetailComponent,
     HumeOverviewComponent
   ],
   imports: [
