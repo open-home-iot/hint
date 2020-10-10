@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError
 from rest_framework.test import APIClient
 from rest_framework import status
 
-from .models import User
+from backend.user.models import User
 
 
 class UserModel(TestCase):
@@ -63,12 +63,11 @@ class UserCreateApi(TestCase):
         down in tearDown().
 
         Special CSRF handling in this case as the view handles an
-        unauthenticated endpoint which still should verify CSRF.
+        unauthenticated endpoint which should still verify CSRF.
         """
         ret = self.client.get("/")
         self.csrf_value = ret.cookies['csrftoken'].value
         self.client = APIClient(
-            enforce_csrf_checks=True,
             HTTP_X_CSRFTOKEN=self.csrf_value,
             HTTP_COOKIE="csrftoken=" + self.csrf_value
         )
@@ -88,8 +87,7 @@ class UserCreateApi(TestCase):
         password.
         """
         ret = self.client.post(UserCreateApi.USER_CREATE_URL,
-                               {'email': 't@t.se', 'password': 'pw'},
-                               format='json')
+                               {'email': 't@t.se', 'password': 'pw'})
 
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ret.data, {'email': 't@t.se',
@@ -103,8 +101,7 @@ class UserCreateApi(TestCase):
         """
         ret = self.client.post(UserCreateApi.USER_CREATE_URL,
                                {'email': 't@t.se', 'password': 'pw',
-                                'first_name': 'test1', 'last_name': 'test2'},
-                               format='json')
+                                'first_name': 'test1', 'last_name': 'test2'})
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ret.data, {'email': 't@t.se',
                                     'first_name': 'test1',
@@ -216,6 +213,8 @@ class UserGetApi(TestCase):
         """
         super().tearDownClass()
         for user in User.objects.all():
+            print("Deleting user")
+            print(user)
             user.delete()
 
     def setUp(self):
@@ -227,7 +226,7 @@ class UserGetApi(TestCase):
 
         Login required since GET user is an authenticated view.
         """
-        self.client = APIClient(enforce_csrf_checks=True)
+        self.client = APIClient()
         self.client.login(email='t@t.se', password='pw')
 
     def tearDown(self):

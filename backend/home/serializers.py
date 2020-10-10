@@ -6,4 +6,4 @@ from .models import Home
 class HomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Home
-        fields = ('id', 'users', 'name')
+        fields = ('users', 'name')

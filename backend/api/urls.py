@@ -1,13 +1,11 @@
 from django.urls import path, include
 
 from backend.user.views import login_user, logout_user, Users, UserSelf
-from backend.home.views import CreateHome, UpdateHome, ListHome
+from backend.home.views import Homes
 
 
 home_patterns = [
-    path("create", CreateHome.as_view()),
-    path("update", UpdateHome.as_view()),
-    path("list", ListHome.as_view()),
+    path("", Homes.as_view()),
 ]
 
 hume_patterns = []

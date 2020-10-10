@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { HomeService } from '../home.service';
 
 @Component({
   selector: 'app-home-add',
@@ -11,7 +12,8 @@ export class HomeAddComponent implements OnInit {
 
   addHomeForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder,
+              private homeService: HomeService) { }
 
   ngOnInit() {
     this.addHomeForm = this.formBuilder.group({
@@ -24,6 +26,7 @@ export class HomeAddComponent implements OnInit {
   createHome() {
     console.log("HOME name:");
     console.log(this.name.value);
+    this.homeService.addHome(this.name.value);
   }
 
 }

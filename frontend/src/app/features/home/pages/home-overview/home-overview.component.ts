@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-home-overview',
   templateUrl: './home-overview.component.html',
@@ -11,8 +12,7 @@ export class HomeOverviewComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   displayAddHomeForm() { this.showAddHomeForm = !this.showAddHomeForm; }
 

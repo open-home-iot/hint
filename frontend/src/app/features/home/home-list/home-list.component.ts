@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { HomeService, Home } from '../home.service';
+
+
 @Component({
   selector: 'app-home-list',
   templateUrl: './home-list.component.html',
@@ -7,9 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeListComponent implements OnInit {
 
-  constructor() { }
+  homes: Home[];
+
+  constructor(private homeService: HomeService) { }
 
   ngOnInit() {
+    this.homes = this.homeService.homes;
   }
 
 }

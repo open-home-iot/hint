@@ -29,13 +29,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
-    'backend.hume',
-    'backend.api',
-    'backend.webapp',
-    'backend.device',
-    'backend.events',
-    'backend.user',
-    'backend.home',
+    'backend.hume.apps.HumeConfig',
+    'backend.api.apps.ApiConfig',
+    'backend.webapp.apps.WebappConfig',
+    'backend.device.apps.DeviceConfig',
+    'backend.events.apps.EventsConfig',
+    'backend.user.apps.UserConfig',
+    'backend.home.apps.HomeConfig',
 
     # Third party
     'channels',
