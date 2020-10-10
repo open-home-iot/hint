@@ -34,8 +34,8 @@ class UserModel(TestCase):
         Verify a basic create user results in correct default values.
         """
         user = User.objects.create(email='t2@t.se')
-        self.assertEqual(user.first_name, '')
-        self.assertEqual(user.first_name, '')
+        self.assertEqual(user.first_name, None)
+        self.assertEqual(user.first_name, None)
         self.assertEqual(user.is_active, True)
         self.assertEqual(user.is_staff, False)
         self.assertEqual(user.is_superuser, False)
@@ -52,15 +52,26 @@ class UserModel(TestCase):
                 pass
 
 
-class UserApi(TestCase):
+class UserCreateApi(TestCase):
+    USER_CREATE_URL = "/api/user/"
+
     def setUp(self):
         """
         CALLED PER TEST CASE!
 
         Create shared test case data, what's created here needs to be torn
         down in tearDown().
+
+        Special CSRF handling in this case as the view handles an
+        unauthenticated endpoint which still should verify CSRF.
         """
-        self.client = APIClient(enforce_csrf_checks=True)
+        ret = self.client.get("/")
+        self.csrf_value = ret.cookies['csrftoken'].value
+        self.client = APIClient(
+            enforce_csrf_checks=True,
+            HTTP_X_CSRFTOKEN=self.csrf_value,
+            HTTP_COOKIE="csrftoken=" + self.csrf_value
+        )
 
     def tearDown(self):
         """
@@ -76,20 +87,21 @@ class UserApi(TestCase):
         Verify a user can be created by supplying only an email address and a
         password.
         """
-        ret = self.client.post('/api/user/sign-up',
+        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
                                {'email': 't@t.se', 'password': 'pw'},
                                format='json')
+
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ret.data, {'email': 't@t.se',
-                                    'first_name': '',
-                                    'last_name': ''})
+                                    'first_name': None,
+                                    'last_name': None})
         self.assertEqual(1, len(User.objects.all()))
 
     def test_api_create_user_with_name(self):
         """
         Verify the user API supports setting a first and last name for a user.
         """
-        ret = self.client.post('/api/user/sign-up',
+        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
                                {'email': 't@t.se', 'password': 'pw',
                                 'first_name': 'test1', 'last_name': 'test2'},
                                format='json')
@@ -105,7 +117,7 @@ class UserApi(TestCase):
         """
         Verify a user cannot be created if the supplied email is not an email.
         """
-        ret = self.client.post('/api/user/sign-up',
+        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
                                {'email': 't@t.', 'password': 'pw'})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data, {'email': ['Enter a valid email address.']})
@@ -114,7 +126,7 @@ class UserApi(TestCase):
         """
         Verify a user cannot be created if no email is supplied.
         """
-        ret = self.client.post('/api/user/sign-up',
+        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
                                {'password': 'pw'})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data, {'email': ['This field is required.']})
@@ -123,7 +135,7 @@ class UserApi(TestCase):
         """
         Verify a user cannot be created if no password is supplied.
         """
-        ret = self.client.post('/api/user/sign-up',
+        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
                                {'email': 't@t.se'})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data, {'password': ['This field is required.']})
@@ -134,7 +146,7 @@ class UserApi(TestCase):
         """
         User.objects.create(email="t@t.se")
 
-        ret = self.client.post('/api/user/sign-up',
+        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
                                {'email': 't@t.se', 'password': 'pw'})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data,
@@ -147,7 +159,7 @@ class UserApi(TestCase):
         """
         long_name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
 
-        ret = self.client.post('/api/user/sign-up',
+        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
                                {'email': 't@t.se', 'password': 'pw',
                                 'first_name': long_name,
                                 'last_name': long_name})
@@ -157,3 +169,78 @@ class UserApi(TestCase):
         self.assertEqual(ret.data,
                          {'first_name': [expected_error_msg],
                           'last_name': [expected_error_msg]})
+
+    def test_api_create_user_fail_no_csrf_token(self):
+        """
+        Verify that a user cannot be created without CSRF verification.
+        """
+        client_wo_csrf = APIClient(enforce_csrf_checks=True)
+
+        ret = client_wo_csrf.post(UserCreateApi.USER_CREATE_URL,
+                                  {'email': 't@t.se', 'password': 'pw'})
+
+        self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class UserGetApi(TestCase):
+    USER_GET_SELF_URL = "/api/user/self"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Need class setup to create base user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user('t@t.se', password='pw')
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Clean up user created in setUpClass().
+        """
+        super().tearDownClass()
+        for user in User.objects.all():
+            user.delete()
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data, what's created here needs to be torn
+        down in tearDown().
+
+        Login required since GET user is an authenticated view.
+        """
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.login(email='t@t.se', password='pw')
+
+    def tearDown(self):
+        """
+        CALLED PER TEST CASE!
+
+        Clear all created data from setUp() and the run test case.
+        """
+        pass
+
+    def test_api_get_user_self(self):
+        """
+        Verify user self endpoint returns information about the request's
+        authenticated user.
+        """
+        ret = self.client.get(UserGetApi.USER_GET_SELF_URL)
+        self.assertEqual(ret.status_code, status.HTTP_200_OK)
+        self.assertEqual(ret.data, {'email': 't@t.se', 'first_name': None,
+                                    'last_name': None})
+
+    def test_api_get_user_self_fail_unauthenticated(self):
+        """
+        Verify that an unauthenticated request for user self fails.
+        """
+        client_wo_authentication = APIClient()
+
+        ret = client_wo_authentication.get(UserGetApi.USER_GET_SELF_URL)
+        self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            ret.data,
+            {'detail': 'Authentication credentials were not provided.'}
+        )

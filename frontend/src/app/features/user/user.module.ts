@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // COMPONENTS
-import { UserOverviewComponent } from './pages/user-overview/user-overview.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-import { UserListComponent } from './user-list/user-list.component';
+
+// PAGES
+import { UserOverviewComponent } from './pages/user-overview/user-overview.component';
 
 // SERVICES
 import { UserService } from './user.service';
@@ -15,8 +16,7 @@ import { UserRoutingModule } from './user-routing.module';
 @NgModule({
   declarations: [
     UserOverviewComponent,
-    UserDetailComponent,
-    UserListComponent
+    UserDetailComponent
   ],
   imports: [
     UserRoutingModule,
@@ -25,6 +25,6 @@ import { UserRoutingModule } from './user-routing.module';
   exports: [
 
   ],
-  providers: [UserService]
+  providers: []
 })
 export class UserModule {}

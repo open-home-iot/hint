@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'backend.device',
     'backend.events',
     'backend.user',
+    'backend.home',
 
     # Third party
     'channels',
@@ -120,6 +121,17 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ]
+}
 
 
 # Internationalization
