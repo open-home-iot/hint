@@ -34,8 +34,8 @@ class UserModel(TestCase):
         Verify a basic create user results in correct default values.
         """
         user = User.objects.create(email='t2@t.se')
-        self.assertEqual(user.first_name, None)
-        self.assertEqual(user.first_name, None)
+        self.assertEqual(user.first_name, '')
+        self.assertEqual(user.first_name, '')
         self.assertEqual(user.is_active, True)
         self.assertEqual(user.is_staff, False)
         self.assertEqual(user.is_superuser, False)
@@ -93,8 +93,8 @@ class UserCreateApi(TestCase):
 
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ret.data, {'email': 't@t.se',
-                                    'first_name': None,
-                                    'last_name': None})
+                                    'first_name': '',
+                                    'last_name': ''})
         self.assertEqual(1, len(User.objects.all()))
 
     def test_api_create_user_with_name(self):
@@ -112,6 +112,22 @@ class UserCreateApi(TestCase):
         user = User.objects.get(email='t@t.se')
         self.assertEqual(user.first_name, 'test1')
         self.assertEqual(user.last_name, 'test2')
+
+    def test_api_create_user_with_blank_names(self):
+        """
+        Verify a user cannot be created if first and last name are nulled.
+        """
+        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+                               {'email': 't@t.se', 'password': 'pw',
+                                'first_name': '', 'last_name': ''})
+        self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ret.data,
+                         {'email': 't@t.se',
+                          'first_name': '',
+                          'last_name': ''})
+        user = User.objects.get(email='t@t.se')
+        self.assertEqual(user.first_name, '')
+        self.assertEqual(user.last_name, '')
 
     def test_api_create_user_fail_email_is_not_an_email(self):
         """
@@ -229,8 +245,8 @@ class UserGetApi(TestCase):
         """
         ret = self.client.get(UserGetApi.USER_GET_SELF_URL)
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
-        self.assertEqual(ret.data, {'email': 't@t.se', 'first_name': None,
-                                    'last_name': None})
+        self.assertEqual(ret.data, {'email': 't@t.se', 'first_name': '',
+                                    'last_name': ''})
 
     def test_api_get_user_self_fail_unauthenticated(self):
         """
