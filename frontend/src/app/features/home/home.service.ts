@@ -7,6 +7,7 @@ const HOME_URL = window.location.origin + "/api/home/"
 
 
 export class Home {
+  id: number;
   name: string;
 }
 
@@ -19,9 +20,11 @@ export class HomeService {
     console.log("Constructing HomeService");
     this.httpService.get(HOME_URL)
       .subscribe(
-        success => {
+        (homes: Home[]) => {
           console.log("Successfully got all HOMES!");
-          console.log(success);
+          for (let home of homes) {
+            this.homes.push(home);
+          }
         },
         error => {
           console.log("Failed to get HOMES!");

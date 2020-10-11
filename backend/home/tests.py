@@ -99,11 +99,11 @@ class HomeCreateApi(TestCase):
         [home] = Home.objects.all()
 
         try:
-            home.users.get(email='suite@t.see')
+            home.users.get(email='suite@t.se')
         except User.DoesNotExist:
             self.fail("User was not associated with the created HOME.")
 
-        self.assertEqual(ret.data, {'name': 'home1'})
+        self.assertEqual(ret.data, {'id': 1, 'name': 'home1'})
 
     def test_api_create_home_fail_no_csrf_token(self):
         """

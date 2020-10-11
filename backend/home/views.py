@@ -7,6 +7,15 @@ from .serializers import HomeSerializer
 
 class Homes(views.APIView):
 
+    def get(self, request, format=None):
+        """
+        Get all HOME instances for the current user.
+        """
+        homes = request.user.home_set.all()
+        serializer = HomeSerializer(homes, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request, format=None):
         """
         Create a new HOME instance.
