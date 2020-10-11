@@ -83,20 +83,26 @@ class HomeCreateApi(TestCase):
 
         Clear all created data from setUp() and the run test case.
         """
-        for user in User.objects.all():
-            user.delete()
-
         for home in Home.objects.all():
             home.delete()
 
     def test_api_create_home(self):
         """
-        Verify that a HOME can be created through the API.
+        Verify that a HOME can be created through the API and that the creating
+        user is automatically associated with the created HOME instance.
         """
         ret = self.client.post(HomeCreateApi.HOME_CREATE_URL,
                                {'name': 'home1'}, format="json")
 
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
+
+        [home] = Home.objects.all()
+
+        try:
+            home.users.get(email='suite@t.see')
+        except User.DoesNotExist:
+            self.fail("User was not associated with the created HOME.")
+
         self.assertEqual(ret.data, {'name': 'home1'})
 
     def test_api_create_home_fail_no_csrf_token(self):

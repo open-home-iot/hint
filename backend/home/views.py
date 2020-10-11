@@ -13,6 +13,7 @@ class Homes(views.APIView):
         """
         serializer = HomeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            home = serializer.save()
+            home.users.add(request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
