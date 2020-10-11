@@ -44,22 +44,18 @@ class HomeCreateApi(TestCase):
     @classmethod
     def setUpClass(cls):
         """
-        Need class setup to create base user for authentication.
+        Sets up global user for authentication.
         """
         super().setUpClass()
-        user = User.objects.create_user(email="suite@t.se", password="pw")
-        print("\nsetUpClass")
-        print(f"Created user: {user}")
+        User.objects.create_user(email="suite@t.se", password="pw")
 
     @classmethod
     def tearDownClass(cls):
         """
-        Clean up user created in setUpClass().
+        Remove global user.
         """
-        super().tearDownClass()
-        print("\ntearDownClass")
-        user = User.objects.get(email="suite@t.se")
-        print(f"{user}")
+        for user in User.objects.all():
+            user.delete()
 
     def setUp(self):
         """
@@ -68,17 +64,18 @@ class HomeCreateApi(TestCase):
         Create shared test case data, what's created here needs to be torn
         down in tearDown().
         """
-        user = User.objects.get(email="suite@t.se")
-        print("\nsetUp")
-        print(f"User for auth: {user}")
-        ret = self.client.get("/")
-        self.csrf_value = ret.cookies['csrftoken'].value
-        self.client = APIClient(
-            enforce_csrf_checks=False,
-            HTTP_X_CSRFTOKEN=self.csrf_value,
-            HTTP_COOKIE="csrftoken=" + self.csrf_value
-        )
-        ret = self.client.login(email="suite@t.se", password="pw")
+        self.client = APIClient()
+        # NOTE! Cannot test with CSRF and authentication at the same time for
+        # some fucking reason. Post on stackoverflow why, it may help someone.
+        # req_client = APIClient()
+        # ret = req_client.get("/")
+        # self.csrf_value = ret.cookies['csrftoken'].value
+        # self.client = APIClient(
+        #    enforce_csrf_checks=True,
+        #    HTTP_X_CSRFTOKEN=self.csrf_value,
+        #    HTTP_COOKIE="csrftoken=" + self.csrf_value
+        # )
+        self.client.login(username="suite@t.se", password="pw")
 
     def tearDown(self):
         """
@@ -86,8 +83,8 @@ class HomeCreateApi(TestCase):
 
         Clear all created data from setUp() and the run test case.
         """
-        print("\ntearDown")
-        print(User.objects.all())
+        for user in User.objects.all():
+            user.delete()
 
         for home in Home.objects.all():
             home.delete()
@@ -97,15 +94,31 @@ class HomeCreateApi(TestCase):
         Verify that a HOME can be created through the API.
         """
         ret = self.client.post(HomeCreateApi.HOME_CREATE_URL,
-                               {'name': 'home1'})
+                               {'name': 'home1'}, format="json")
 
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ret.data, {'name': 'home1'})
+
+    def test_api_create_home_fail_no_csrf_token(self):
+        """
+        Verify that a HOME cannot be created if no CSRF protection is set.
+        """
+        client_wo_csrf = APIClient(enforce_csrf_checks=True)
+        client_wo_csrf.login(username="suite@t.se", password="pw")
+        ret = client_wo_csrf.post(HomeCreateApi.HOME_CREATE_URL,
+                                  {'name': 'home1'}, format="json")
+
+        self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            ret.data,
+            {'detail': 'CSRF Failed: CSRF cookie not set.'}
+        )
 
     def test_api_create_home_fail_unauthenticated(self):
         """
         Verify that a HOME cannot be created if the user is not authenticated.
         """
-        client_wo_authentication = APIClient(enforce_csrf_checks=True)
+        client_wo_authentication = APIClient()
 
         ret = client_wo_authentication.post(
             HomeCreateApi.HOME_CREATE_URL,
@@ -113,3 +126,7 @@ class HomeCreateApi(TestCase):
         )
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            ret.data,
+            {'detail': 'Authentication credentials were not provided.'}
+        )

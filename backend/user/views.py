@@ -41,14 +41,20 @@ class UserSelf(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@csrf_protect
 def login_user(request):
     """
     Log in a user.
     """
 
+    if request.method != 'POST':
+        return JsonResponse(
+            {'auth': ['Wrong method.']},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
     if request.user.is_authenticated:
-        print("User was already authenticated!")
-        return HttpResponse(status=200)
+        return JsonResponse({'auth': ['Already signed in.']}, status=status.HTTP_200_OK)
 
     request_body = request.body.decode('utf-8')
     dict_request_body = json.loads(request_body)
@@ -59,17 +65,20 @@ def login_user(request):
 
     if user is not None:
         login(request, user)
-        return HttpResponse(status=200)
+        return JsonResponse({'auth': ['Signed in successfully.']}, status=status.HTTP_200_OK)
     else:
         response = JsonResponse({'auth': ['Invalid credentials']},
-                                status=401)
+                                status=status.HTTP_401_UNAUTHORIZED)
         response['WWW-Authenticate'] = 'Invalid username or password'
         return response
 
 
+@csrf_protect
 def logout_user(request):
     """
     Log out a user.
     """
-    logout(request)
-    return HttpResponse(status=200)
+    if request.method == 'POST':
+        logout(request)
+        return JsonResponse({'auth': ['Signed out successfully.']}, status=200)
+    return JsonResponse({'auth': ['Wrong method.']}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

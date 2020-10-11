@@ -1,3 +1,5 @@
+import json
+
 from django.test import TestCase
 from django.db import transaction
 from django.db.utils import IntegrityError
@@ -65,12 +67,7 @@ class UserCreateApi(TestCase):
         Special CSRF handling in this case as the view handles an
         unauthenticated endpoint which should still verify CSRF.
         """
-        ret = self.client.get("/")
-        self.csrf_value = ret.cookies['csrftoken'].value
-        self.client = APIClient(
-            HTTP_X_CSRFTOKEN=self.csrf_value,
-            HTTP_COOKIE="csrftoken=" + self.csrf_value
-        )
+        self.client = APIClient()
 
     def tearDown(self):
         """
@@ -213,8 +210,6 @@ class UserGetApi(TestCase):
         """
         super().tearDownClass()
         for user in User.objects.all():
-            print("Deleting user")
-            print(user)
             user.delete()
 
     def setUp(self):
@@ -243,6 +238,7 @@ class UserGetApi(TestCase):
         authenticated user.
         """
         ret = self.client.get(UserGetApi.USER_GET_SELF_URL)
+
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
         self.assertEqual(ret.data, {'email': 't@t.se', 'first_name': '',
                                     'last_name': ''})
@@ -259,3 +255,104 @@ class UserGetApi(TestCase):
             ret.data,
             {'detail': 'Authentication credentials were not provided.'}
         )
+
+
+class UserAuthApi(TestCase):
+    USER_AUTH_LOGIN_URL = "/api/user/login"
+    USER_AUTH_LOGOUT_URL = "/api/user/logout"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Need class setup to create base user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user('t@t.se', password='pw')
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Clean up user created in setUpClass().
+        """
+        super().tearDownClass()
+        for user in User.objects.all():
+            user.delete()
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data, what's created here needs to be torn
+        down in tearDown().
+
+        Login required since GET user is an authenticated view.
+        """
+        req_client = APIClient()
+        ret = req_client.get("/")
+        self.csrf_value = ret.cookies['csrftoken'].value
+        self.client = APIClient(
+            enforce_csrf_checks=True,
+            HTTP_X_CSRFTOKEN=self.csrf_value,
+            HTTP_COOKIE="csrftoken=" + self.csrf_value
+        )
+
+    def tearDown(self):
+        """
+        CALLED PER TEST CASE!
+
+        Clear all created data from setUp() and the run test case.
+        """
+        pass
+
+    def test_api_user_login(self):
+        """
+        Verify a user with correct credentials can log in.
+        """
+        ret = self.client.post(UserAuthApi.USER_AUTH_LOGIN_URL,
+                               {"username": "t@t.se", "password": "pw"},
+                               format="json")
+
+        self.assertEqual(ret.status_code, status.HTTP_200_OK)
+
+    def test_api_user_login_fail_no_csrf(self):
+        """
+        Verify login requests require a CSRF token.
+        """
+        client = APIClient(enforce_csrf_checks=True)
+        ret = client.post(UserAuthApi.USER_AUTH_LOGIN_URL,
+                          {"username": "t@t.se", "password": "pw"},
+                          format="json")
+
+        self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_api_user_login_fail_wrong_method(self):
+        """
+        Verify a user cannot use any other method than POST to login.
+        """
+        ret = self.client.get(UserAuthApi.USER_AUTH_LOGIN_URL)
+
+        self.assertEqual(ret.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_api_user_logout(self):
+        """
+        Verify a user can logout.
+        """
+        login_successful = self.client.login(username='t@t.se', password='pw')
+
+        self.assertEqual(login_successful, True)
+
+        ret = self.client.post(UserAuthApi.USER_AUTH_LOGOUT_URL)
+
+        self.assertEqual(ret.status_code, status.HTTP_200_OK)
+
+    def test_api_user_logout_fail_wrong_method(self):
+        """
+        Verify a user cannot use any other method than POST to logout.
+        """
+        login_successful = self.client.login(username='t@t.se', password='pw')
+
+        self.assertEqual(login_successful, True)
+
+        ret = self.client.get(UserAuthApi.USER_AUTH_LOGOUT_URL)
+
+        self.assertEqual(ret.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

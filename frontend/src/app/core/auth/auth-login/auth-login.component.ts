@@ -44,10 +44,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
   get password() { return this.loginForm.get('password') }
 
   login() {
-    const email = this.email.value;
-    const password = this.password.value;
-
-    this.authService.loginWithPromise(email, password)
+    this.authService.loginWithPromise(this.email.value, this.password.value)
       .then(() => {
         console.log("Manual login succeeded!");
         this.apiLoginError = false;
