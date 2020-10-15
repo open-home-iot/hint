@@ -1,5 +1,3 @@
-import json
-
 from django.test import TestCase
 from django.db import transaction
 from django.db.utils import IntegrityError
@@ -7,6 +5,8 @@ from django.db.utils import IntegrityError
 from rest_framework.test import APIClient
 from rest_framework import status
 
+# Refer to models under test with an absolute path as the root path of run
+# tests are from ../backend.
 from backend.user.models import User
 
 

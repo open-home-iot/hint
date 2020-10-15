@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
@@ -54,7 +54,9 @@ def login_user(request):
         )
 
     if request.user.is_authenticated:
-        return JsonResponse({'auth': ['Already signed in.']}, status=status.HTTP_200_OK)
+        return JsonResponse(
+            {'auth': ['Already signed in.']}, status=status.HTTP_200_OK
+        )
 
     request_body = request.body.decode('utf-8')
     dict_request_body = json.loads(request_body)
@@ -65,7 +67,8 @@ def login_user(request):
 
     if user is not None:
         login(request, user)
-        return JsonResponse({'auth': ['Signed in successfully.']}, status=status.HTTP_200_OK)
+        return JsonResponse({'auth': ['Signed in successfully.']},
+                            status=status.HTTP_200_OK)
     else:
         response = JsonResponse({'auth': ['Invalid credentials']},
                                 status=status.HTTP_401_UNAUTHORIZED)
@@ -81,4 +84,5 @@ def logout_user(request):
     if request.method == 'POST':
         logout(request)
         return JsonResponse({'auth': ['Signed out successfully.']}, status=200)
-    return JsonResponse({'auth': ['Wrong method.']}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return JsonResponse({'auth': ['Wrong method.']},
+                        status=status.HTTP_405_METHOD_NOT_ALLOWED)
