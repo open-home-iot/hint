@@ -8,7 +8,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  private authenticated: boolean = false;
+  authenticated: boolean = false;
 
   private authSubscription: Subscription;
 
