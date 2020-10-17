@@ -4,4 +4,11 @@
   </button>
   <app-home-add *ngIf="showAddHomeForm"></app-home-add>
 </div>
+<div id="find_hume">
+  <button (click)="displayFindHumeForm()" type="button" name="button">
+    Find HUME
+  </button>
+  <app-hume-find *ngIf="showFindHumeForm"></app-hume-find>
+</div>
+
 <app-home-list></app-home-list>

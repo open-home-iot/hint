@@ -1,9 +1,12 @@
+from django.core.exceptions import ValidationError
+
 from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Hume
 from .serializers import HumeSerializer
+from backend.home.models import Home
 
 
 class HumePair(views.APIView):
@@ -40,3 +43,52 @@ class HumePair(views.APIView):
 
         return Response(serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST)
+
+
+class HumeFind(views.APIView):
+
+    def get(self, request, format=None):
+        """
+        Get an unassociated HUME.
+        """
+        try:
+            hume = Hume.objects.filter(uuid=request.GET.get('hume_uuid'),
+                                       is_paired=False,
+                                       home=None)
+        except ValidationError:
+            return Response({"hume_uuid": ["Invalid UUID."]},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if hume:
+            hume = hume[0]
+            serializer = HumeSerializer(hume)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({"hume_uuid": ["Does not exist"]},
+                        status=status.HTTP_404_NOT_FOUND)
+
+
+class HumeAssociate(views.APIView):
+
+    def post(self, request, hume_id, format=None):
+        """
+        Associates a HUME to a user.
+        """
+        hume = Hume.objects.get(id=hume_id)
+
+        # hume is already associated, protective measure for this API endpoint.
+        # Dissalowed here to explicitly implement moving HUMEs in some other
+        # view later, makes it more verbose.
+        if hume.home:
+            return Response({}, status.HTTP_403_FORBIDDEN)
+
+        home = Home.objects.filter(id=request.data["home_id"],
+                                   users__id=request.user.id)
+
+        if home:
+            hume.home = home[0]  # Still a queryset
+            hume.save()
+            return Response({}, status=status.HTTP_200_OK)
+
+        return Response({"home_id": ["Home does not exist."]},
+                        status=status.HTTP_404_NOT_FOUND)

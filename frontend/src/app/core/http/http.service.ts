@@ -14,6 +14,11 @@ export class HttpService {
     return this.httpClient.get(url);
   }
 
+  getWithOptions(url: string, options: {}) {
+    console.log("Sending HTTP GET request with options");
+    return this.httpClient.get(url, options);
+  }
+
   post(url: string, data: {}) {
     console.log("Sending HTTP POST request");
     return this.httpClient.post(url, data);

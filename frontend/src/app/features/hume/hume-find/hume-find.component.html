@@ -1,0 +1,36 @@
+<form id="find_hume_form"
+      (ngSubmit)="findHume()"
+      [formGroup]="findHumeForm">
+  <div class="label_input_pair">
+    <label for="uuid">UUID</label>
+    <input id="uuid"
+           name="uuid"
+           type="text"
+           formControlName="uuid">
+  </div>
+  <div *ngIf="uuid.touched && uuid.errors?.required"
+       class="form_error">
+    Invalid UUID.
+  </div>
+  <button type="submit" [disabled]="!findHumeForm.valid" name="button">Find</button>
+</form>
+<div *ngIf="foundHume" id="found_hume">
+  Found HUME:
+  {{ foundHume.uuid }}
+  <form id="associate_hume_form"
+        (ngSubmit)="associateHume()"
+        [formGroup]="associateHumeForm">
+    <div class="label_input_pair">
+      <label for="home_id">HOME ID</label>
+      <input id="home_id"
+             name="home_id"
+             type="number"
+             formControlName="home_id">
+    </div>
+    <div *ngIf="homeId.touched && homeId.errors?.required"
+         class="form_error">
+      Invalid HOME ID.
+    </div>
+    <button type="submit" [disabled]="!associateHumeForm.valid" name="button">Associate</button>
+  </form>
+</div>
