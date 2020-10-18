@@ -38,8 +38,8 @@ export class HumeService {
     });
   }
 
-  humeAssociateUrl(id) {
-    return HUME_URL + String(id) + "/associate"
+  private humeAssociateUrl(id: number) {
+    return HUME_URL + String(id) + "/associate";
   }
 
   associateHume(id: number, homeId: number): Promise<{}> {

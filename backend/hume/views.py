@@ -64,7 +64,7 @@ class HumeFind(views.APIView):
             serializer = HumeSerializer(hume)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        return Response({"hume_uuid": ["Does not exist"]},
+        return Response({"hume_uuid": ["Does not exist."]},
                         status=status.HTTP_404_NOT_FOUND)
 
 
