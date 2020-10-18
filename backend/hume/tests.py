@@ -150,3 +150,90 @@ class HumeFindApi(TestCase):
         ret = client_wo_auth.get(HumeFindApi.HUME_FIND_URL)
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class HumeAssociateApi(TestCase):
+    HUME_BASE_URL = "/api/hume/"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data, what's created here needs to be torn
+        down in tearDown().
+        """
+        self.client = APIClient()
+        self.client.login(email="suite@t.se", password="pw")
+
+        self.hume = Hume.objects.create(
+            ip_address="127.0.0.1",
+            uuid="c4a19f7e0fd911eb97a060f81dbb505c"
+        )
+
+        self.home = Home.objects.create(name="Home1")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
+
+    def test_api_associate_hume(self):
+        """
+        Verify that a HUME can be associated to a HOME.
+        """
+        ret = self.client.post(HumeAssociateApi.HUME_BASE_URL +
+                               str(self.hume.id) +
+                               "/associate",
+                               {"home_id": self.home.id})
+
+        self.assertEqual(ret.status_code, status.HTTP_200_OK)
+
+    def test_api_associate_hume_fail_already_associated(self):
+        """
+        Verify that a HUME cannot be re-associated through the association API.
+        """
+        def associate():
+            return self.client.post(HumeAssociateApi.HUME_BASE_URL +
+                                    str(self.hume.id) +
+                                    "/associate",
+                                    {"home_id": self.home.id})
+
+        associate()
+        ret = associate()
+
+        self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_api_associate_hume_fail_home_does_not_belong_to_user(self):
+        """
+        Verify that a HUME cannot be associated with a HOME that is not owned
+        by the associating user.
+        """
+        home = Home.objects.create(name="Home2")
+        home.users.add(User.objects.create_user("t@t.se", password="pw"))
+        home.save()
+
+        ret = self.client.post(HumeAssociateApi.HUME_BASE_URL +
+                               str(self.hume.id) +
+                               "/associate",
+                               {"home_id": home.id})
+
+        self.assertEqual(ret.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_api_associate_hume_fail_unauthenticated(self):
+        """
+        Verify that a HUME cannot be associated with a HOME if the user is not
+        authenticated.
+        """
+        client_wo_auth = APIClient()
+
+        ret = client_wo_auth.post(HumeAssociateApi.HUME_BASE_URL +
+                                  str(self.hume.id) +
+                                  "/associate",
+                                  {"home_id": self.home.id})
+
+        self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)

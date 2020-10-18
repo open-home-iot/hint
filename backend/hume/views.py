@@ -80,7 +80,8 @@ class HumeAssociate(views.APIView):
         # Dissalowed here to explicitly implement moving HUMEs in some other
         # view later, makes it more verbose.
         if hume.home:
-            return Response({}, status.HTTP_403_FORBIDDEN)
+            return Response({"hume_id": ["Already associated."]},
+                            status.HTTP_403_FORBIDDEN)
 
         home = Home.objects.filter(id=request.data["home_id"],
                                    users__id=request.user.id)
@@ -90,5 +91,5 @@ class HumeAssociate(views.APIView):
             hume.save()
             return Response({}, status=status.HTTP_200_OK)
 
-        return Response({"home_id": ["Home does not exist."]},
+        return Response({"home_id": ["Does not exist."]},
                         status=status.HTTP_404_NOT_FOUND)
