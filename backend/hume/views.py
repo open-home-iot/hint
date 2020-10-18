@@ -55,6 +55,7 @@ class HumeFind(views.APIView):
             hume = Hume.objects.filter(uuid=request.GET.get('hume_uuid'),
                                        is_paired=False,
                                        home=None)
+            print(hume)
         except ValidationError:
             return Response({"hume_uuid": ["Invalid UUID."]},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -89,7 +90,27 @@ class HumeAssociate(views.APIView):
         if home:
             hume.home = home[0]  # Still a queryset
             hume.save()
-            return Response({}, status=status.HTTP_200_OK)
+            serializer = HumeSerializer(hume)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response({"home_id": ["Does not exist."]},
-                        status=status.HTTP_404_NOT_FOUND)
+                        status=status.HTTP_400_BAD_REQUEST)
+
+
+class HomeHumes(views.APIView):
+
+    def get(self, request, home_id, format=None):
+        """
+        Get all HUME instances for a given HOME.
+        """
+        # Ensures only objects the current user is allowed to view is returned
+        # through the home__users__id filter. It ensures that the HOME instance
+        # is owned by the current user.
+        humes = Hume.objects.filter(home__id=home_id,
+                                    home__users__id=request.user.id)
+
+        if humes:
+            serializer = HumeSerializer(humes, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response([], status=status.HTTP_200_OK)

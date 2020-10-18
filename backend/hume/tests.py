@@ -237,3 +237,98 @@ class HumeAssociateApi(TestCase):
                                   {"home_id": self.home.id})
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class HomeHumesApi(TestCase):
+    HOME_BASE_URL = "/api/home/"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data, what's created here needs to be torn
+        down in tearDown().
+        """
+        self.client = APIClient()
+        self.client.login(email="suite@t.se", password="pw")
+
+        self.hume = Hume.objects.create(
+            ip_address="127.0.0.1",
+            uuid="c4a19f7e0fd911eb97a060f81dbb505c"
+        )
+
+        self.home = Home.objects.create(name="Home1")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
+
+        self.hume.home = self.home
+        self.hume.save()
+
+    def test_api_get_home_humes(self):
+        """
+        Verify that the HOME HUMEs API endpoint works as intended
+        """
+        hume2 = Hume.objects.create(
+            ip_address="127.0.0.1",
+            uuid="14a19f7e0fd911eb97a060f81dbb505c"
+        )
+        hume2.home = self.home
+        hume2.save()
+        Hume.objects.create(
+            ip_address="127.0.0.1",
+            uuid="24a19f7e0fd911eb97a060f81dbb505c"
+        )
+
+        ret = self.client.get(HomeHumesApi.HOME_BASE_URL +
+                              str(self.home.id) + "/humes")
+
+        self.assertEqual(ret.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(ret.data), 2)
+
+    def test_api_get_home_humes_fail_unauthenticated(self):
+        """
+        Verify that no HUMEs can be gotten if the user is not logged in.
+        """
+        client_wo_auth = APIClient()
+
+        ret = client_wo_auth.get(HomeHumesApi.HOME_BASE_URL +
+                              str(self.home.id) + "/humes")
+
+        self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_api_get_home_humes_no_user_leakage(self):
+        """
+        Verify that other user's homes are not included in the returned query
+        set.
+        """
+        user = User.objects.create_user(email="t@t.se", password="pw")
+
+        hume = Hume.objects.create(
+            ip_address="127.0.0.1",
+            uuid="14a19f7e0fd911eb97a060f81dbb505c"
+        )
+
+        home = Home.objects.create(name="Home2")
+        home.users.add(user)
+        home.save()
+
+        hume.home = home
+        hume.save()
+
+        client = APIClient()
+        client.login(email="t@t.se", password="pw")
+
+        ret = client.get(HomeHumesApi.HOME_BASE_URL +
+                         str(home.id) + "/humes")
+
+        self.assertEqual(ret.status_code, status.HTTP_200_OK)
+        self.assertEqual(ret.data[0]["uuid"],
+                         "14a19f7e-0fd9-11eb-97a0-60f81dbb505c")

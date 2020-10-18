@@ -2,7 +2,7 @@ from django.urls import path, include
 
 from backend.user.views import login_user, logout_user, Users, UserSelf
 from backend.home.views import Homes
-from backend.hume.views import HumePair, HumeFind, HumeAssociate
+from backend.hume.views import HumePair, HumeFind, HumeAssociate, HomeHumes
 
 
 user_patterns = [
@@ -19,7 +19,7 @@ home_patterns = [
     # to query for. Should create similar API view for devices of a given HUME.
     # Still, the view needs to enforce strict user checks to make sure some
     # other user is not querying for another user's HUMEs.
-#    path("<id:int>/humes", HomeHumes.as_view())
+    path("<int:home_id>/humes", HomeHumes.as_view())
 ]
 
 hume_patterns = [
