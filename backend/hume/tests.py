@@ -300,7 +300,7 @@ class HomeHumesApi(TestCase):
         client_wo_auth = APIClient()
 
         ret = client_wo_auth.get(HomeHumesApi.HOME_BASE_URL +
-                              str(self.home.id) + "/humes")
+                                 str(self.home.id) + "/humes")
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
 
