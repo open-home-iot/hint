@@ -2,7 +2,11 @@ from django.urls import path, include
 
 from backend.user.views import login_user, logout_user, Users, UserSelf
 from backend.home.views import Homes
-from backend.hume.views import HumePair, HumeFind, HumeAssociate, HomeHumes
+from backend.hume.views import HumePair, \
+                               HumeFind, \
+                               HumeAssociate, \
+                               HomeHumes, \
+                               HumeConfirmPairing
 
 
 user_patterns = [
@@ -25,7 +29,8 @@ home_patterns = [
 hume_patterns = [
     path("pair", HumePair.as_view()),
     path("find", HumeFind.as_view()),
-    path("<int:hume_id>/associate", HumeAssociate.as_view())
+    path("<int:hume_id>/associate", HumeAssociate.as_view()),
+    path("<int:hume_id>/confirm-pairing", HumeConfirmPairing.as_view())
 ]
 
 device_patterns = []

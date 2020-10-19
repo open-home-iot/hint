@@ -23,4 +23,9 @@ export class HttpService {
     console.log("Sending HTTP POST request");
     return this.httpClient.post(url, data);
   }
+
+  put(url: string, data: {}) {
+    console.log("Sending HTTP PUT request");
+    return this.httpClient.put(url, data);
+  }
 }

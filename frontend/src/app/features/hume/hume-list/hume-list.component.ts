@@ -19,4 +19,8 @@ export class HumeListComponent implements OnInit {
     this.humes = this.humeService.initHomeHumes(this.homeId);
   }
 
+  pairHume(humeId: number) {
+    console.log("Pairing HUME: " + String(humeId));
+    this.humeService.pairHume(this.homeId, humeId);
+  }
 }

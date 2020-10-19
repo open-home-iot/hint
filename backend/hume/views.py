@@ -45,6 +45,25 @@ class HumePair(views.APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
 
+class HumeConfirmPairing(views.APIView):
+
+    def put(self, request, hume_id, format=None):
+        """
+        Puts the HUME in a PAIRED state.
+        """
+        hume = Hume.objects.filter(id=hume_id,
+                                   home__users__id=request.user.id)
+
+        if hume:
+            hume = hume[0]
+            hume.is_paired = True
+            hume.save()
+
+            return Response(status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class HumeFind(views.APIView):
 
     def get(self, request, format=None):
@@ -73,7 +92,7 @@ class HumeAssociate(views.APIView):
 
     def post(self, request, hume_id, format=None):
         """
-        Associates a HUME to a user.
+        Put the HUME in an ASSOCIATED state and links it to a user's HOME.
         """
         hume = Hume.objects.get(id=hume_id)
 
@@ -82,7 +101,7 @@ class HumeAssociate(views.APIView):
         # view later, makes it more verbose.
         if hume.home:
             return Response({"hume_id": ["Already associated."]},
-                            status.HTTP_403_FORBIDDEN)
+                            status.HTTP_400_BAD_REQUEST)
 
         home = Home.objects.filter(id=request.data["home_id"],
                                    users__id=request.user.id)

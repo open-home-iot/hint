@@ -103,4 +103,30 @@ export class HumeService {
       return this.humes[homeId];
     }
   }
+
+  private humePairUrl(humeId: number): string {
+    return HUME_URL + String(humeId) + "/confirm-pairing";
+  }
+
+  pairHume(homeId: number, humeId: number) {
+    this.httpService.put(this.humePairUrl(humeId), {})
+      .subscribe(
+        () => {
+          this.humePaired(homeId, humeId);
+        },
+        () => {
+          console.log("HUME pairing failed.")
+        }
+      );
+  }
+
+  humePaired(homeId: number, humeId: number) {
+    let humes = this.humes[homeId]
+
+    for (let hume of humes) {
+      if (hume.id == humeId) {
+        hume.is_paired = true;
+      }
+    }
+  }
 }

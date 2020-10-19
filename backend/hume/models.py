@@ -1,5 +1,6 @@
 from django.db import models
 
+from backend.user.models import User
 from backend.home.models import Home
 
 
@@ -15,3 +16,7 @@ class Hume(models.Model):
     # User specified
     home = models.ForeignKey(Home, on_delete=models.CASCADE, null=True)
     name = models.CharField(blank=True, max_length=50)
+
+
+class HumeUser(User):
+    hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
