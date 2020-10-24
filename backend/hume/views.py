@@ -74,7 +74,6 @@ class HumeFind(views.APIView):
             hume = Hume.objects.filter(uuid=request.GET.get('hume_uuid'),
                                        is_paired=False,
                                        home=None)
-            print(hume)
         except ValidationError:
             return Response({"hume_uuid": ["Invalid UUID."]},
                             status=status.HTTP_400_BAD_REQUEST)
