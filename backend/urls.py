@@ -19,6 +19,5 @@ urlpatterns = [
     path("<path:url>", include(app_urls)),
 ]
 
-# TODO fill in
 # Websocket URLs are routed to through the root routing.py
 websocket_urlpatterns = app_ws_urlpatterns

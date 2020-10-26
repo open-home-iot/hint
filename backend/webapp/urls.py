@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path
 
 from .views import AppView
 from .consumers import HumeConsumer
@@ -9,5 +9,5 @@ urlpatterns = [
 ]
 
 websocket_urlpatterns = [
-    re_path(r'^ws/hume/(?P<hume_id>\d+)$', HumeConsumer),
+    path("ws/test/<int:some_id>", HumeConsumer),
 ]

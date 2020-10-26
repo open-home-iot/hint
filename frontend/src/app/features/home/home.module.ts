@@ -16,6 +16,7 @@ import { HomeService } from './home.service';
 import { HomeRoutingModule } from './home-routing.module';
 import { HumeModule } from '../hume/hume.module';
 
+
 @NgModule({
   declarations: [
     HomeOverviewComponent,

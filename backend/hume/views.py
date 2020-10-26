@@ -39,7 +39,8 @@ class HumePair(views.APIView):
                 hume = Hume.objects.get(uuid=serializer.data["uuid"])
                 return Response(
                     {"is_paired": hume.is_paired},
-                    status=status.HTTP_409_CONFLICT)
+                    status=status.HTTP_409_CONFLICT
+                )
 
         return Response(serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST)

@@ -27,7 +27,6 @@ import { HumeRoutingModule } from './hume-routing.module';
     ReactiveFormsModule
   ],
   exports: [
-    HumeOverviewComponent,
     HumeFindComponent,
     HumeListComponent
   ],

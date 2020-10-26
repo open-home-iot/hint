@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 
+import { WebSocketService } from '../../core/websocket/websocket.service';
+
 @Injectable()
 export class EventService {
-  id: number = 1;
-  events: string[] = ["Event " + this.id.toString()];
 
-  addDevice(name: string) {
-    this.id++;
-    this.events.push(name + " " + this.id.toString());
+  constructor(private webSocketService: WebSocketService) { }
+
+  subscribe(callback) {
+    this.webSocketService.subscribe(callback);
   }
 
-  getAllDevices() {
-    return this.events;
+  send(message) {
+    this.webSocketService.send(message);
   }
 }
