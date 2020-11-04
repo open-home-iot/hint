@@ -29,13 +29,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
-    'backend.hume.apps.HumeConfig',
-    'backend.api.apps.ApiConfig',
-    'backend.webapp.apps.WebappConfig',
-    'backend.device.apps.DeviceConfig',
-    'backend.events.apps.EventsConfig',
     'backend.user.apps.UserConfig',
     'backend.home.apps.HomeConfig',
+    'backend.hume.apps.HumeConfig',
+    'backend.device.apps.DeviceConfig',
+    'backend.webapp.apps.WebappConfig',
 
     # Third party
     'channels',
@@ -102,21 +100,26 @@ AUTH_USER_MODEL = 'user.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.\
+                 UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.\
+                 MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.\
+                 CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.\
+                 NumericPasswordValidator',
     },
 ]
 
 
-# Rest Framework
+# Django Rest Framework (DRF)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',

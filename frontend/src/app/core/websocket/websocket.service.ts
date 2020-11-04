@@ -24,10 +24,12 @@ export class WebSocketService {
 
   private onSocketOpen(event: any) {
     console.log("Socket opened!");
+    console.log(new Date().toString());
   }
 
   private onSocketClose(event: any) {
     console.log("Socket closed!");
+    console.log(new Date().toString());
   }
 
   private onSocketError(event: any) {
