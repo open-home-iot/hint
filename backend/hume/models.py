@@ -7,7 +7,6 @@ from backend.home.models import Home
 class Hume(models.Model):
     # HUME originated info
     uuid = models.UUIDField(unique=True)
-    ip_address = models.GenericIPAddressField()
     heartbeat = models.DateTimeField(auto_now_add=True)
 
     # HINT info
@@ -20,3 +19,8 @@ class Hume(models.Model):
 
 class HumeUser(User):
     hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
+
+
+class ValidHume(models.Model):
+    uuid = models.UUIDField(unique=True)
+    taken = models.BooleanField(default=False)

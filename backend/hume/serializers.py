@@ -6,5 +6,4 @@ from .models import Hume
 class HumeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hume
-        fields = ('id', 'uuid', 'ip_address', 'heartbeat', 'is_paired', 'name',
-                  'home')
+        fields = ('id', 'uuid', 'heartbeat', 'is_paired', 'name', 'home')

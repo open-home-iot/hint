@@ -3,10 +3,9 @@ import { Injectable } from '@angular/core';
 import { HttpService } from '../../core/http/http.service';
 
 
-const HUME_URL = window.location.origin + "/api/hume/";
-const HUME_FIND_URL = HUME_URL + "find";
+const HUME_URL = window.location.origin + "/api/humes/";
 
-const HOME_URL = window.location.origin + "/api/home/";
+const HOME_URL = window.location.origin + "/api/homes/";
 
 export class Hume {
   id: number;
@@ -29,8 +28,7 @@ export class HumeService {
 
   findHume(uuid: string) {
     return new Promise((resolve, reject) => {
-      this.httpService.getWithOptions(HUME_FIND_URL,
-                                      { params: { "hume_uuid": uuid } })
+      this.httpService.get(HUME_URL + uuid)
         .subscribe(
           (hume: Hume) => {
             resolve(hume);

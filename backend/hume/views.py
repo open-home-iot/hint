@@ -4,12 +4,12 @@ from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Hume
+from .models import Hume, ValidHume
 from .serializers import HumeSerializer
 from backend.home.models import Home
 
 
-class HumePair(views.APIView):
+class Humes(views.APIView):
     permission_classes = []
 
     def post(self, request, format=None):
@@ -28,7 +28,12 @@ class HumePair(views.APIView):
         - Create a new HUME
         """
         serializer = HumeSerializer(data=request.data)
+
         if serializer.is_valid():
+            try:
+                ValidHume.objects.get(uuid=serializer.validated_data["uuid"])
+            except ValidHume.DoesNotExist:
+                return Response(status=status.HTTP_403_FORBIDDEN)
 
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -67,12 +72,12 @@ class HumeConfirmPairing(views.APIView):
 
 class HumeFind(views.APIView):
 
-    def get(self, request, format=None):
+    def get(self, request, hume_uuid, format=None):
         """
         Get an unassociated HUME.
         """
         try:
-            hume = Hume.objects.filter(uuid=request.GET.get('hume_uuid'),
+            hume = Hume.objects.filter(uuid=hume_uuid,
                                        is_paired=False,
                                        home=None)
         except ValidationError:
