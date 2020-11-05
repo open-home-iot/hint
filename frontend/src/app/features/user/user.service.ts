@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { HttpService } from '../../core/http/http.service';
 import { AuthService } from '../../core/auth/auth.service'
 
-const USER_SELF_URL = window.location.origin + "/api/user/self";
+const USER_SELF_URL = window.location.origin + "/api/users/self";
 
 
 export class User {

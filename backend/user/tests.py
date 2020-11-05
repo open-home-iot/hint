@@ -22,15 +22,6 @@ class UserModel(TestCase):
         user.set_password("pw")
         user.save()
 
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        for user in User.objects.all():
-            user.delete()
-
     def test_create_user_defaults(self):
         """
         Verify a basic create user results in correct default values.
@@ -68,15 +59,6 @@ class UserCreateApi(TestCase):
         unauthenticated endpoint which should still verify CSRF.
         """
         self.client = APIClient()
-
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        for user in User.objects.all():
-            user.delete()
 
     def test_api_create_user_email_password_only(self):
         """
@@ -203,15 +185,6 @@ class UserGetApi(TestCase):
         super().setUpClass()
         User.objects.create_user('t@t.se', password='pw')
 
-    @classmethod
-    def tearDownClass(cls):
-        """
-        Clean up user created in setUpClass().
-        """
-        super().tearDownClass()
-        for user in User.objects.all():
-            user.delete()
-
     def setUp(self):
         """
         CALLED PER TEST CASE!
@@ -223,14 +196,6 @@ class UserGetApi(TestCase):
         """
         self.client = APIClient()
         self.client.login(email='t@t.se', password='pw')
-
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        pass
 
     def test_api_get_user_self(self):
         """
@@ -269,15 +234,6 @@ class UserAuthApi(TestCase):
         super().setUpClass()
         User.objects.create_user('t@t.se', password='pw')
 
-    @classmethod
-    def tearDownClass(cls):
-        """
-        Clean up user created in setUpClass().
-        """
-        super().tearDownClass()
-        for user in User.objects.all():
-            user.delete()
-
     def setUp(self):
         """
         CALLED PER TEST CASE!
@@ -295,14 +251,6 @@ class UserAuthApi(TestCase):
             HTTP_X_CSRFTOKEN=self.csrf_value,
             HTTP_COOKIE="csrftoken=" + self.csrf_value
         )
-
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        pass
 
     def test_api_user_login(self):
         """

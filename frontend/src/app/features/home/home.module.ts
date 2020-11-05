@@ -14,6 +14,8 @@ import { HomeService } from './home.service';
 
 // MODULES
 import { HomeRoutingModule } from './home-routing.module';
+import { HumeModule } from '../hume/hume.module';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { HomeRoutingModule } from './home-routing.module';
   imports: [
     HomeRoutingModule,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HumeModule
   ],
   exports: [
     HomeOverviewComponent

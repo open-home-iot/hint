@@ -1,1 +1,10 @@
-<app-event-icons></app-event-icons>
+<p>Event overview works!</p>
+
+<input [(ngModel)]="msg">
+<button type="button" (click)="send()">Send</button>
+
+<div id="messages">
+  <div *ngFor="let message of messages" class="message">
+    {{ message }}
+  </div>
+</div>

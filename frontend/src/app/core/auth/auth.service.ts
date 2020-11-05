@@ -4,8 +4,8 @@ import { HttpService } from '../http/http.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
-const LOGIN_URL = window.location.origin + "/api/user/login";
-const LOGOUT_URL = window.location.origin + "/api/user/logout";
+const LOGIN_URL = window.location.origin + "/api/users/login";
+const LOGOUT_URL = window.location.origin + "/api/users/logout";
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +22,11 @@ export class AuthService {
     this.initiated = false; // Initially, we do not have up-to-date information.
     this.authSubject = new BehaviorSubject<boolean>(false);
 
-    // Initial login attempt to check if the user is authenticated. This works without username/password since the
-    // CSRF token cookie works as an identifier for the session that the user was given upon his/her last login. And
-    // the CSRF token cookie always gets set on outgoing HTTP requests, see the AuthInterceptor for more information.
+    // Initial login attempt to check if the user is authenticated. This works
+    // without username/password since the CSRF token cookie works as an
+    // identifier for the session that the user was given upon his/her last
+    // login. And the CSRF token cookie always gets set on outgoing HTTP
+    // requests, see the AuthInterceptor for more information.
     this.login("", "");
   }
 

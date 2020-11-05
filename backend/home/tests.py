@@ -51,14 +51,6 @@ class HomeCreateApi(TestCase):
         super().setUpClass()
         User.objects.create_user(email="suite@t.se", password="pw")
 
-    @classmethod
-    def tearDownClass(cls):
-        """
-        Remove global user.
-        """
-        for user in User.objects.all():
-            user.delete()
-
     def setUp(self):
         """
         CALLED PER TEST CASE!
@@ -78,15 +70,6 @@ class HomeCreateApi(TestCase):
         #    HTTP_COOKIE="csrftoken=" + self.csrf_value
         # )
         self.client.login(username="suite@t.se", password="pw")
-
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        for home in Home.objects.all():
-            home.delete()
 
     def test_api_create_home(self):
         """
@@ -157,6 +140,7 @@ class HomeGetApi(TestCase):
         """
         Remove global user.
         """
+        super().tearDownClass()
         for user in User.objects.all():
             user.delete()
 

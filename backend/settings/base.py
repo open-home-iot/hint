@@ -29,13 +29,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
-    'backend.hume.apps.HumeConfig',
-    'backend.api.apps.ApiConfig',
-    'backend.webapp.apps.WebappConfig',
-    'backend.device.apps.DeviceConfig',
-    'backend.events.apps.EventsConfig',
     'backend.user.apps.UserConfig',
     'backend.home.apps.HomeConfig',
+    'backend.hume.apps.HumeConfig',
+    'backend.device.apps.DeviceConfig',
+    'backend.webapp.apps.WebappConfig',
 
     # Third party
     'channels',
@@ -78,14 +76,7 @@ TEMPLATES = [
 ASGI_APPLICATION = 'backend.routing.application'
 # WSGI_APPLICATION = 'backend.wsgi.application'
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('127.0.0.1', 6379,)],
-        },
-    },
-}
+CHANNEL_LAYERS = {}
 
 
 # Database
@@ -123,7 +114,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Rest Framework
+# Django Rest Framework (DRF)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',

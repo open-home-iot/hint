@@ -1,21 +1,26 @@
 from django.db import models
 
 from backend.user.models import User
+from backend.home.models import Home
 
 
-#class Hume(models.Model):
-#    users = models.ManyToManyField(User)
+class Hume(models.Model):
+    # HUME originated info
+    uuid = models.UUIDField(unique=True)
+    heartbeat = models.DateTimeField(auto_now_add=True)
 
-#    name = models.CharField(null=True, blank=True, max_length=100)
-#    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    # HINT info
+    is_paired = models.BooleanField(default=False)
 
-#    heartbeat = models.DateTimeField(auto_now_add=True)
+    # User specified
+    home = models.ForeignKey(Home, on_delete=models.CASCADE, null=True)
+    name = models.CharField(blank=True, max_length=50)
 
 
-#class HumeUser(models.Model):
-#    related_hume = models.OneToOneField(Hume,
-#                                        on_delete=models.CASCADE,
-#                                        primary_key=True)
-#
-#    hume_auth_token = models.CharField(null=True, blank=True, max_length=100)
-#    pass
+class HumeUser(User):
+    hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
+
+
+class ValidHume(models.Model):
+    uuid = models.UUIDField(unique=True)
+    taken = models.BooleanField(default=False)

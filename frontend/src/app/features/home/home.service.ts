@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpService } from '../../core/http/http.service';
 
 
-const HOME_URL = window.location.origin + "/api/home/"
+const HOME_URL = window.location.origin + "/api/homes/"
 
 
 export class Home {
