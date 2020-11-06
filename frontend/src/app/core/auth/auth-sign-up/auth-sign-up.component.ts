@@ -7,7 +7,7 @@ import { HttpService } from '../../http/http.service';
 
 import { passwordValidator } from '../../directives/validators/confirm-password.directive';
 
-const SIGN_UP_URL = window.location.origin + "/api/user/"
+const SIGN_UP_URL = window.location.origin + "/api/users/signup"
 
 @Component({
   selector: 'app-auth-sign-up',
