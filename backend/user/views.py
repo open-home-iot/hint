@@ -13,7 +13,7 @@ from .serializers import UserSerializer
 from .models import User
 
 
-class Users(views.APIView):
+class UserSignup(views.APIView):
     # Default is IsAuthenticated, but we don't need to be authenticated to
     # create an account.
     permission_classes = []
