@@ -6,6 +6,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+.vscode
 
 # Database files
 *.sqlite3

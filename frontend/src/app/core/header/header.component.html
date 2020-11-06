@@ -1,11 +1,4 @@
-<div id="header">
-
-  <div id="logo_box">
-
-    <h1 routerLink="/">HOME</h1>
-
-  </div>
-
+<div routerLink="/" id="header" class="col-md-12">
 
   <div *ngIf="authenticated; else unauthenticated"
        id="authenticated"
