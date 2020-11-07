@@ -1,5 +1,21 @@
-<div routerLink="/" id="header" class="col-md-12">
+<div id="header" class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
 
+<a routerLink="/" class="link-unadorned dmy-0 mr-md-auto"><h5 class="font-weight-normal">Internet of plants</h5></a>
+
+<nav class="my-2 my-md-0 mr-md-3">
+  <div *ngIf="authenticated" id="authenticated">
+    <a routerLink="/homes" class="p-2 text-dark">Homes</a>
+    <a routerLink="/event" class="p-2 text-dark">Event</a>
+    <a routerLink="/user/account" class="p-2 text-dark">Account</a>
+    <a routerLink="/Dashboard" class="p-2 text-dark">Dashboard</a>
+    <app-auth-logout></app-auth-logout>
+  </div>
+  <div id="unauthenticated">
+    <button (click)="showLogin()" class="btn btn-outline-primary">Login</button>
+    <a routerLink="/sign-up" class="btn btn-outline-primary">Sign up</a>
+  </div>
+</nav>
+<!--
   <div *ngIf="authenticated; else unauthenticated"
        id="authenticated"
        class="auth_container">
@@ -20,7 +36,7 @@
   </div>
 
 
-  <ng-template #unauthenticated>
+>
 
     <div id="unauthenticated" class="auth_container">
 
@@ -30,14 +46,14 @@
 
   </ng-template>
 
-
+    
   <nav *ngIf="authenticated"
        id="main_navigation">
 
-      <a routerLink="/home">HOMEs</a>
+      <a routerLink="/homes">HOMEs</a>
       <a routerLink="/event">WS test</a>
-
+      <a routerLink="/user/myPage"></a>
   </nav>
-
+-->
 
 </div>

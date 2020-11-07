@@ -54,6 +54,15 @@
   }
 }
 
+h5 {
+  font-size: 2rem;
+}
+
+.link-unadorned {
+  text-decoration: none;
+  color: black !important;
+}
+
 .auth_container {
   display: inline-block;
   background-color: rgb(255, 162, 205);

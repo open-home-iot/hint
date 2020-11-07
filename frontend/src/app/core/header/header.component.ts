@@ -22,7 +22,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     );
   }
 
+  showLogin(){
+    console.log("test");
+  }
+
   ngOnDestroy() {
     this.authSubscription.unsubscribe();
   }
+
+
 }
