@@ -12,7 +12,7 @@
       <div ngbDropdown class="d-inline-block">
         <a class="p-2 text-dark" ngbDropdownToggle>Account</a>
         <div ngbDropdownMenu>
-          <a routerLink="/users" class="p-2 text-dark">My page</a>
+          <a routerLink="/user" class="p-2 text-dark">My page</a>
           <app-auth-logout></app-auth-logout>
         </div>
       </div>
@@ -23,47 +23,4 @@
       <a routerLink="/sign-up" class="btn btn-outline-primary">Sign up</a>
     </div>
   </nav>
-
-
-  <!--
-  <div *ngIf="authenticated; else unauthenticated"
-       id="authenticated"
-       class="auth_container">
-
-    <app-event-icons class="event_overview"></app-event-icons>
-    <div class="account_dropdown">
-
-      <i class="material-icons">account_circle</i>
-      <div class="dropdown_content">
-
-        <button routerLink="/user">Account</button>
-        <app-auth-logout></app-auth-logout>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
->
-
-    <div id="unauthenticated" class="auth_container">
-
-      <button routerLink="/sign-up">Sign up</button>
-
-    </div>
-
-  </ng-template>
-
-    
-  <nav *ngIf="authenticated"
-       id="main_navigation">
-
-      <a routerLink="/homes">HOMEs</a>
-      <a routerLink="/event">WS test</a>
-      <a routerLink="/user/myPage"></a>
-  </nav>
--->
-
 </div>
