@@ -8,7 +8,7 @@
   display: block;
   height: 100%;
   margin: auto;
-  
+
   .link-unadorned {
     text-decoration: none;
     color: black !important;
@@ -20,12 +20,25 @@
 
   #main-navigation {
     #authenticated {
+      .d-inline-block.dropdown {
+        cursor: pointer;
 
+        .dropdown-toggle::after {
+          display: none;
+        }
+      }
+      .d-inline-block.show.dropdown {
+        .dropdown-menu.show {
+          display: flex;
+          flex-direction: column;
+        }
+      }
     }
 
-    #unathenticated{
-
+    #unathenticated {
     }
   }
 }
-
+.btn {
+  margin: 5px;
+}

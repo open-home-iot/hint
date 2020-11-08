@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../auth.service'
 import { Subscription } from 'rxjs';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -17,13 +17,15 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
 
   apiLoginError: boolean = false;
   apiLoginErrorMessages: [] = [];
+  apiLoginSuccess: boolean = false;
 
   loginForm: FormGroup;
 
   private authSubscription: Subscription;
 
   constructor(private authService: AuthService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private modalService: NgbModal) { }
 
   ngOnInit() {
     this.authSubscription = this.authService.authSubject.subscribe(
@@ -50,6 +52,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
       .then(() => {
         console.log("Manual login succeeded!");
         this.apiLoginError = false;
+        this.apiLoginSuccess = true;
       },
       (error: HttpErrorResponse) => {
         console.log("Manual login failed!")
@@ -57,34 +60,24 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
         this.apiLoginErrorMessages = Object.assign([], error.error.auth);
       });
   }
+  
+  open(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result
+    };
 }
 
-
+/*
 @Component({
   selector: 'ngbd-modal-basic',
-  templateUrl: './auth-login.modal.html'
+  templateUrl: './auth-login-modal.component.html'
 })
 export class NgbdModalBasic {
-  closeResult = '';
 
   constructor(private modalService: NgbModal) {}
 
   open(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result
+    };
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-}
-
+*/
