@@ -1,50 +1,26 @@
-<div id="header">
+<div id="header"
+  class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
 
-  <div id="logo_box">
+  <a routerLink="/" class="link-unadorned dmy-0 mr-md-auto">
+    <h5 class="font-weight-normal">Internet of plants</h5>
+  </a>
 
-    <h1 routerLink="/">HOME</h1>
-
-  </div>
-
-
-  <div *ngIf="authenticated; else unauthenticated"
-       id="authenticated"
-       class="auth_container">
-
-    <app-event-icons class="event_overview"></app-event-icons>
-    <div class="account_dropdown">
-
-      <i class="material-icons">account_circle</i>
-      <div class="dropdown_content">
-
-        <button routerLink="/user">Account</button>
-        <app-auth-logout></app-auth-logout>
-
+  <nav id="main-navigation" class="my-2 my-md-0 mr-md-3">
+    <div *ngIf="authenticated" id="authenticated">
+      <a routerLink="/home" class="p-2 text-dark">Home</a>
+      <a routerLink="/event" class="p-2 text-dark">Event</a>
+      <div ngbDropdown class="d-inline-block">
+        <a class="p-2 text-dark" ngbDropdownToggle>Account</a>
+        <div ngbDropdownMenu>
+          <a routerLink="/user" class="p-2 text-dark">My page</a>
+          <app-auth-logout></app-auth-logout>
+        </div>
       </div>
-
+      <a routerLink="/dashboard" class="p-2 text-dark">Dashboard</a>
     </div>
-
-  </div>
-
-
-  <ng-template #unauthenticated>
-
-    <div id="unauthenticated" class="auth_container">
-
-      <button routerLink="/sign-up">Sign up</button>
-
+    <div *ngIf="!authenticated" id="unauthenticated">
+      <app-auth-login id="auth-login"></app-auth-login>
+      <a routerLink="/sign-up" class="btn btn-outline-primary">Sign up</a>
     </div>
-
-  </ng-template>
-
-
-  <nav *ngIf="authenticated"
-       id="main_navigation">
-
-      <a routerLink="/home">HOMEs</a>
-      <a routerLink="/event">WS test</a>
-
   </nav>
-
-
 </div>

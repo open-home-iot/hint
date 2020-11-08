@@ -4,6 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../auth.service'
 import { Subscription } from 'rxjs';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'app-auth-login',
@@ -15,13 +17,15 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
 
   apiLoginError: boolean = false;
   apiLoginErrorMessages: [] = [];
+  apiLoginSuccess: boolean = false;
 
   loginForm: FormGroup;
 
   private authSubscription: Subscription;
 
   constructor(private authService: AuthService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private modalService: NgbModal) { }
 
   ngOnInit() {
     this.authSubscription = this.authService.authSubject.subscribe(
@@ -48,6 +52,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
       .then(() => {
         console.log("Manual login succeeded!");
         this.apiLoginError = false;
+        this.apiLoginSuccess = true;
       },
       (error: HttpErrorResponse) => {
         console.log("Manual login failed!")
@@ -55,4 +60,8 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
         this.apiLoginErrorMessages = Object.assign([], error.error.auth);
       });
   }
+  
+  open(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result
+    };
 }

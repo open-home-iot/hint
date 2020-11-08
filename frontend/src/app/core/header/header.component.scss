@@ -1,3 +1,4 @@
+@import "/src/variables";
 :host {
   display: block;
   height: 12%;
@@ -8,55 +9,36 @@
   height: 100%;
   margin: auto;
 
-  #logo_box {
-    display: inline-block;
-    background-color: rgb(97, 97, 97);
-    width: 50%;
-    height: 70%;
-    margin: auto;
+  .link-unadorned {
+    text-decoration: none;
+    color: black !important;
   }
 
-  #authenticated {
+  h5 {
+    font-size: 2rem;
+  }
 
-    .event_overview {
-      display: block;
-      width: 100%;
-    }
+  #main-navigation {
+    #authenticated {
+      .d-inline-block.dropdown {
+        cursor: pointer;
 
-    .account_dropdown {
-      position: relative;
-      display: block;
-      width: 100%;
-
-      .dropdown_content {
-        position: absolute;
-        display: none;
-
-        button {
-          min-width: 160px;
-          display: block;
-          z-index: 1;
-          text-decoration: none;
+        .dropdown-toggle::after {
+          display: none;
+        }
+      }
+      .d-inline-block.show.dropdown {
+        .dropdown-menu.show {
+          display: flex;
+          flex-direction: column;
         }
       }
     }
 
-    .account_dropdown:hover .dropdown_content {
-      display: block;
+    #unathenticated {
     }
   }
-
-  #main_navigation {
-    background-color: rgb(237, 237, 237);
-    width: 100%;
-    height: 30%;
-  }
 }
-
-.auth_container {
-  display: inline-block;
-  background-color: rgb(255, 162, 205);
-  width: 50%;
-  height: 70%;
-  float: right;
+.btn {
+  margin: 5px;
 }
