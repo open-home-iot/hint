@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
+// BOOTSTRAP
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 // ROUTING
 import { AppRoutingModule } from './app-routing.module';
 
@@ -48,6 +51,9 @@ import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.compo
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+
+    //BOOTSTRAP IMPORT
+    NgbModule,  
 
     // FEATURE MODULE IMPORTS
     HomeModule,

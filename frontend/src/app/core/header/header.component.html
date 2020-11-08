@@ -2,7 +2,7 @@
 
 <a routerLink="/" class="link-unadorned dmy-0 mr-md-auto"><h5 class="font-weight-normal">Internet of plants</h5></a>
 
-<nav class="my-2 my-md-0 mr-md-3">
+<nav id="main-navigation" class="my-2 my-md-0 mr-md-3">
   <div *ngIf="authenticated" id="authenticated">
     <a routerLink="/homes" class="p-2 text-dark">Homes</a>
     <a routerLink="/event" class="p-2 text-dark">Event</a>
@@ -14,7 +14,18 @@
     <button (click)="showLogin()" class="btn btn-outline-primary">Login</button>
     <a routerLink="/sign-up" class="btn btn-outline-primary">Sign up</a>
   </div>
+    <app-auth-login id="auth-login" class="hidden"></app-auth-login>
 </nav>
+
+<div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+    </div>
+  </div>
+</div>
 <!--
   <div *ngIf="authenticated; else unauthenticated"
        id="authenticated"

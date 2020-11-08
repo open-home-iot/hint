@@ -4,6 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../auth.service'
 import { Subscription } from 'rxjs';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'app-auth-login',
@@ -56,3 +58,33 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
       });
   }
 }
+
+
+@Component({
+  selector: 'ngbd-modal-basic',
+  templateUrl: './auth-login.modal.html'
+})
+export class NgbdModalBasic {
+  closeResult = '';
+
+  constructor(private modalService: NgbModal) {}
+
+  open(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+}
+

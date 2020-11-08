@@ -8,65 +8,24 @@
   display: block;
   height: 100%;
   margin: auto;
-
-  #logo_box {
-    display: inline-block;
-    background-color: $blue-light;
-    width: 50%;
-    height: 70%;
-    margin: auto;
+  
+  .link-unadorned {
+    text-decoration: none;
+    color: black !important;
   }
 
-  #authenticated {
-
-    .event_overview {
-      display: block;
-      width: 100%;
-    }
-
-    .account_dropdown {
-      position: relative;
-      display: block;
-      width: 100%;
-
-      .dropdown_content {
-        position: absolute;
-        display: none;
-
-        button {
-          min-width: 160px;
-          display: block;
-          z-index: 1;
-          text-decoration: none;
-        }
-      }
-    }
-
-    .account_dropdown:hover .dropdown_content {
-      display: block;
-    }
+  h5 {
+    font-size: 2rem;
   }
 
-  #main_navigation {
-    background-color: $green-forest;
-    width: 100%;
-    height: 30%;
+  #main-navigation {
+    #authenticated {
+
+    }
+
+    #unathenticated{
+
+    }
   }
 }
 
-h5 {
-  font-size: 2rem;
-}
-
-.link-unadorned {
-  text-decoration: none;
-  color: black !important;
-}
-
-.auth_container {
-  display: inline-block;
-  background-color: rgb(255, 162, 205);
-  width: 50%;
-  height: 70%;
-  float: right;
-}

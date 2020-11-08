@@ -24,6 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   showLogin(){
     console.log("test");
+    document.querySelector("#auth-login").classList.remove("hidden");
   }
 
   ngOnDestroy() {
