@@ -65,19 +65,3 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result
     };
 }
-
-/*
-@Component({
-  selector: 'ngbd-modal-basic',
-  templateUrl: './auth-login-modal.component.html'
-})
-export class NgbdModalBasic {
-
-  constructor(private modalService: NgbModal) {}
-
-  open(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result
-    };
-  }
-
-*/

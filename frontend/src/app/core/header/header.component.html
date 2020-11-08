@@ -7,16 +7,16 @@
 
   <nav id="main-navigation" class="my-2 my-md-0 mr-md-3">
     <div *ngIf="authenticated" id="authenticated">
-      <a routerLink="/homes" class="p-2 text-dark">Homes</a>
+      <a routerLink="/home" class="p-2 text-dark">Home</a>
       <a routerLink="/event" class="p-2 text-dark">Event</a>
       <div ngbDropdown class="d-inline-block">
         <a class="p-2 text-dark" ngbDropdownToggle>Account</a>
         <div ngbDropdownMenu>
-          <a routerLink="/user/account" class="p-2 text-dark">My page</a>
+          <a routerLink="/users" class="p-2 text-dark">My page</a>
           <app-auth-logout></app-auth-logout>
         </div>
       </div>
-      <a routerLink="/Dashboard" class="p-2 text-dark">Dashboard</a>
+      <a routerLink="/dashboard" class="p-2 text-dark">Dashboard</a>
     </div>
     <div *ngIf="!authenticated" id="unauthenticated">
       <app-auth-login id="auth-login"></app-auth-login>
