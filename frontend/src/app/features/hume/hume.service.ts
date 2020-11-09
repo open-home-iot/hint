@@ -8,12 +8,9 @@ const HUME_URL = window.location.origin + "/api/humes/";
 const HOME_URL = window.location.origin + "/api/homes/";
 
 export class Hume {
-  id: number;
   uuid: string;
   name: string;
   heartbeat: string;
-  is_paired: boolean;
-  ip_address: string;
   home: string;
 }
 
@@ -40,10 +37,6 @@ export class HumeService {
     });
   }
 
-  private humeAssociateUrl(id: number): string {
-    return HUME_URL + String(id) + "/associate";
-  }
-
   private pushHume(hume: Hume, homeId: number) {
     console.log("Adding HUME: " + hume.uuid + " to homeId: " + homeId);
     if (homeId in this.humes) {
@@ -55,23 +48,6 @@ export class HumeService {
 
   private setHumes(humes: Hume[], homeId: number) {
     this.humes[homeId] = humes;
-  }
-
-  associateHume(id: number, homeId: number): Promise<{}> {
-    return new Promise((resolve, reject) => {
-      this.httpService.post(this.humeAssociateUrl(id), { "home_id": homeId })
-        .subscribe(
-          (hume: Hume) => {
-            console.log("HUME associate succeeded!");
-            this.pushHume(hume, homeId);
-            resolve();
-          },
-          error => {
-            console.log("HUME associated failed.");
-            reject();
-          }
-        );
-    });
   }
 
   private homeHumesUrl(homeId: number): string {
@@ -102,15 +78,16 @@ export class HumeService {
     }
   }
 
-  private humePairUrl(humeId: number): string {
-    return HUME_URL + String(humeId) + "/confirm-pairing";
+  private humePairUrl(humeUuid: string): string {
+    return HUME_URL + humeUuid + "/confirm-pairing";
   }
 
-  pairHume(homeId: number, humeId: number) {
-    this.httpService.put(this.humePairUrl(humeId), {})
+  pairHume(homeId: number, hume: Hume) {
+    this.httpService.post(this.humePairUrl(hume.uuid),
+                          {"home_id": homeId})
       .subscribe(
         () => {
-          this.humePaired(homeId, humeId);
+          this.humePaired(homeId, hume);
         },
         () => {
           console.log("HUME pairing failed.")
@@ -118,13 +95,7 @@ export class HumeService {
       );
   }
 
-  humePaired(homeId: number, humeId: number) {
-    let humes = this.humes[homeId]
-
-    for (let hume of humes) {
-      if (hume.id == humeId) {
-        hume.is_paired = true;
-      }
-    }
+  humePaired(homeId: number, hume: Hume) {
+    this.humes[homeId].push(hume);
   }
 }

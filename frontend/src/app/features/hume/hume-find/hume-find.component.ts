@@ -11,7 +11,7 @@ import { HumeService, Hume } from '../hume.service';
 export class HumeFindComponent implements OnInit {
 
   findHumeForm: FormGroup;
-  associateHumeForm: FormGroup;
+  pairHumeForm: FormGroup;
 
   foundHume: Hume;
 
@@ -22,13 +22,13 @@ export class HumeFindComponent implements OnInit {
     this.findHumeForm = this.formBuilder.group({
       uuid: ['', Validators.required]
     });
-    this.associateHumeForm = this.formBuilder.group({
+    this.pairHumeForm = this.formBuilder.group({
       home_id: ['', Validators.required]
     });
   }
 
   get uuid() { return this.findHumeForm.get('uuid'); }
-  get homeId() { return this.associateHumeForm.get('home_id'); }
+  get homeId() { return this.pairHumeForm.get('home_id'); }
 
   findHume() {
     console.log("HUME UUID:");
@@ -47,17 +47,7 @@ export class HumeFindComponent implements OnInit {
     );
   }
 
-  associateHume() {
-    var promise = this.humeService.associateHume(this.foundHume.id,
-                                                 this.homeId.value);
-
-    promise.then(
-      () => {
-        console.log("Successfully associated HUME!");
-      },
-      () => {
-        console.log("Failed to associate HUME!");
-      }
-    );
+  pairHume() {
+    this.humeService.pairHume(this.homeId.value, this.foundHume);
   }
 }

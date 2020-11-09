@@ -61,74 +61,50 @@ class Humes(views.APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
 
-class HumeConfirmPairing(views.APIView):
-
-    def put(self, request, hume_id, format=None):
-        """
-        Puts the HUME in a PAIRED state.
-        """
-        hume = Hume.objects.filter(id=hume_id,
-                                   home__users__id=request.user.id)
-
-        if hume:
-            hume = hume[0]
-            hume.is_paired = True
-            hume.save()
-
-            return Response(status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
 class HumeFind(views.APIView):
 
     def get(self, request, hume_uuid, format=None):
         """
-        Get an unassociated HUME.
+        Get an unpaired HUME, this API is only intended for fetching unpaired
+        HUMEs for pairing them with a given HOME instance.
         """
         try:
-            hume = Hume.objects.filter(uuid=hume_uuid,
-                                       is_paired=False,
-                                       home=None)
-        except ValidationError:
-            return Response({"hume_uuid": ["Invalid UUID."]},
-                            status=status.HTTP_400_BAD_REQUEST)
+            hume = Hume.objects.get(uuid=hume_uuid,
+                                    home=None)
 
-        if hume:
-            hume = hume[0]
-            serializer = HumeSerializer(hume)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        # ValidationError is raised if invalid UUID, DoesNotExist happens if
+        # the HUME is already associated with a HOME instance.
+        except (ValidationError, Hume.DoesNotExist):
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        return Response({"hume_uuid": ["Does not exist."]},
-                        status=status.HTTP_404_NOT_FOUND)
+        serializer = HumeSerializer(hume)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class HumeAssociate(views.APIView):
+class HumeConfirmPairing(views.APIView):
 
-    def post(self, request, hume_id, format=None):
+    def post(self, request, hume_uuid, format=None):
         """
-        Put the HUME in an ASSOCIATED state and links it to a user's HOME.
+        Pairs the HUME with a HOME instance.
         """
-        hume = Hume.objects.get(id=hume_id)
+        home_id = request.data["home_id"]
 
-        # hume is already associated, protective measure for this API endpoint.
-        # Dissalowed here to explicitly implement moving HUMEs in some other
-        # view later, makes it more verbose.
-        if hume.home:
-            return Response({"hume_id": ["Already associated."]},
-                            status.HTTP_400_BAD_REQUEST)
+        try:
+            hume = Hume.objects.get(uuid=hume_uuid,
+                                    home=None)
+        except Hume.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        home = Home.objects.filter(id=request.data["home_id"],
-                                   users__id=request.user.id)
+        try:
+            home = Home.objects.get(id=home_id,
+                                    users__id=request.user.id)
+        except Home.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        if home:
-            hume.home = home[0]  # Still a queryset
-            hume.save()
-            serializer = HumeSerializer(hume)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        hume.home = home
+        hume.save()
 
-        return Response({"home_id": ["Does not exist."]},
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 
 
 class HomeHumes(views.APIView):

@@ -46,7 +46,7 @@ class UserModel(TestCase):
 
 
 class UserCreateApi(TestCase):
-    USER_CREATE_URL = "/api/user/"
+    USER_CREATE_URL = "/api/users/signup"
 
     def setUp(self):
         """
@@ -175,7 +175,7 @@ class UserCreateApi(TestCase):
 
 
 class UserGetApi(TestCase):
-    USER_GET_SELF_URL = "/api/user/self"
+    USER_GET_SELF_URL = "/api/users/self"
 
     @classmethod
     def setUpClass(cls):
@@ -223,8 +223,8 @@ class UserGetApi(TestCase):
 
 
 class UserAuthApi(TestCase):
-    USER_AUTH_LOGIN_URL = "/api/user/login"
-    USER_AUTH_LOGOUT_URL = "/api/user/logout"
+    USER_AUTH_LOGIN_URL = "/api/users/login"
+    USER_AUTH_LOGOUT_URL = "/api/users/logout"
 
     @classmethod
     def setUpClass(cls):

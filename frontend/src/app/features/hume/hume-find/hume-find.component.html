@@ -18,8 +18,8 @@
   Found HUME:
   {{ foundHume.uuid }}
   <form id="associate_hume_form"
-        (ngSubmit)="associateHume()"
-        [formGroup]="associateHumeForm">
+        (ngSubmit)="pairHume()"
+        [formGroup]="pairHumeForm">
     <div class="label_input_pair">
       <label for="home_id">HOME ID</label>
       <input id="home_id"
@@ -31,6 +31,6 @@
          class="form_error">
       Invalid HOME ID.
     </div>
-    <button type="submit" [disabled]="!associateHumeForm.valid" name="button">Associate</button>
+    <button type="submit" [disabled]="!pairHumeForm.valid" name="button">Pair</button>
   </form>
 </div>

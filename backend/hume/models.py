@@ -17,7 +17,8 @@ class Hume(models.Model):
     # User specified
     home = models.ForeignKey(Home,
                              on_delete=models.CASCADE,
-                             null=True)
+                             null=True,
+                             blank=True)
     name = models.CharField(blank=True, max_length=50)
 
 

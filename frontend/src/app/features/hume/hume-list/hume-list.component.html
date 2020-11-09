@@ -1,6 +1,4 @@
 <div class="hume_instance" *ngFor="let hume of humes">
   HUME ID: {{ hume.id }}
   UUID: {{ hume.uuid }}
-
-  <button *ngIf="!hume.is_paired" (click)="pairHume(hume.id)">Pair</button>
 </div>

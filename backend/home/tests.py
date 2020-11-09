@@ -41,7 +41,7 @@ class HomeModel(TestCase):
 
 
 class HomeCreateApi(TestCase):
-    HOME_CREATE_URL = "/api/home/"
+    HOME_CREATE_URL = "/api/homes/"
 
     @classmethod
     def setUpClass(cls):
@@ -124,7 +124,7 @@ class HomeCreateApi(TestCase):
 
 
 class HomeGetApi(TestCase):
-    HOME_GET_ALL_URL = "/api/home/"
+    HOME_GET_ALL_URL = "/api/homes/"
 
     @classmethod
     def setUpClass(cls):
