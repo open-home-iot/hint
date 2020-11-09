@@ -1,7 +1,7 @@
 from django.urls import path
 
 from backend.hume.views import Humes, HumeFind, HumeAssociate, \
-                               HumeConfirmPairing, HomeHumes
+                               HumeConfirmPairing
 
 
 urlpatterns = [

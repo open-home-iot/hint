@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.exceptions import ValidationError
 
 from rest_framework import views
@@ -7,6 +9,7 @@ from rest_framework import status
 from .models import Hume, ValidHume
 from .serializers import HumeSerializer
 from backend.home.models import Home
+from backend.user.models import User
 
 
 class Humes(views.APIView):
@@ -19,33 +22,40 @@ class Humes(views.APIView):
         CHECKED DUE TO NO PERMISSION_CLASSES (NOT CHECKED WHEN
         UNAUTHENTICATED).
 
-        One of the following happens depending on:
-
-        If the HUME ID already exists:
-        - Return HUME.is_paired
-
         If the HUME does not exist:
         - Create a new HUME
+
+        Else:
+        - Invalid request!
         """
         serializer = HumeSerializer(data=request.data)
 
         if serializer.is_valid():
+            hume_uuid = serializer.validated_data["uuid"]
+
             try:
-                ValidHume.objects.get(uuid=serializer.validated_data["uuid"])
+                ValidHume.objects.get(uuid=hume_uuid)
             except ValidHume.DoesNotExist:
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            generated_password = str(uuid.uuid1())
+            hume_user = User.objects.create_user(
+                email=f"{str(hume_uuid).replace('-', '')}@fake.com",
+                password=generated_password
+            )
 
-        uuid_errors = serializer.errors.get("uuid")
-        if uuid_errors:
-            if uuid_errors[0].code == "unique":
-                hume = Hume.objects.get(uuid=serializer.data["uuid"])
-                return Response(
-                    {"is_paired": hume.is_paired},
-                    status=status.HTTP_409_CONFLICT
-                )
+            hume = serializer.save()
+            hume.hume_user = hume_user
+            hume.save()
+            return_data = HumeSerializer(hume).data
+            return_data.update({
+                "hume_user": {
+                    "username": hume_user.email,
+                    "password": generated_password
+                }
+            })
+            return Response(return_data,
+                            status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST)

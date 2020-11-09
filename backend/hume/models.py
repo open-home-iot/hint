@@ -6,21 +6,20 @@ from backend.home.models import Home
 
 class Hume(models.Model):
     # HUME originated info
-    uuid = models.UUIDField(unique=True)
+    uuid = models.UUIDField(unique=True, primary_key=True)
     heartbeat = models.DateTimeField(auto_now_add=True)
 
-    # HINT info
-    is_paired = models.BooleanField(default=False)
+    # HINT-allocated user account for HUME requests
+    hume_user = models.OneToOneField(User,
+                                     on_delete=models.CASCADE,
+                                     null=True)
 
     # User specified
-    home = models.ForeignKey(Home, on_delete=models.CASCADE, null=True)
+    home = models.ForeignKey(Home,
+                             on_delete=models.CASCADE,
+                             null=True)
     name = models.CharField(blank=True, max_length=50)
-
-
-class HumeUser(User):
-    hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
 
 
 class ValidHume(models.Model):
     uuid = models.UUIDField(unique=True)
-    taken = models.BooleanField(default=False)
