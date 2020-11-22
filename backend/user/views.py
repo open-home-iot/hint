@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import views
 from rest_framework.response import Response
@@ -18,7 +17,6 @@ class UserSignup(views.APIView):
     # create an account.
     permission_classes = []
 
-    @method_decorator(csrf_protect)
     def post(self, request, format=None):
         """
         Create a new user.
@@ -41,7 +39,7 @@ class UserSelf(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@csrf_protect
+@csrf_exempt
 def login_user(request):
     """
     Log in a user.
@@ -76,7 +74,7 @@ def login_user(request):
         return response
 
 
-@csrf_protect
+@csrf_exempt
 def logout_user(request):
     """
     Log out a user.

@@ -1,6 +1,7 @@
 import uuid
 
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from rest_framework import views
 from rest_framework.response import Response
@@ -13,15 +14,10 @@ from backend.user.models import User
 
 
 class Humes(views.APIView):
-    permission_classes = []
+    permission_classes = []  # Implies no CSRF check.
 
     def post(self, request, format=None):
         """
-        ! CSRF NOTICE !
-        CSRF EXEMPT DUE TO THAT THIS VIEW IS NOT USED BY USERS. CSRF IS NOT
-        CHECKED DUE TO NO PERMISSION_CLASSES (NOT CHECKED WHEN
-        UNAUTHENTICATED).
-
         If the HUME does not exist:
         - Create a new HUME
 
@@ -61,6 +57,21 @@ class Humes(views.APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
 
+class BrokerCredentials(views.APIView):
+
+    def get(self, request, format=None):
+        """
+        A HUME requests broker credentials.
+        """
+        # TODO: Ensure user is a HUME
+        return Response({"username": settings.HUME_BROKER_USERNAME,
+                         "password": settings.HUME_BROKER_PASSWORD},
+                        status=status.HTTP_200_OK)
+
+
+###############################################################################
+# AJAX VIEWS
+###############################################################################
 class HumeFind(views.APIView):
 
     def get(self, request, hume_uuid, format=None):
