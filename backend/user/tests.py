@@ -1,3 +1,5 @@
+import unittest
+
 from django.test import TestCase
 from django.db import transaction
 from django.db.utils import IntegrityError
@@ -162,17 +164,6 @@ class UserCreateApi(TestCase):
                          {'first_name': [expected_error_msg],
                           'last_name': [expected_error_msg]})
 
-    def test_api_create_user_fail_no_csrf_token(self):
-        """
-        Verify that a user cannot be created without CSRF verification.
-        """
-        client_wo_csrf = APIClient(enforce_csrf_checks=True)
-
-        ret = client_wo_csrf.post(UserCreateApi.USER_CREATE_URL,
-                                  {'email': 't@t.se', 'password': 'pw'})
-
-        self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
-
 
 class UserGetApi(TestCase):
     USER_GET_SELF_URL = "/api/users/self"
@@ -262,6 +253,7 @@ class UserAuthApi(TestCase):
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
 
+    @unittest.skip("CSRF for login disabled")
     def test_api_user_login_fail_no_csrf(self):
         """
         Verify login requests require a CSRF token.
