@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'backend.hume.apps.HumeConfig',
     'backend.device.apps.DeviceConfig',
     'backend.webapp.apps.WebappConfig',
+    'backend.broker.apps.BrokerConfig',
 
     # Third party
     'channels',
