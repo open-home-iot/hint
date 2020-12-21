@@ -4,7 +4,7 @@ from rabbitmq_client.client import RMQClient
 class Producer:
     client: RMQClient
 
-    @classmethod
+    @staticmethod
     def command(hume_uuid, message):
         """
         :type hume_uuid: str

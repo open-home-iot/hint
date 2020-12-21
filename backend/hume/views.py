@@ -155,6 +155,6 @@ class HumeDiscoverDevices(views.APIView):
                 "HUME, please discover some devices".encode('utf-8')
             )
 
-            return Response(status=status.HTTP_200_OK)
+            return Response([], status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_403_FORBIDDEN)

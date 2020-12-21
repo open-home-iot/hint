@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { HttpService } from '../../core/http/http.service';
 
+import { Device } from '../device/device.service';
+
 
 const HUME_URL = window.location.origin + "/api/humes/";
 
@@ -97,5 +99,13 @@ export class HumeService {
 
   humePaired(homeId: number, hume: Hume) {
     this.humes[homeId].push(hume);
+  }
+
+  private discoverDevicesUrl(humeUUID: string) {
+    return HUME_URL + humeUUID + "/devices/discover";
+  }
+
+  discoverDevices(humeUUID: string) {
+    return this.httpService.get(this.discoverDevicesUrl(humeUUID));
   }
 }
