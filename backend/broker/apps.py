@@ -12,6 +12,8 @@ from django.conf import settings
 
 from rabbitmq_client.client import RMQClient
 
+from backend.broker.consumer_views import incoming_command_queue_message
+
 
 class BrokerConfig(AppConfig):
     name = 'backend.broker'
@@ -32,6 +34,7 @@ class BrokerConfig(AppConfig):
         if settings.DEBUG and not RUN_MAIN:
             return
 
+        print(f"BrokerConfig.has_started: {BrokerConfig.has_started}")
         if BrokerConfig.has_started:
             return
         BrokerConfig.has_started = True
@@ -72,26 +75,18 @@ class BrokerConfig(AppConfig):
             virtual_host='/',
             credentials=credentials
         )
+
         client = RMQClient(log_queue=log_queue,
-                           connection_parameters=connection_params)
+                           connection_parameters=connection_params,
+                           daemonize=True)
         client.start()
-        # client.command_queue(settings.MASTER_COMMAND_QUEUE_NAME,
-        #                      )
+        client.command_queue(settings.MASTER_COMMAND_QUEUE_NAME,
+                             incoming_command_queue_message)
 
-        def stop(signum, frame, client=None, listener=None, log_queue=None):
-            """Stops the RMQ client on interrupt"""
-            print("Stopping client...")
+        def stop_func(signal, frame, client=None):
+            """Stop client"""
             client.stop()
-            print("Stopping queue listener...")
-            listener.stop()
-            print("Stopping log queue")
-            log_queue.close()
 
-        callback = functools.partial(
-            stop,
-            client=client,
-            listener=listener,
-            log_queue=log_queue
-        )
+        stop_callback = functools.partial(stop_func, client=client)
 
-        signal.signal(signal.SIGINT, callback)
+        signal.signal(signal.SIGINT, stop_callback)
