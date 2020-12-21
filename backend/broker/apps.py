@@ -13,6 +13,7 @@ from django.conf import settings
 from rabbitmq_client.client import RMQClient
 
 from backend.broker.consumer_views import incoming_command_queue_message
+from backend.broker import producer
 
 
 class BrokerConfig(AppConfig):
@@ -82,6 +83,7 @@ class BrokerConfig(AppConfig):
         client.start()
         client.command_queue(settings.MASTER_COMMAND_QUEUE_NAME,
                              incoming_command_queue_message)
+        producer.init(client)
 
         def stop_func(signal, frame, client=None):
             """Stop client"""

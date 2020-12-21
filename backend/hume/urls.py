@@ -1,7 +1,12 @@
 from django.urls import path
 
-from backend.hume.views import Humes, HumeFind, HumeConfirmPairing, \
+from backend.hume.views import (
+    Humes,
+    HumeFind,
+    HumeConfirmPairing,
+    HumeDiscoverDevices,
     BrokerCredentials
+)
 
 
 urlpatterns = [
@@ -11,5 +16,6 @@ urlpatterns = [
 
     # AJAX
     path("<str:hume_uuid>", HumeFind.as_view()),
-    path("<str:hume_uuid>/confirm-pairing", HumeConfirmPairing.as_view())
+    path("<str:hume_uuid>/confirm-pairing", HumeConfirmPairing.as_view()),
+    path("<str:hume_uuid>/devices/discover", HumeDiscoverDevices.as_view())
 ]

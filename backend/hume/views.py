@@ -7,10 +7,13 @@ from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Hume, ValidHume
-from .serializers import HumeSerializer
+from backend.hume.models import Hume, ValidHume
+from backend.hume.serializers import HumeSerializer
+
 from backend.home.models import Home
 from backend.user.models import User
+
+from backend.broker.producer import Producer
 
 
 class Humes(views.APIView):
@@ -135,3 +138,23 @@ class HomeHumes(views.APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response([], status=status.HTTP_200_OK)
+
+
+class HumeDiscoverDevices(views.APIView):
+
+    def get(self, request, hume_uuid, format=None):
+        """
+        Request that HINT tell HUME to discover devices.
+        """
+        if Hume.objects.filter(
+            uuid=hume_uuid,
+            home__users__id=request.user.id
+        ).exists():
+            Producer.command(
+                hume_uuid,
+                "HUME, please discover some devices".encode('utf-8')
+            )
+
+            return Response(status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
