@@ -17,10 +17,11 @@ export class EventOverviewComponent implements OnInit {
 
   ngOnInit() {
     this.messages = [];
-    this.eventService.subscribe(this.onMessage.bind(this));
   }
 
-  onMessage(message: MessageEvent) { this.messages.push(message.data) }
+  onMessage(message: MessageEvent) {
+    this.messages.push(message.data);
+  }
 
   send() {
     this.eventService.send(this.msg);

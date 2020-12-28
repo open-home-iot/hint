@@ -5,13 +5,15 @@ import { WebSocketService } from '../../core/websocket/websocket.service';
 @Injectable()
 export class EventService {
 
-  constructor(private webSocketService: WebSocketService) { }
-
-  subscribe(callback) {
-    this.webSocketService.subscribe(callback);
+  constructor(private webSocketService: WebSocketService) {
+    this.webSocketService.registerCallback(this.onEvent.bind(this));
   }
 
-  send(message) {
+  onEvent(event) {
+    console.log(event);
+  }
+
+  send(message: {}) {
     this.webSocketService.send(message);
   }
 }

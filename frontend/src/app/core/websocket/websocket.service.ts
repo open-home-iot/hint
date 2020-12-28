@@ -11,6 +11,7 @@ export class WebSocketService {
 
   private ws: WebSocket;
   private callback: any;
+  isOpen: boolean = false;
 
   constructor() {
     console.log("Constructing WebSocketService");
@@ -22,28 +23,25 @@ export class WebSocketService {
     this.ws.onmessage = this.onSocketMessage.bind(this);
   }
 
-  private onSocketOpen(event: any) {
-    console.log("Socket opened!");
-    console.log(new Date().toString());
-  }
-
-  private onSocketClose(event: any) {
-    console.log("Socket closed!");
-    console.log(new Date().toString());
-  }
-
-  private onSocketError(event: any) {
-    console.log("Socket error!");
-  }
-
-  private onSocketMessage(event: any) {
-    console.log("Socket message received:");
+  private onSocketOpen(event: Event) {
     console.log(event);
-    this.callback(event);
   }
 
-  subscribe(callback) {
-    console.log("Subscribe was called");
+  private onSocketClose(event: CloseEvent) {
+    console.log(event);
+  }
+
+  private onSocketError(event: Event) {
+    console.log(event);
+  }
+
+  private onSocketMessage(event: MessageEvent) {
+    console.log(event);
+    this.callback(event.data);
+  }
+
+  registerCallback(callback) {
+    console.log("registerCallback was called");
     this.callback = callback;
   }
 
