@@ -1,3 +1,5 @@
+import json
+
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
@@ -35,15 +37,15 @@ class HomeConsumer(WebsocketConsumer):
         """
         Called on receiving an event from the socket connection.
         """
-        print(text_data)
-        self.send(text_data)
-        # decoded_data = json.loads(text_data)
-        # home_id = str(decoded_data["home_id"])
-        # self.home_ids.append(home_id)
-        # print(f"Adding home: {home_id} to list of monitored homes")
-        # async_to_sync(self.channel_layer.group_add)(
-        #     home_id, self.channel_name
-        # )
+        print(f"New home consumer message: {json.loads(text_data)}")
+        decoded_data = json.loads(text_data)
+        home_id = str(decoded_data["home_id"])
+        self.home_ids.append(home_id)
+        print(f"Currently monitored home_ids: {self.home_ids}")
+        print(f"Adding home: {home_id} to list of monitored homes")
+        async_to_sync(self.channel_layer.group_add)(
+            home_id, self.channel_name
+        )
 
     def home_event(self, event):
         """

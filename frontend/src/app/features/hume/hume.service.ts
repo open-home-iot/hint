@@ -54,7 +54,6 @@ export class HumeService {
 
   initHomeHumes(homeId: number): Hume[] {
     console.log("Getting humes for home: " + String(homeId))
-    console.log(Date.now())
     if (homeId in this.humes) {
       console.log("Home id already has an entry in Home->Humes map")
       return this.humes[homeId];
@@ -62,12 +61,8 @@ export class HumeService {
       this.humes[homeId] = [];
 
       let obs = this.httpService.get(this.homeHumesUrl(homeId));
-      console.log(obs);
-
       obs.subscribe(
         (humes: Hume[]) => {
-          console.log(Date.now())
-          console.log("Get HOME HUMEs succeeded:");
           console.log(humes);
           for (let hume of humes) {
             this.pushHume(hume, homeId);

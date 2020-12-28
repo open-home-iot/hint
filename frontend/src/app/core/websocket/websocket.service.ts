@@ -11,7 +11,7 @@ export class WebSocketService {
 
   private ws: WebSocket;
   private callback: any;
-  isOpen: boolean = false;
+  private messageBuffer: {"home_id": number}[] = [];
 
   constructor() {
     console.log("Constructing WebSocketService");
@@ -25,6 +25,10 @@ export class WebSocketService {
 
   private onSocketOpen(event: Event) {
     console.log(event);
+    while (this.messageBuffer.length > 0) {
+      console.log("Sending buffered WS message...")
+      this.send(this.messageBuffer.pop());
+    }
   }
 
   private onSocketClose(event: CloseEvent) {
@@ -46,6 +50,10 @@ export class WebSocketService {
   }
 
   send(message) {
-    this.ws.send(message);
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(message);
+    } else {
+      this.messageBuffer.push(message);
+    }
   }
 }
