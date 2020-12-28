@@ -25,6 +25,15 @@ export class HumeService {
     console.log("Constructing HumeService");
   }
 
+  getHomeHumes(homeId: number) {
+    if (homeId in this.humes) {
+      return this.humes[homeId];
+    } else {
+      this.humes[homeId] = []
+      return this.humes[homeId];
+    }
+  }
+
   findHume(uuid: string) {
     return new Promise((resolve, reject) => {
       this.httpService.get(HUME_URL + uuid)

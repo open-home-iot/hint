@@ -35,14 +35,26 @@ class HomeConsumer(WebsocketConsumer):
 
     def receive(self, text_data=None):
         """
-        Called on receiving an event from the socket connection.
+        Called on receiving an event from the socket connection. Currently, the
+        only expected event is a subscription for a home ID.
+
+        :param text_data: JSON formatted string
         """
         print(f"New home consumer message: {json.loads(text_data)}")
         decoded_data = json.loads(text_data)
+
+        if decoded_data.get("testing"):
+            self.send(json.dumps(
+                {
+                    "home_id": decoded_data["home_id"],
+                    "hume_uuid": decoded_data["hume_uuid"],
+                }
+            ))
+            return
+
         home_id = str(decoded_data["home_id"])
         self.home_ids.append(home_id)
         print(f"Currently monitored home_ids: {self.home_ids}")
-        print(f"Adding home: {home_id} to list of monitored homes")
         async_to_sync(self.channel_layer.group_add)(
             home_id, self.channel_name
         )

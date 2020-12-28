@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { EventService } from '../../event.service';
+import { EventService, HomeEvent } from '../../event.service';
+import { HomeService, Home } from '../../../home/home.service';
+import { HumeService, Hume } from '../../../hume/hume.service';
+import { WebSocketService } from '../../../../core/websocket/websocket.service';
 
 @Component({
   selector: 'app-event-overview',
@@ -10,20 +13,40 @@ import { EventService } from '../../event.service';
 })
 export class EventOverviewComponent implements OnInit {
 
-  msg: string = "";
-  messages: string[];
+  events: HomeEvent[] = [];
 
-  constructor(private eventService: EventService) { }
+  constructor(private eventService: EventService,
+              private homeService: HomeService,
+              private humeService: HumeService,
+              private webSocketService: WebSocketService) { }
 
-  ngOnInit() {
-    this.messages = [];
+  ngOnInit() { }
+
+  subscribe() {
+    let homes = this.homeService.homes;
+    for (let home of homes) {
+      this.eventService.subscribeToHomeEvents(home.id, this.onEvent.bind(this));
+      let humes = this.humeService.getHomeHumes(home.id);
+      for (let hume of humes) {
+        this.eventService.subscribeToHumeEvents(hume.uuid, this.onEvent.bind(this));
+      }
+    }
   }
 
-  onMessage(message: MessageEvent) {
-    this.messages.push(message.data);
+  test() {
+    let homes = this.homeService.homes;
+    for (let home of homes) {
+      let humes = this.humeService.getHomeHumes(home.id);
+      for (let hume of humes) {
+        this.webSocketService.send(JSON.stringify({"testing": 1,
+                                                   "home_id": home.id,
+                                                   "hume_uuid": hume.uuid}));
+      }
+    }
   }
 
-  send() {
-    this.eventService.send(this.msg);
+  onEvent(event: HomeEvent) {
+    console.log(event);
+    this.events.push(event);
   }
 }
