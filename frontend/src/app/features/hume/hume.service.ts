@@ -48,33 +48,35 @@ export class HumeService {
     }
   }
 
-  private setHumes(humes: Hume[], homeId: number) {
-    this.humes[homeId] = humes;
-  }
-
   private homeHumesUrl(homeId: number): string {
     return HOME_URL + String(homeId) + "/humes";
   }
 
   initHomeHumes(homeId: number): Hume[] {
+    console.log("Getting humes for home: " + String(homeId))
+    console.log(Date.now())
     if (homeId in this.humes) {
+      console.log("Home id already has an entry in Home->Humes map")
       return this.humes[homeId];
     } else {
-      this.setHumes([], homeId);
+      this.humes[homeId] = [];
 
-      this.httpService.get(this.homeHumesUrl(homeId))
-        .subscribe(
-          (humes: Hume[]) => {
-            console.log("Get HOME HUMEs succeeded:");
-            console.log(humes);
-            for (let hume of humes) {
-              this.pushHume(hume, homeId);
-            }
-          },
-          error => {
-            console.log("Get HOME HUMEs failed.");
+      let obs = this.httpService.get(this.homeHumesUrl(homeId));
+      console.log(obs);
+
+      obs.subscribe(
+        (humes: Hume[]) => {
+          console.log(Date.now())
+          console.log("Get HOME HUMEs succeeded:");
+          console.log(humes);
+          for (let hume of humes) {
+            this.pushHume(hume, homeId);
           }
-        );
+        },
+        error => {
+          console.log("Get HOME HUMEs failed.");
+        }
+      );
 
       return this.humes[homeId];
     }

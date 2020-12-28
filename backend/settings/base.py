@@ -74,8 +74,7 @@ TEMPLATES = [
 # Channels settings
 
 # With channels enabled, we are now running an ASGI application.
-ASGI_APPLICATION = 'backend.routing.application'
-# WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 CHANNEL_LAYERS = {
     "default": {
