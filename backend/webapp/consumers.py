@@ -43,6 +43,7 @@ class HomeConsumer(WebsocketConsumer):
         print(f"New home consumer message: {json.loads(text_data)}")
         decoded_data = json.loads(text_data)
 
+        # TODO remove
         if decoded_data.get("testing"):
             self.send(json.dumps(
                 {
@@ -76,4 +77,13 @@ class HomeConsumer(WebsocketConsumer):
                       consumer_views module in the broker app
         :type event: dict
         """
-        raise NotImplementedError
+        def format_event(event):
+            """
+            Formats an incoming event for dispatch to a websocket client.
+
+            :param event: dict with event information
+            :returns: formatted JSON string
+            """
+            event.pop("type")
+            return json.dumps(event)
+        self.send(format_event(event))

@@ -85,10 +85,20 @@ class BrokerConfig(AppConfig):
                              incoming_command_queue_message)
         producer.init(client)
 
-        def stop_func(signal, frame, client=None):
+        def stop_func(signal,
+                      frame,
+                      client=None,
+                      queue_listener=None,
+                      log_queue=None):
             """Stop client"""
             client.stop()
+            queue_listener.stop()
+            log_queue.close()
 
-        stop_callback = functools.partial(stop_func, client=client)
+        stop_callback = functools.partial(stop_func,
+                                          client=client,
+                                          queue_listener=listener,
+                                          log_queue=log_queue)
 
         signal.signal(signal.SIGINT, stop_callback)
+        signal.signal(signal.SIGTERM, stop_callback)

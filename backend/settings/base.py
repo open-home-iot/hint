@@ -29,12 +29,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
+    'backend.broker.apps.BrokerConfig',
     'backend.user.apps.UserConfig',
     'backend.home.apps.HomeConfig',
     'backend.hume.apps.HumeConfig',
     'backend.device.apps.DeviceConfig',
     'backend.webapp.apps.WebappConfig',
-    'backend.broker.apps.BrokerConfig',
 
     # Third party
     'channels',
