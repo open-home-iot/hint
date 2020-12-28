@@ -1,16 +1,16 @@
 from django.urls import path
 
-from .views import AppView
-from .consumers import HumeConsumer
+from backend.webapp.views import AppView
+from backend.webapp.consumers import HomeConsumer
 
 
 urlpatterns = [
-    path("", AppView.as_view(), name='index')
+    path("", AppView.as_view())
 ]
 
 websocket_urlpatterns = [
     # as_asgi() is similar to how Django class based views
     # require the as_view() call. as_asgi() returns an
     # ASGI application to handle the incoming call.
-    path("ws/test/<int:hume_id>", HumeConsumer.as_asgi()),
+    path("", HomeConsumer.as_asgi()),
 ]

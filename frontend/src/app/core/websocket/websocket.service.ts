@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 
-const WS_BASE_URL = window.location.origin + "/ws/";
+const WS_BASE_URL = window.location.origin;
 
 
 @Injectable({
@@ -15,7 +15,7 @@ export class WebSocketService {
   constructor() {
     console.log("Constructing WebSocketService");
 
-    this.ws = new WebSocket(WS_BASE_URL.replace("http://", "ws://") + "test/1");
+    this.ws = new WebSocket(WS_BASE_URL.replace("http://", "ws://"));
     this.ws.onopen = this.onSocketOpen.bind(this);
     this.ws.onclose = this.onSocketClose.bind(this);
     this.ws.onerror = this.onSocketError.bind(this);
