@@ -2,17 +2,10 @@ import { Injectable } from '@angular/core';
 
 import { WebSocketService } from '../../core/websocket/websocket.service';
 
-
 export class HomeEvent {
   home_id: number;
   hume_uuid: string;
   device_uuid: string;
-}
-
-interface SubscriptionKey {
-  homeId: number;
-  humeUUID: string;
-  deviceUUID: string;
 }
 
 @Injectable({
@@ -21,7 +14,7 @@ interface SubscriptionKey {
 export class EventService {
 
   private subscriptionMap: {
-    (subscriptionKey: keyof SubscriptionKey): Function[]
+    (subscriptionKey: (number | string)): Function[]
   } | {} = {};
 
   constructor(private webSocketService: WebSocketService) {
@@ -49,33 +42,20 @@ export class EventService {
     }
   }
 
-  subscribeToHomeEvents(homeId: number, callback: Function) {
-    console.log("Subscribing to home events: " + String(homeId));
-    if (!(homeId in this.subscriptionMap)) {
-      this.subscriptionMap[homeId] = [];
+  subscribe(subscriptionKey: number | string, callback: Function) {
+    console.log("Subscribing to key: " + String(subscriptionKey));
+    if (!(subscriptionKey in this.subscriptionMap)) {
+      this.subscriptionMap[subscriptionKey] = [];
     }
 
-    this.subscriptionMap[homeId].push(callback);
+    this.subscriptionMap[subscriptionKey].push(callback);
     console.log(this.subscriptionMap)
   }
 
-  subscribeToHumeEvents(humeUUID: string, callback: Function) {
-    console.log("Subscribing to hume events: " + humeUUID);
-    if (!(humeUUID in this.subscriptionMap)) {
-      this.subscriptionMap[humeUUID] = [];
-    }
-
-    this.subscriptionMap[humeUUID].push(callback);
-    console.log(this.subscriptionMap)
-  }
-
-  subscribeToDeviceEvents(deviceUUID: string, callback: Function) {
-    console.log("Subscribing to device events: " + deviceUUID);
-    if (!(deviceUUID in this.subscriptionMap)) {
-      this.subscriptionMap[deviceUUID] = [];
-    }
-
-    this.subscriptionMap[deviceUUID].push(callback);
+  unsubscribe(subscriptionKey: number | string) {
+    console.log(this.subscriptionMap);
+    delete this.subscriptionMap[subscriptionKey];
+    console.log(this.subscriptionMap);
   }
 
   monitorHome(homeId: number) {

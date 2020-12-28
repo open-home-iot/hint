@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { EventService, HomeEvent } from '../../event.service';
 import { HomeService, Home } from '../../../home/home.service';
@@ -11,9 +11,10 @@ import { WebSocketService } from '../../../../core/websocket/websocket.service';
   styleUrls: ['./event-overview.component.scss'],
   providers: [EventService]
 })
-export class EventOverviewComponent implements OnInit {
+export class EventOverviewComponent implements OnInit, OnDestroy {
 
   events: HomeEvent[] = [];
+  subscriptionKeys: (number | string)[] = []
 
   constructor(private eventService: EventService,
               private homeService: HomeService,
@@ -22,13 +23,23 @@ export class EventOverviewComponent implements OnInit {
 
   ngOnInit() { }
 
+  ngOnDestroy() {
+    console.log("OnDestroy");
+    console.log(this.subscriptionKeys)
+    for (let key of this.subscriptionKeys) {
+      this.eventService.unsubscribe(key);
+    }
+  }
+
   subscribe() {
     let homes = this.homeService.homes;
     for (let home of homes) {
-      this.eventService.subscribeToHomeEvents(home.id, this.onEvent.bind(this));
+      this.eventService.subscribe(home.id, this.onEvent.bind(this));
+      this.subscriptionKeys.push(home.id);
       let humes = this.humeService.getHomeHumes(home.id);
       for (let hume of humes) {
-        this.eventService.subscribeToHumeEvents(hume.uuid, this.onEvent.bind(this));
+        this.eventService.subscribe(hume.uuid, this.onEvent.bind(this));
+        this.subscriptionKeys.push(hume.uuid);
       }
     }
   }
