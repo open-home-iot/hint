@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { HttpService } from '../../core/http/http.service';
 
+import { Device } from '../device/device.service';
+
 
 const HUME_URL = window.location.origin + "/api/humes/";
 
@@ -21,6 +23,15 @@ export class HumeService {
 
   constructor(private httpService: HttpService) {
     console.log("Constructing HumeService");
+  }
+
+  getHomeHumes(homeId: number) {
+    if (homeId in this.humes) {
+      return this.humes[homeId];
+    } else {
+      this.humes[homeId] = []
+      return this.humes[homeId];
+    }
   }
 
   findHume(uuid: string) {
@@ -46,33 +57,30 @@ export class HumeService {
     }
   }
 
-  private setHumes(humes: Hume[], homeId: number) {
-    this.humes[homeId] = humes;
-  }
-
   private homeHumesUrl(homeId: number): string {
     return HOME_URL + String(homeId) + "/humes";
   }
 
   initHomeHumes(homeId: number): Hume[] {
+    console.log("Getting humes for home: " + String(homeId))
     if (homeId in this.humes) {
+      console.log("Home id already has an entry in Home->Humes map")
       return this.humes[homeId];
     } else {
-      this.setHumes([], homeId);
+      this.humes[homeId] = [];
 
-      this.httpService.get(this.homeHumesUrl(homeId))
-        .subscribe(
-          (humes: Hume[]) => {
-            console.log("Get HOME HUMEs succeeded:");
-            console.log(humes);
-            for (let hume of humes) {
-              this.pushHume(hume, homeId);
-            }
-          },
-          error => {
-            console.log("Get HOME HUMEs failed.");
+      let obs = this.httpService.get(this.homeHumesUrl(homeId));
+      obs.subscribe(
+        (humes: Hume[]) => {
+          console.log(humes);
+          for (let hume of humes) {
+            this.pushHume(hume, homeId);
           }
-        );
+        },
+        error => {
+          console.log("Get HOME HUMEs failed.");
+        }
+      );
 
       return this.humes[homeId];
     }
@@ -97,5 +105,13 @@ export class HumeService {
 
   humePaired(homeId: number, hume: Hume) {
     this.humes[homeId].push(hume);
+  }
+
+  private discoverDevicesUrl(humeUUID: string) {
+    return HUME_URL + humeUUID + "/devices/discover";
+  }
+
+  discoverDevices(humeUUID: string) {
+    return this.httpService.get(this.discoverDevicesUrl(humeUUID));
   }
 }

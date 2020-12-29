@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 
-const WS_BASE_URL = window.location.origin + "/ws/";
+const WS_BASE_URL = window.location.origin;
 
 
 @Injectable({
@@ -11,43 +11,49 @@ export class WebSocketService {
 
   private ws: WebSocket;
   private callback: any;
+  private messageBuffer: {"home_id": number}[] = [];
 
   constructor() {
     console.log("Constructing WebSocketService");
 
-    this.ws = new WebSocket(WS_BASE_URL.replace("http://", "ws://") + "test/1");
+    this.ws = new WebSocket(WS_BASE_URL.replace("http://", "ws://"));
     this.ws.onopen = this.onSocketOpen.bind(this);
     this.ws.onclose = this.onSocketClose.bind(this);
     this.ws.onerror = this.onSocketError.bind(this);
     this.ws.onmessage = this.onSocketMessage.bind(this);
   }
 
-  private onSocketOpen(event: any) {
-    console.log("Socket opened!");
-    console.log(new Date().toString());
-  }
-
-  private onSocketClose(event: any) {
-    console.log("Socket closed!");
-    console.log(new Date().toString());
-  }
-
-  private onSocketError(event: any) {
-    console.log("Socket error!");
-  }
-
-  private onSocketMessage(event: any) {
-    console.log("Socket message received:");
+  private onSocketOpen(event: Event) {
     console.log(event);
-    this.callback(event);
+    while (this.messageBuffer.length > 0) {
+      console.log("Sending buffered WS message...")
+      this.send(this.messageBuffer.pop());
+    }
   }
 
-  subscribe(callback) {
-    console.log("Subscribe was called");
+  private onSocketClose(event: CloseEvent) {
+    console.log(event);
+  }
+
+  private onSocketError(event: Event) {
+    console.log(event);
+  }
+
+  private onSocketMessage(event: MessageEvent) {
+    console.log(event);
+    this.callback(event.data);
+  }
+
+  registerCallback(callback) {
+    console.log("registerCallback was called");
     this.callback = callback;
   }
 
   send(message) {
-    this.ws.send(message);
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(message);
+    } else {
+      this.messageBuffer.push(message);
+    }
   }
 }

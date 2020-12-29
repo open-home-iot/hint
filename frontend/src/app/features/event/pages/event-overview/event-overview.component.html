@@ -1,10 +1,10 @@
 <p>Event overview works!</p>
 
-<input [(ngModel)]="msg">
-<button type="button" (click)="send()">Send</button>
+<button type="button" (click)="subscribe()">Subscribe</button>
+<button type="button" (click)="test()">Test</button>
 
-<div id="messages">
-  <div *ngFor="let message of messages" class="message">
-    {{ message }}
+<div id="events">
+  <div *ngFor="let event of events" class="event">
+    {{ event }}
   </div>
 </div>

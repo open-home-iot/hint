@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 
+export class Device {
+  uuid: string
+}
+
 @Injectable()
 export class DeviceService {
   id: number = 1;

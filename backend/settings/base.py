@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
+    'backend.broker.apps.BrokerConfig',
     'backend.user.apps.UserConfig',
     'backend.home.apps.HomeConfig',
     'backend.hume.apps.HumeConfig',
@@ -73,10 +74,16 @@ TEMPLATES = [
 # Channels settings
 
 # With channels enabled, we are now running an ASGI application.
-ASGI_APPLICATION = 'backend.routing.application'
-# WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
-CHANNEL_LAYERS = {}
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 
 # Database

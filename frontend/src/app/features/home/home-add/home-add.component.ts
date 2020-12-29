@@ -26,7 +26,7 @@ export class HomeAddComponent implements OnInit {
   createHome() {
     console.log("HOME name:");
     console.log(this.name.value);
-    this.homeService.addHome(this.name.value);
+    this.homeService.createHome(this.name.value);
   }
 
 }

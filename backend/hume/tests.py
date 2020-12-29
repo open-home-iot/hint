@@ -356,3 +356,17 @@ class HomeHumesApi(TestCase):
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
         self.assertEqual(ret.data[0]["uuid"],
                          "14a19f7e-0fd9-11eb-97a0-60f81dbb505c")
+
+    def test_api_get_home_humes_correct_hume_associations(self):
+        """
+        Verify that if a user has more than one home, that humes belonging to
+        a home cannot be gotten by querying another home.
+        """
+        home_2 = Home.objects.create(name="Home2")
+        home_2.users.add(User.objects.get(email="suite@t.se"))
+        home_2.save()
+
+        ret = self.client.get(HomeHumesApi.HOME_BASE_URL +
+                              str(home_2.id) + "/humes")
+
+        self.assertEqual([], ret.data)
