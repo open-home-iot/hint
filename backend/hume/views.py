@@ -146,15 +146,16 @@ class HumeDiscoverDevices(views.APIView):
         """
         Request that HINT tell HUME to discover devices.
         """
-        if Hume.objects.filter(
-            uuid=hume_uuid,
-            home__users__id=request.user.id
-        ).exists():
-            Producer.command(
-                hume_uuid,
-                "HUME, please discover some devices".encode('utf-8')
+        try:
+            Hume.objects.get(
+                uuid=hume_uuid,
+                home__users__id=request.user.id
             )
+        except Hume.DoesNotExist:
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
-            return Response([], status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        Producer.command(
+            hume_uuid,
+            "HUME, please discover some devices".encode('utf-8')
+        )
+        return Response([], status=status.HTTP_200_OK)

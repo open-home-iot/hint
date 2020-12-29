@@ -4,6 +4,7 @@ import { EventService, HomeEvent } from '../../event.service';
 import { HomeService, Home } from '../../../home/home.service';
 import { HumeService, Hume } from '../../../hume/hume.service';
 import { WebSocketService } from '../../../../core/websocket/websocket.service';
+import { HttpService } from '../../../../core/http/http.service';
 
 @Component({
   selector: 'app-event-overview',
@@ -19,7 +20,8 @@ export class EventOverviewComponent implements OnInit, OnDestroy {
   constructor(private eventService: EventService,
               private homeService: HomeService,
               private humeService: HumeService,
-              private webSocketService: WebSocketService) { }
+              private webSocketService: WebSocketService,
+              private httpService: HttpService) { }
 
   ngOnInit() { }
 
@@ -54,6 +56,19 @@ export class EventOverviewComponent implements OnInit, OnDestroy {
                                                    "hume_uuid": hume.uuid}));
       }
     }
+  }
+
+  discoverDevicesTest() {
+    this.httpService.get(
+      window.location.origin + "/api/humes/98ab77d6-2cdb-11eb-b60d-60f81dbb505c/devices/discover"
+    ).subscribe(
+      success => {
+        console.log(success);
+      },
+      error => {
+        console.log(error)
+      }
+    );
   }
 
   onEvent(event: HomeEvent) {
