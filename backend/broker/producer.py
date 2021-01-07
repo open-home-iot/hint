@@ -1,4 +1,9 @@
+import json
+
 from rabbitmq_client.client import RMQClient
+
+
+DISCOVER_DEVICES = 0
 
 
 class Producer:
@@ -20,3 +25,19 @@ def init(client):
     :type client: RMQClient
     """
     Producer.client = client
+
+
+def discover_devices(hume_uuid, message_content):
+    """
+    :param message_content: discover devices message content
+    :type message_content: str
+    """
+    Producer.command(
+        hume_uuid,
+        json.dumps(
+            {
+                "type": DISCOVER_DEVICES,
+                "content": message_content
+            }
+        ).encode('utf-8')
+    )

@@ -9,19 +9,19 @@ This module defines handling for incoming hub (HUME) events.
 """
 
 
-def incoming_command_queue_message(message):
+def incoming_command(command):
     """
-    :param message: message from the HINT master command queue
-    :type message: bytes
+    :param command: message from the HINT master command queue
+    :type command: bytes
     """
-    print(message)
-    decoded_message = json.loads(message.decode('utf-8'))
+    print(command)
+    decoded_command = json.loads(command.decode('utf-8'))
 
     try:
         # Needed to be put here since this function is imported at
         # AppConfig.ready, and at that point apps are not loaded yet.
         from backend.home.models import Home
-        home = Home.objects.get(hume__uuid=decoded_message["uuid"])
+        home = Home.objects.get(hume__uuid=decoded_command["uuid"])
     except Home.DoesNotExist:
         print("Tried to send home event for a hume that does not have a home")
         return
@@ -32,6 +32,6 @@ def incoming_command_queue_message(message):
         {
             "type": "home.event",  # Will lead to home_event being called
             "home_id": home.id,
-            "hume_uuid": decoded_message["uuid"],
+            "hume_uuid": decoded_command["uuid"],
         }
     )

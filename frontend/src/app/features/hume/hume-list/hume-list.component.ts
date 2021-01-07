@@ -23,14 +23,6 @@ export class HumeListComponent implements OnInit {
 
   discoverDevices(humeUUID: string) {
     console.log("HUME to discover devices for: " + humeUUID);
-    this.humeService.discoverDevices(humeUUID)
-      .subscribe(
-        (devices: Device[]) => {
-          console.log(devices);
-        },
-        error => {
-          console.log(error);
-        }
-      );
+    this.humeService.discoverDevices(humeUUID).subscribe();
   }
 }

@@ -1,4 +1,5 @@
 import uuid
+import json
 
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -13,7 +14,7 @@ from backend.hume.serializers import HumeSerializer
 from backend.home.models import Home
 from backend.user.models import User
 
-from backend.broker.producer import Producer
+from backend.broker import producer
 
 
 class Humes(views.APIView):
@@ -154,8 +155,6 @@ class HumeDiscoverDevices(views.APIView):
         except Hume.DoesNotExist:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        Producer.command(
-            hume_uuid,
-            "HUME, please discover some devices".encode('utf-8')
-        )
+        producer.discover_devices(hume_uuid, "")
+
         return Response([], status=status.HTTP_200_OK)
