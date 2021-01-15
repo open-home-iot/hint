@@ -1,11 +1,11 @@
-#!/bin/sh
+#! /bin/zsh
 
 # First Terminal for running the django dev server
 osascript -e 'tell app "Terminal"
   do script "
-    source /Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenvwrapper.sh &&
+    source ~/.pyenv/versions/3.9.0/bin/virtualenvwrapper.sh &&
       workon hint &&
-      cd PycharmProjects/hint &&
+      cd ~/repos/hint &&
       python manage.py runserver
   "
 end tell'
@@ -14,7 +14,10 @@ end tell'
 # re-compilation
 osascript -e 'tell app "Terminal"
   do script "
-    cd PycharmProjects/hint/frontend &&
-      ng build --watch=true --outputPath=/Users/MTH/PycharmProjects/hint/backend/static/ang
+    cd ~/repos/hint/frontend &&
+      ng build --watch=true --outputPath=/Users/mansthornvik/repos/hint/backend/static/ang
   "
 end tell'
+
+docker run -d -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+docker run -d -it --rm --name redis -p 6379:6379 redis
