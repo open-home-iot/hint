@@ -6,6 +6,7 @@ export class HomeEvent {
   home_id: number;
   hume_uuid: string;
   device_uuid: string;
+  content: any;
 }
 
 @Injectable({
@@ -23,6 +24,7 @@ export class EventService {
 
   onEvent(event: string) {
     let decoded_event: HomeEvent = JSON.parse(event);
+    console.log("onEvent ")
     console.log(decoded_event);
 
     if (decoded_event.home_id in this.subscriptionMap) {
@@ -47,7 +49,7 @@ export class EventService {
     if (!(subscriptionKey in this.subscriptionMap)) {
       this.subscriptionMap[subscriptionKey] = [];
     }
-
+    console.log("in event service " + this.subscriptionMap[subscriptionKey]);
     this.subscriptionMap[subscriptionKey].push(callback);
     console.log(this.subscriptionMap)
   }
