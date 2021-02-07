@@ -33,5 +33,6 @@ def incoming_command(command):
             "type": "home.event",  # Will lead to home_event being called
             "home_id": home.id,
             "hume_uuid": decoded_command["uuid"],
+            "content": decoded_command["content"]
         }
     )
