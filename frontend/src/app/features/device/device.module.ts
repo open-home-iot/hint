@@ -25,7 +25,7 @@ import { DeviceRoutingModule } from './device-routing.module';
     CommonModule
   ],
   exports: [
-
+    DeviceListComponent
   ],
   providers: [DeviceService]
 })
