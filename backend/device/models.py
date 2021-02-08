@@ -44,7 +44,7 @@ class DataType(_Choices):
 def create_device(hume, device_spec):
     """
     Creates all objects necessary from the device specification: Device,
-    DeviceAction (if present), DeviceDataSource (if present).
+    DeviceDataSource (if present).
 
     :param hume: HUME the device belongs to, this shall always be present when
                  creating a new device, as it will be created as a result of
@@ -66,34 +66,13 @@ def create_device(hume, device_spec):
 
     device = Device.objects.create(**device_dict)
 
-    data_sources = {}
     if device_spec.get("data_sources") is not None:
         for data_source_spec in device_spec["data_sources"]:
-            data_source = DeviceDataSource.objects.create(
+            DeviceDataSource.objects.create(
                 device=device,
-                data_source_id=data_source_spec["id"],
                 name=data_source_spec["name"],
                 data_type=data_source_spec["data_type"]
             )
-            data_sources[data_source.data_source_id] = data_source
-
-    for action in device_spec["actions"]:
-        # MUST fields
-        device_action = {
-            "device": device,
-            "action_id": action["id"],
-            "name": action["name"],
-            "type": action["type"],
-        }
-
-        # OPTIONAL fields
-        if action.get("description") is not None:
-            device_action["description"] = action["description"]
-        if action.get("data_source") is not None:
-            device_action["data_source"] = \
-                data_sources[action["data_source"]]
-
-        DeviceAction.objects.create(**device_action)
 
 
 class Device(models.Model):
@@ -161,70 +140,23 @@ class Device(models.Model):
 
 class DeviceDataSource(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    data_source_id = models.IntegerField()
     name = models.CharField(max_length=50)
     data_type = models.IntegerField(choices=DataType.CHOICES)
-
-    class Meta:
-        unique_together = [['device', 'data_source_id']]
 
     def __str__(self):
         """str representation of a DeviceDataSource instance"""
         return f"<{self.__class__.__name__} instance {self.id} (related " \
-               f"device: {self.device.uuid}, data_source_id: " \
-               f"{self.data_source_id}, name: {self.name}, data_type: " \
+               f"device: {self.device.uuid}, name: {self.name}, data_type: " \
                f"{DataType.get_verbose_name(self.data_type)})>"
 
 
-class DeviceAction(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    action_id = models.IntegerField()
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=258, null=True, blank=True)
-
-    class Type(_Choices):
-        VANILLA = 0
-        READ = 1
-        STATEFUL = 2
-        PARAMETERIZED = 3
-
-        CHOICES = [
-            (VANILLA, "Vanilla"),
-            (READ, "Read"),
-            (STATEFUL, "Stateful"),
-            (PARAMETERIZED, "Parameterized"),
-        ]
-
-    type = models.IntegerField(choices=Type.CHOICES)
-
-    # For READ actions only
-    data_source = models.ForeignKey(DeviceDataSource,
-                                    on_delete=models.CASCADE,
-                                    null=True,
-                                    blank=True)
-
-    class Meta:
-        # Ensure a device has uniquely identifiable actions
-        unique_together = [['device', 'action_id']]
-
-    def __str__(self):
-        """str representation of a DeviceAction instance"""
-        return f"<{self.__class__.__name__} instance {self.id} (related " \
-               f"device: {self.device.uuid}, action_id: {self.action_id}, " \
-               f"name: {self.name}, type: " \
-               f"{DeviceAction.Type.get_verbose_name(self.type)}, " \
-               f"data_source: {self.data_source.id})>"
-
-
 class DeviceReading(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
     data_source = models.ForeignKey(DeviceDataSource, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
     data = models.CharField(max_length=25)
 
     def __str__(self):
         """str representation of a DeviceReading instance"""
-        return f"<{self.__class__.__name__} instance {self.id} (related " \
-               f"device: {self.device.uuid}, data_source: " \
+        return f"<{self.__class__.__name__} instance {self.id} (data_source: " \
                f"{self.data_source.id}, timestamp: {self.timestamp}, data: " \
                f"{self.data})>"
