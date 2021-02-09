@@ -22,8 +22,7 @@ class HumePairApi(TestCase):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data, what's created here needs to be torn
-        down in tearDown().
+        Create shared test case data.
         """
         self.client = APIClient()
 
