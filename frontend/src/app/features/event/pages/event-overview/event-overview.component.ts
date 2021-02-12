@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { EventService, HomeEvent } from '../../event.service';
+import { EventService, HumeEvent } from '../../event.service';
 import { HomeService, Home } from '../../../home/home.service';
 import { HumeService, Hume } from '../../../hume/hume.service';
 import { WebSocketService } from '../../../../core/websocket/websocket.service';
 import { HttpService } from '../../../../core/http/http.service';
 
-@Component({
+@Component({ 
   selector: 'app-event-overview',
   templateUrl: './event-overview.component.html',
   styleUrls: ['./event-overview.component.scss'],
@@ -14,7 +14,7 @@ import { HttpService } from '../../../../core/http/http.service';
 })
 export class EventOverviewComponent implements OnInit, OnDestroy {
 
-  events: HomeEvent[] = [];
+  events: HumeEvent[] = [];
   subscriptionKeys: (number | string)[] = []
 
   constructor(private eventService: EventService,
@@ -29,18 +29,19 @@ export class EventOverviewComponent implements OnInit, OnDestroy {
     console.log("OnDestroy");
     console.log(this.subscriptionKeys)
     for (let key of this.subscriptionKeys) {
-      this.eventService.unsubscribe(key);
+      //this.eventService.unsubscribe(key);
+      //TODO
     }
   }
 
   subscribe() {
     let homes = this.homeService.homes;
     for (let home of homes) {
-      this.eventService.subscribe(home.id, this.onEvent.bind(this));
+      //this.eventService.subscribe(home.id, this.onEvent.bind(this)); TODO
       this.subscriptionKeys.push(home.id);
       let humes = this.humeService.getHomeHumes(home.id);
       for (let hume of humes) {
-        this.eventService.subscribe(hume.uuid, this.onEvent.bind(this));
+        //this.eventService.subscribe(hume.uuid, this.onEvent.bind(this)); //TODO
         this.subscriptionKeys.push(hume.uuid);
       }
     }
@@ -71,7 +72,7 @@ export class EventOverviewComponent implements OnInit, OnDestroy {
     );
   }
 
-  onEvent(event: HomeEvent) {
+  onEvent(event: HumeEvent) {
     console.log(event);
     this.events.push(event);
   }

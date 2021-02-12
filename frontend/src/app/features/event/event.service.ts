@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 
 import { WebSocketService } from '../../core/websocket/websocket.service';
+import { Hume } from '../hume/hume.service';
 
-export class HomeEvent {
+export class HumeEvent {
   home_id: number;
   hume_uuid: string;
   device_uuid: string;
+  event_type: string;
   content: any;
 }
 
@@ -15,47 +17,54 @@ export class HomeEvent {
 export class EventService {
 
   private subscriptionMap: {
-    (subscriptionKey: (number | string)): Function[]
+    (subscriptionKey: string): {
+      subscription_id: string
+      callback: Function,
+      event_type: string
+    }[] 
   } | {} = {};
+
+  /*
+{ "hubIDX2": [function1, function2, function3] }
+
+  { "hubIDX2": [
+    {"consumer": hume_list, "eventType": "discover_devices", "callback": function1},
+    {"eventType": "discover_devices" ,"callback": function2}
+    ] 
+  }
+  */
 
   constructor(private webSocketService: WebSocketService) {
     this.webSocketService.registerCallback(this.onEvent.bind(this));
   }
 
   onEvent(event: string) {
-    let decoded_event: HomeEvent = JSON.parse(event);
-    console.log("onEvent ")
+    let decoded_event: HumeEvent = JSON.parse(event);
     console.log(decoded_event);
-
-    if (decoded_event.home_id in this.subscriptionMap) {
-      for (let callback of this.subscriptionMap[decoded_event.home_id]) {
-        callback(decoded_event)
-      }
-    }
+    
     if (decoded_event.hume_uuid in this.subscriptionMap) {
-      for (let callback of this.subscriptionMap[decoded_event.hume_uuid]) {
-        callback(decoded_event)
-      }
-    }
-    if (decoded_event.device_uuid in this.subscriptionMap) {
-      for (let callback of this.subscriptionMap[decoded_event.device_uuid]) {
-        callback(decoded_event)
+      for (let callbackObject of this.subscriptionMap[decoded_event.hume_uuid]) {
+         if (decoded_event.event_type == callbackObject.event_type){
+            callbackObject(decoded_event);
+         }
       }
     }
   }
 
-  subscribe(subscriptionKey: number | string, callback: Function) {
+  subscribe(subscriptionKey: string, subscriptionId: string, eventType: string, callback: Function) {
     console.log("Subscribing to key: " + String(subscriptionKey));
     if (!(subscriptionKey in this.subscriptionMap)) {
       this.subscriptionMap[subscriptionKey] = [];
     }
-    console.log("in event service " + this.subscriptionMap[subscriptionKey]);
     this.subscriptionMap[subscriptionKey].push(callback);
+    console.log("this is the subscriptionmap")
     console.log(this.subscriptionMap)
+    console.log("end of subscriptionmap")
   }
 
-  unsubscribe(subscriptionKey: number | string) {
+  unsubscribe(subscriptionKey: string, subscriptionId: string, eventType: string, callback: Function) {
     console.log(this.subscriptionMap);
+
     delete this.subscriptionMap[subscriptionKey];
     console.log(this.subscriptionMap);
   }

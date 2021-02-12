@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 export class Device {
   uuid: string
+  humeUuid: string
 }
 
 @Injectable()

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import {Device} from '../device.service'
 
 @Component({
   selector: 'app-device-list',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./device-list.component.scss']
 })
 export class DeviceListComponent implements OnInit {
+
+  @Input() deviceList: Device[]; 
 
   constructor() { }
 
