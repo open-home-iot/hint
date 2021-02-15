@@ -10,6 +10,7 @@ from backend.home.models import Home
 
 
 class HomeModel(TestCase):
+
     def setUp(self):
         """
         CALLED PER TEST CASE!

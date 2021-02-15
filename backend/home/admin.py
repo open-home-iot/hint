@@ -1,18 +1,18 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from backend.hume.models import Hume, ValidHume
+from backend.home.models import Home, Room
 
 
-class ValidHumeAdmin(ModelAdmin):
-    model = ValidHume
-    list_display = ('uuid', )
+class HomeAdmin(ModelAdmin):
+    model = Home
+    list_display = ('id', 'name')
 
 
-class HumeAdmin(ModelAdmin):
-    model = Hume
-    list_display = ('uuid', )
+class RoomAdmin(ModelAdmin):
+    model = Room
+    list_display = ('id', 'home', 'name')
 
 
-admin.site.register(ValidHume, ValidHumeAdmin)
-admin.site.register(Hume, HumeAdmin)
+admin.site.register(Home, HomeAdmin)
+admin.site.register(Room, RoomAdmin)

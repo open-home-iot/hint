@@ -3,6 +3,7 @@ from abc import ABC
 from django.db import models
 
 from backend.hume.models import Hume
+from backend.home.models import Room
 
 
 class _Choices(ABC):
@@ -78,6 +79,10 @@ def create_device(hume, device_spec):
 class Device(models.Model):
     hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
     is_attached = models.BooleanField(default=False)
+
+    # When Rooms are deleted, do not delete devices, they belong to the general
+    # Home now.
+    room = models.ForeignKey(Room, null=True, on_delete=models.SET_NULL)
 
     # Device specification
     uuid = models.UUIDField(primary_key=True)
