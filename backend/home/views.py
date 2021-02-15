@@ -2,7 +2,8 @@ from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import HomeSerializer
+from backend.home.serializers import HomeSerializer, RoomSerializer
+from backend.home.models import Room
 
 
 class Homes(views.APIView):
@@ -26,3 +27,19 @@ class Homes(views.APIView):
             home.users.add(request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Rooms(views.APIView):
+
+    def get(self, request, home_id, format=None):
+        """
+        Get all rooms related to a home_id.
+
+        :type home_id: integer
+        """
+        # TODO restrict access to homes that do not belong to the current user
+        rooms = Room.objects.filter(home=home_id,
+                                    home__users__id=request.user.id)
+        serializer = RoomSerializer(rooms, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
