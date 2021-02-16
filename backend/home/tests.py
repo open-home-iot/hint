@@ -1,3 +1,4 @@
+# pylint: disable=missing-class-docstring
 from django.test import TestCase
 
 from rest_framework.test import APIClient
@@ -179,7 +180,7 @@ class HomeGetApi(TestCase):
         ret = self.client.get(HomeGetApi.HOME_GET_ALL_URL)
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
-        [home1, home2] = ret.data
+        [_home, _home2] = ret.data
 
     def test_api_get_all_homes_only_user_specific_homes(self):
         """

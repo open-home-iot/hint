@@ -1,3 +1,4 @@
+# pylint: disable=missing-class-docstring
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError

@@ -25,6 +25,11 @@ class _Choices(ABC):
 
 
 class DataType(_Choices):
+    """
+    Specifies data types a device can report it supports for a data source/
+    action input.
+    """
+
     STR = 0
     INT = 1
     FLOAT = 2
@@ -77,6 +82,8 @@ def create_device(hume, device_spec):
 
 
 class Device(models.Model):
+    # pylint: disable=missing-class-docstring
+
     hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
     is_attached = models.BooleanField(default=False)
 
@@ -90,6 +97,12 @@ class Device(models.Model):
     description = models.CharField(max_length=258, null=True, blank=True)
 
     class Category(_Choices):
+        """
+        Specifies the different device categories, it is an inner class to
+        enhance code readability through the referencing format:
+        Device.Category.SENSOR. It reads really well.
+        """
+
         SENSOR = 0
         ACTUATOR = 1
         COLLECTION = 2
@@ -103,6 +116,12 @@ class Device(models.Model):
     category = models.IntegerField(choices=Category.CHOICES)
 
     class Type(_Choices):
+        """
+        Device type, either custom or known. Custom devices have to report
+        a custom_device_name. This is an inner class for the same reason as
+        the device category.
+        """
+
         THERMOMETER = 0
         CUSTOM = 666
 
@@ -144,6 +163,8 @@ class Device(models.Model):
 
 
 class DeviceDataSource(models.Model):
+    # pylint: disable=missing-class-docstring
+
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     data_type = models.IntegerField(choices=DataType.CHOICES)
@@ -156,6 +177,8 @@ class DeviceDataSource(models.Model):
 
 
 class DeviceReading(models.Model):
+    # pylint: disable=missing-class-docstring
+
     data_source = models.ForeignKey(DeviceDataSource, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
     data = models.CharField(max_length=25)

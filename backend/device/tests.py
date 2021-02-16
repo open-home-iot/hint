@@ -1,3 +1,4 @@
+# pylint: disable=missing-class-docstring
 from django.test import TestCase
 
 from backend.device.models import (
