@@ -23,4 +23,4 @@ class Hume(models.Model):
 
 
 class ValidHume(models.Model):
-    uuid = models.UUIDField(unique=True)
+    uuid = models.UUIDField(primary_key=True)
