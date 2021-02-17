@@ -31,8 +31,6 @@ class HomeModel(TestCase):
 
         [_user] = home.users.all()
 
-        self.fail("I'm a failing test case, hurr durr.")
-
 
 class HomeCreateApi(TestCase):
     """Verifies API endpoints related to creating Homes"""
