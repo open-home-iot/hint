@@ -31,6 +31,8 @@ class HomeModel(TestCase):
 
         [_user] = home.users.all()
 
+        self.fail("I'm a failing test case, hurr durr.")
+
 
 class HomeCreateApi(TestCase):
     """Verifies API endpoints related to creating Homes"""
@@ -131,33 +133,14 @@ class HomeGetApi(TestCase):
         User.objects.create_user(email="suite@t.se", password="pw")
         User.objects.create_user(email="some_dude@t.se", password="pw")
 
-    @classmethod
-    def tearDownClass(cls):
-        """
-        Remove global user.
-        """
-        super().tearDownClass()
-        for user in User.objects.all():
-            user.delete()
-
     def setUp(self):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data, what's created here needs to be torn
-        down in tearDown().
+        Create shared test case data.
         """
         self.client = APIClient()
         self.client.login(username="suite@t.se", password="pw")
-
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        for home in Home.objects.all():
-            home.delete()
 
     def test_api_get_all_homes(self):
         """
