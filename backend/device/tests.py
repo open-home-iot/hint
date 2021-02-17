@@ -1,4 +1,3 @@
-# pylint: disable=missing-class-docstring
 from django.test import TestCase
 
 from backend.device.models import (
@@ -16,52 +15,53 @@ DEVICE_UUID_2 = "e2bf93b6-9b5d-4944-a863-611b6b6600e1"
 DEVICE_UUID_3 = "e2bf93b6-9b5d-4944-a863-611b6b6600e2"
 
 
-def verify_device_fields(tc, device, device_spec):
+def verify_device_fields(test_case, device, device_spec):
     """
     Compares the input device instance and device spec and checks that the
     correct objects have been created.
 
-    :param tc: test case instance
+    :param test_case: test case instance
     :type device: Device
     :type device_spec: dict
     """
-    tc.assertEqual(str(device.uuid), device_spec["uuid"])
-    tc.assertEqual(device.name, device_spec["name"])
-    tc.assertEqual(
+    test_case.assertEqual(str(device.uuid), device_spec["uuid"])
+    test_case.assertEqual(device.name, device_spec["name"])
+    test_case.assertEqual(
         device.description,
         device_spec["description"]
     )
-    tc.assertEqual(device.category, device_spec["category"])
-    tc.assertEqual(device.type, device_spec["type"])
+    test_case.assertEqual(device.category, device_spec["category"])
+    test_case.assertEqual(device.type, device_spec["type"])
 
 
-def verify_device_data_sources(tc, data_sources, device_spec):
+def verify_device_data_sources(test_case, data_sources, device_spec):
     """
     Compares the input data source instances to the device spec.
 
-    :param tc: test case instance
+    :param test_case: test case instance
     :type data_sources:
     :type device_spec:
     """
     spec_sources = device_spec["data_sources"]
-    tc.assertEqual(len(data_sources), len(spec_sources))
+    test_case.assertEqual(len(data_sources), len(spec_sources))
 
     for spec_source in spec_sources:
         match_found = False
 
         for source_instance in data_sources:
             if source_instance.name == spec_source["name"]:
-                tc.assertTrue(
+                test_case.assertTrue(
                     source_instance.data_type == spec_source["data_type"]
                 )
                 match_found = True
                 break
 
         if not match_found:
-            tc.fail(f"No matching data source created for: {spec_source}")
+            test_case.fail(f"No matching data source created for: {spec_source}")
 
 
 class ModelTests(TestCase):
+    """Verifies behavior of Device models and instantiation helpers"""
 
     def setUp(self):
         """

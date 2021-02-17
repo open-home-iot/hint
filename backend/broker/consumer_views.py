@@ -1,12 +1,10 @@
+"""
+This module defines handling for incoming hub (HUME) events.
+"""
 import json
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-
-
-"""
-This module defines handling for incoming hub (HUME) events.
-"""
 
 
 def incoming_command(command):
@@ -18,6 +16,7 @@ def incoming_command(command):
     decoded_command = json.loads(command.decode('utf-8'))
 
     try:
+        # pylint: disable=import-outside-toplevel
         # Needed to be put here since this function is imported at
         # AppConfig.ready, and at that point apps are not loaded yet.
         from backend.home.models import Home

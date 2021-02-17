@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 from abc import ABC
 
 from django.db import models
@@ -7,6 +8,7 @@ from backend.home.models import Room
 
 
 class _Choices(ABC):
+    # pylint: disable=inconsistent-return-statements
 
     # Subclasses shall override
     CHOICES = []

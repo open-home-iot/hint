@@ -1,5 +1,4 @@
 # pylint: disable=missing-class-docstring
-import pika
 import logging
 import os
 import signal
@@ -7,6 +6,8 @@ import functools
 
 from logging.handlers import QueueHandler, QueueListener
 from multiprocessing import Queue
+
+import pika
 
 from django.apps import AppConfig
 from django.conf import settings
@@ -30,10 +31,10 @@ class BrokerConfig(AppConfig):
         # Development specific, due to Django code reload ...
         # DEBUG indicates development, RUN_MAIN indicates it's not the
         # reloader reaching this block.
-        RUN_MAIN = os.environ.get("RUN_MAIN")
+        run_main = os.environ.get("RUN_MAIN")
         print(f"settings.DEBUG: {settings.DEBUG}")
-        print(f"RUN_MAIN: {RUN_MAIN}")
-        if settings.DEBUG and not RUN_MAIN:
+        print(f"RUN_MAIN: {run_main}")
+        if settings.DEBUG and not run_main:
             return
 
         print(f"BrokerConfig.has_started: {BrokerConfig.has_started}")
@@ -41,15 +42,15 @@ class BrokerConfig(AppConfig):
             return
         BrokerConfig.has_started = True
 
-        RMQ_CLIENT_LOG_LEVEL = logging.INFO
+        rmq_client_log_level = logging.INFO
 
         # Set up queue handler for same process log events
         logger = logging.getLogger("rabbitmq_client")
-        logger.setLevel(RMQ_CLIENT_LOG_LEVEL)
+        logger.setLevel(rmq_client_log_level)
 
         log_queue = Queue()
         handler = QueueHandler(log_queue)
-        handler.setLevel(RMQ_CLIENT_LOG_LEVEL)
+        handler.setLevel(rmq_client_log_level)
         logger.addHandler(handler)
 
         # Create handler to actually print something
@@ -59,7 +60,7 @@ class BrokerConfig(AppConfig):
                                       style="{",
                                       datefmt="%d/%m/%Y %H:%M:%S")
         stream_handler.setFormatter(formatter)
-        stream_handler.setLevel(RMQ_CLIENT_LOG_LEVEL)
+        stream_handler.setLevel(rmq_client_log_level)
 
         # Start queue monitor
         listener = QueueListener(
@@ -86,20 +87,26 @@ class BrokerConfig(AppConfig):
                              incoming_command)
         producer.init(client)
 
-        def stop_func(signal,
-                      frame,
-                      client=None,
-                      queue_listener=None,
-                      log_queue=None):
-            """Stop client"""
-            client.stop()
-            queue_listener.stop()
-            log_queue.close()
+        def stop_func(_s,
+                      _f,
+                      rmq_client=None,
+                      client_log_queue=None,
+                      log_queue_listener=None):
+            """
+            :param _s: signal leading to stop
+            :param _f: frame when stop was called
+            :param rmq_client: RMQClient
+            :param client_log_queue: Log queue
+            :param log_queue_listener: Log queue listener
+            """
+            rmq_client.stop()
+            log_queue_listener.stop()
+            client_log_queue.close()
 
         stop_callback = functools.partial(stop_func,
-                                          client=client,
-                                          queue_listener=listener,
-                                          log_queue=log_queue)
+                                          rmq_client=client,
+                                          client_log_queue=log_queue,
+                                          log_queue_listener=listener)
 
         signal.signal(signal.SIGINT, stop_callback)
         signal.signal(signal.SIGTERM, stop_callback)

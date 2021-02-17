@@ -7,6 +7,7 @@ from backend.home.models import Room
 
 
 class Homes(views.APIView):
+    """Exposes Home fetching/creation."""
 
     def get(self, request, format=None):
         """
@@ -30,6 +31,7 @@ class Homes(views.APIView):
 
 
 class Rooms(views.APIView):
+    """Exposes Room fetching/creation"""
 
     def get(self, request, home_id, format=None):
         """

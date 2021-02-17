@@ -5,6 +5,8 @@ from channels.generic.websocket import WebsocketConsumer
 
 
 class HomeConsumer(WebsocketConsumer):
+    """Allows frontend users to subscribe to events related to a Home"""
+    # pylint: disable=arguments-differ
 
     def __init__(self, *args, **kwargs):
         """"""

@@ -4,7 +4,7 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # pylint: disable=missing-class-docstring
+    # pylint: disable=missing-class-docstring,too-few-public-methods
 
     class Meta:
         model = User

@@ -1,4 +1,3 @@
-# pylint: disable=missing-class-docstring
 from django.test import TestCase
 
 from rest_framework.test import APIClient
@@ -11,27 +10,16 @@ from backend.home.models import Home
 
 
 class HomeModel(TestCase):
+    """Verifies Home model behavior"""
 
     def setUp(self):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data, what's created here needs to be torn
-        down in tearDown().
+        Create shared test case data. DB instances are automatically deleted
+        when each test case ends and do not need to be removed.
         """
         self.user = User.objects.create_user("t@t.se", password="pw")
-
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        for user in User.objects.all():
-            user.delete()
-
-        for home in Home.objects.all():
-            home.delete()
 
     def test_create_home(self):
         """
@@ -41,8 +29,12 @@ class HomeModel(TestCase):
         home.users.add(self.user)
         home.save()
 
+        [_user] = home.users.all()
+
 
 class HomeCreateApi(TestCase):
+    """Verifies API endpoints related to creating Homes"""
+
     HOME_CREATE_URL = "/api/homes/"
 
     @classmethod
@@ -126,6 +118,8 @@ class HomeCreateApi(TestCase):
 
 
 class HomeGetApi(TestCase):
+    """Verifies the Home-getting API endpoint"""
+
     HOME_GET_ALL_URL = "/api/homes/"
 
     @classmethod
