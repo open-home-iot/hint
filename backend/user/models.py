@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, \
 
 
 class CustomUserManager(BaseUserManager):
-    # pylint: disable=missing-class-docstring
+
 
     def create_user(self,
                     email,
@@ -42,7 +42,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    # pylint: disable=missing-class-docstring
+
 
     email = models.EmailField(unique=True)
 

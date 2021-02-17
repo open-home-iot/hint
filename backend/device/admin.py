@@ -1,4 +1,3 @@
-# pylint: disable=missing-class-docstring
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 

@@ -8,8 +8,8 @@ from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import UserSerializer
-from .models import User
+from backend.user.serializers import UserSerializer
+from backend.user.models import User
 
 
 class UserSignup(views.APIView):

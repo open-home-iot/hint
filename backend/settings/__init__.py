@@ -1,1 +1,1 @@
-from .local import *  # noqa
+from backend.settings.local import *  # noqa

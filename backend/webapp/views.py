@@ -2,7 +2,7 @@ from django.views.generic.base import TemplateView
 
 
 class AppView(TemplateView):
-    # pylint: disable=missing-class-docstring
+
 
     template_name = "index.html"
 

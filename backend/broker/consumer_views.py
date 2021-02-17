@@ -16,7 +16,6 @@ def incoming_command(command):
     decoded_command = json.loads(command.decode('utf-8'))
 
     try:
-        # pylint: disable=import-outside-toplevel
         # Needed to be put here since this function is imported at
         # AppConfig.ready, and at that point apps are not loaded yet.
         from backend.home.models import Home

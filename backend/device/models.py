@@ -1,4 +1,3 @@
-# pylint: disable=too-few-public-methods
 from abc import ABC
 
 from django.db import models
@@ -8,7 +7,6 @@ from backend.home.models import Room
 
 
 class _Choices(ABC):
-    # pylint: disable=inconsistent-return-statements
 
     # Subclasses shall override
     CHOICES = []
@@ -84,7 +82,6 @@ def create_device(hume, device_spec):
 
 
 class Device(models.Model):
-    # pylint: disable=missing-class-docstring
 
     hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
     is_attached = models.BooleanField(default=False)
@@ -165,7 +162,6 @@ class Device(models.Model):
 
 
 class DeviceDataSource(models.Model):
-    # pylint: disable=missing-class-docstring
 
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
@@ -179,7 +175,6 @@ class DeviceDataSource(models.Model):
 
 
 class DeviceReading(models.Model):
-    # pylint: disable=missing-class-docstring
 
     data_source = models.ForeignKey(DeviceDataSource, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()

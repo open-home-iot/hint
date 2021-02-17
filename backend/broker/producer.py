@@ -8,7 +8,6 @@ DISCOVER_DEVICES = 0
 
 class Producer:
     """Static class to host client producing utilities"""
-    # pylint: disable=too-few-public-methods
 
     client: RMQClient
 
