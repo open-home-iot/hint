@@ -57,7 +57,9 @@ def verify_device_data_sources(test_case, data_sources, device_spec):
                 break
 
         if not match_found:
-            test_case.fail(f"No matching data source created for: {spec_source}")
+            test_case.fail(
+                f"No matching data source created for: {spec_source}"
+            )
 
 
 class ModelTests(TestCase):

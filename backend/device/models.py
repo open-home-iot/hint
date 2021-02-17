@@ -154,11 +154,12 @@ class Device(models.Model):
     def __str__(self):
         """str representation of a Device instance"""
         return f"<{self.__class__.__name__} instance {self.uuid} (" \
-               f"hume owner: {self.hume.uuid}, is_attached: {self.is_attached}" \
-               f", name: {self.name}, category: " \
-               f"{Device.Category.get_verbose_name(self.category)}" \
-               f", type: {self.get_type_name(self.type)}, " \
-               f"parent: {self.parent})>"
+               f"hume owner: {self.hume.uuid}, " \
+               f"is_attached: {self.is_attached}, " \
+               f"name: {self.name}, " \
+               f"category: {Device.Category.get_verbose_name(self.category)}, " \
+               f"type: {self.get_type_name(self.type)}, " \
+               f"parent: {self.parent})>"  # noqa
 
 
 class DeviceDataSource(models.Model):
@@ -182,6 +183,7 @@ class DeviceReading(models.Model):
 
     def __str__(self):
         """str representation of a DeviceReading instance"""
-        return f"<{self.__class__.__name__} instance {self.id} (data_source: " \
-               f"{self.data_source.id}, timestamp: {self.timestamp}, data: " \
+        return f"<{self.__class__.__name__} instance {self.id} (" \
+               f"data_source: {self.data_source.id}, " \
+               f"timestamp: {self.timestamp}, data: " \
                f"{self.data})>"

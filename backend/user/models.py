@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, \
 
 class CustomUserManager(BaseUserManager):
 
-
     def create_user(self,
                     email,
                     password='',
@@ -42,7 +41,6 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-
 
     email = models.EmailField(unique=True)
 

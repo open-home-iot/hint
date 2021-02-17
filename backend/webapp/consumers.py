@@ -7,7 +7,6 @@ from channels.generic.websocket import WebsocketConsumer
 class HomeConsumer(WebsocketConsumer):
     """Allows frontend users to subscribe to events related to a Home"""
 
-
     def __init__(self, *args, **kwargs):
         """"""
         self.home_ids = []
