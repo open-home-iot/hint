@@ -28,4 +28,5 @@ jobs:
 
     - name: Run Django test cases
       run: |
+        echo $PWD
         python manage.py test
