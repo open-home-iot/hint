@@ -63,5 +63,5 @@ class HomeRooms(views.APIView):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({"error": "Unauthorized"},
-                            status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "That home does not exist."},
+                            status=status.HTTP_400_BAD_REQUEST)

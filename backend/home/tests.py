@@ -220,6 +220,22 @@ class RoomCreateApi(TestCase):
         self.assertEqual(res.data["name"], "test")
         self.assertEqual(res.data["id"], 1)
 
+    def test_verify_other_users_cannot_create_room(self):
+        """
+        Verify that a user cannot create a room for a home that user does not
+        own.
+        """
+        user = User.objects.create_user(email="o@o.se", password="pw")
+        home2 = Home.objects.create(name="home2")
+        home2.users.add(user)
+        home2.save()
+
+        res = self.client.post(f"{RoomCreateApi.HOME_BASE_URL}{home2.id}"
+                               f"{RoomCreateApi.ROOM_RESOURCE_SUFFIX}",
+                               {"name": "test"})
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 class RoomGetApi(TestCase):
 
