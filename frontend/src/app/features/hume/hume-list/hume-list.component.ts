@@ -17,7 +17,6 @@ export class HumeListComponent implements OnInit {
   constructor(private humeService: HumeService) { }
 
   ngOnInit(): void {
-    console.log("Init HUME list component");
     this.humes = this.humeService.initHomeHumes(this.homeId);
   }
 

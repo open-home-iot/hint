@@ -17,8 +17,6 @@ export class AuthService {
 
   constructor(private httpService: HttpService,
               private router: Router) {
-    console.log("Constructing AuthService");
-
     this.initiated = false; // Initially, we do not have up-to-date information.
     this.authSubject = new BehaviorSubject<boolean>(false);
 
@@ -40,7 +38,6 @@ export class AuthService {
 
     observable.subscribe(
       next => {
-        console.log("Success logging in!");
         this.updateAuthService(true);
       },
       (error: HttpErrorResponse) => {
@@ -56,7 +53,6 @@ export class AuthService {
       this.sendLoginRequest(username, password)
         .subscribe(
           next => {
-            console.log("Success logging in!");
             this.updateAuthService(true);
             resolve();
           },

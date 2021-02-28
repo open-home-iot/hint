@@ -4,8 +4,12 @@
     <label for="name">Room name</label>
     <input id="name" name="name" type="text" formControlName="name" placeholder="Livingroom">
   </div>
-  <button type="submit" class="btn btn-outline-dark">Save</button>
+  <div *ngIf="name.touched && name.errors?.required"
+       class="form_error">
+    You must provide a name for the room.
+  </div>
   <div *ngIf="apiError" class="form_error">
     {{ apiError }}
   </div>
+  <button type="submit" [disabled]="!createRoomForm.valid" class="btn btn-outline-dark">Save</button>
 </form>

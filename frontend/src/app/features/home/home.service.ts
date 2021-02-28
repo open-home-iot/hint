@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
-
-import { HttpService } from '../../core/http/http.service';
 import { EventService } from '../event/event.service';
 
 const HOMES_URL = window.location.origin + "/api/homes/"
@@ -17,26 +13,30 @@ export class Home {
 export class Room {
   id: number;
   name: string;
+
+  constructor(id: number, name: string) {
+    this.id = id;
+    this.name = name;
+  }
 }
 
 @Injectable()
 export class HomeService {
 
   homes: Home[] = [];
+  rooms: Room[] = [];
 
   constructor(private httpClient: HttpClient,
               private eventService: EventService) {
-    console.log("Constructing HomeService");
     this.httpClient.get(HOMES_URL)
       .subscribe(
         (homes: Home[]) => {
-          console.log("Successfully got all HOMES!");
           for (let home of homes) {
             this.addHome(home);
           }
         },
         error => {
-          console.log(error);
+          console.error(error);
         }
       );
   }
@@ -49,40 +49,64 @@ export class HomeService {
   }
 
   createHome(name: string) {
-    console.log("HomeService: Creating HOME");
     this.httpClient.post(HOMES_URL, {name: name})
       .subscribe(
         (home: Home) => {
-          console.log("Successfully created HOME instance!");
           this.addHome(home);
         },
         error => {
-          console.log(error);
+          console.error(error);
         }
       );
+  }
+
+  private addRoom(room: Room) {
+    this.rooms.push(room);
+  }
+
+  private addRooms(rooms: Room[]) {
+    for (let room of rooms) {
+      this.addRoom(room);
+    }
   }
 
   private getHomeRoomsUrl(homeID: number) {
     return HOMES_URL + String(homeID) + "/rooms";
   }
 
-  getHomeRooms(homeID: number) {
-    return this.httpClient.get<Room[]>(this.getHomeRoomsUrl(homeID))
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      console.error("An error occured:", error.error.message);
-    } else {
-      console.error(
-        `Backend returned code: ${error.status}, ` +
-        `body was: ${error.error}`
-      );
+  getHomeRooms(homeID: number): Promise<Room[]> {
+    if (this.rooms.length > 0) {
+      return Promise.resolve(this.rooms);
     }
 
-    return throwError("Oops, that didn't go so well...");
+    // No rooms gotten yet, getting rooms...
+    return new Promise<Room[]>((resolve, reject) => {
+      this.httpClient.get(this.getHomeRoomsUrl(homeID))
+        .subscribe(
+          (rooms: Room[]) => {
+            this.addRooms(rooms);
+            resolve(this.rooms);
+          },
+          error => {
+            reject(error)
+          }
+        );
+    });
+  }
+
+  createRoom(homeID: number, roomName: string): Promise<Room> {
+    return new Promise<Room>((resolve, reject) => {
+      this.httpClient.post(this.getHomeRoomsUrl(homeID),
+                     {"name": roomName})
+        .subscribe(
+          (room: Room) => {
+            this.addRoom(room);
+            resolve(room);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
   }
 }

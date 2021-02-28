@@ -1,5 +1,7 @@
-<app-room-add></app-room-add>
+<app-room-add (newRoomEvent)="onRoomCreated($event)"
+              homeID="{{ homeID }}">
+</app-room-add>
 
 <div class="room" *ngFor="let room of rooms">
-  {{ room.name }}
+  <h2>{{ room.name }}</h2>
 </div>

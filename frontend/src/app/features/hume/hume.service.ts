@@ -21,9 +21,7 @@ export class HumeService {
 
   private humes: { [homeId: number]: Hume[]  } = {};
 
-  constructor(private httpService: HttpService) {
-    console.log("Constructing HumeService");
-  }
+  constructor(private httpService: HttpService) { }
 
   getHomeHumes(homeId: number) {
     if (homeId in this.humes) {
@@ -49,7 +47,6 @@ export class HumeService {
   }
 
   private pushHume(hume: Hume, homeId: number) {
-    console.log("Adding HUME: " + hume.uuid + " to homeId: " + homeId);
     if (homeId in this.humes) {
       this.humes[homeId].push(hume);
     } else {
@@ -62,9 +59,7 @@ export class HumeService {
   }
 
   initHomeHumes(homeId: number): Hume[] {
-    console.log("Getting humes for home: " + String(homeId))
     if (homeId in this.humes) {
-      console.log("Home id already has an entry in Home->Humes map")
       return this.humes[homeId];
     } else {
       this.humes[homeId] = [];
@@ -72,13 +67,12 @@ export class HumeService {
       let obs = this.httpService.get(this.homeHumesUrl(homeId));
       obs.subscribe(
         (humes: Hume[]) => {
-          console.log(humes);
           for (let hume of humes) {
             this.pushHume(hume, homeId);
           }
         },
         error => {
-          console.log("Get HOME HUMEs failed.");
+          console.error("Get HOME HUMEs failed: ", error);
         }
       );
 

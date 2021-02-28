@@ -26,10 +26,19 @@ export class RoomOverviewComponent implements OnInit {
     }
 
     this.homeService.getHomeRooms(this.homeID)
-      .subscribe(
-        (result: Room[]) => {
-          console.log(result);
-        }
-      );
+      .then(this.onGetRooms.bind(this))
+      .catch(this.onGetRoomsFailed);
+  }
+
+  onGetRooms(rooms: Room[]) {
+    this.rooms = rooms;
+  }
+
+  onGetRoomsFailed(error) {
+    console.error("Get rooms failed: ", error)
+  }
+
+  onRoomCreated(room: Room) {
+    //this.rooms.push(room);
   }
 }

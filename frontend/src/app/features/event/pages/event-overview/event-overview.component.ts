@@ -26,8 +26,6 @@ export class EventOverviewComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   ngOnDestroy() {
-    console.log("OnDestroy");
-    console.log(this.subscriptionKeys)
     for (let key of this.subscriptionKeys) {
       this.eventService.unsubscribe(key);
     }
