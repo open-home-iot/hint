@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeOverviewComponent } from './pages/home-overview/home-overview.component';
-import { HomeRoomOverviewComponent } from './pages/home-room-overview/home-room-overview.component';
+import { RoomOverviewComponent } from './pages/room-overview/room-overview.component';
 
 import { AuthGuard } from '../../core/auth/auth.guard';
 
@@ -26,7 +26,7 @@ const routes: Routes = [
   },
   {
     path: 'home/:id',
-    component: HomeRoomOverviewComponent,
+    component: RoomOverviewComponent,
     canActivate: [AuthGuard]
   }
 ];
