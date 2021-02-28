@@ -53,7 +53,7 @@ import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.compo
     HttpClientModule,
 
     //BOOTSTRAP IMPORT
-    NgbModule,  
+    NgbModule,
 
     // FEATURE MODULE IMPORTS
     HomeModule,
@@ -67,7 +67,6 @@ import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.compo
     // CORE ROUTING MODULE, DO NOT REMOVE!
     // NEEDS TO DECLARED LAST OR CATCH ALL ROUTE REGISTERS BEFORE CHILD ROUTES!
     AppRoutingModule
-    // NEEDS TO DECLARED LAST OR CATCH ALL ROUTE REGISTERS BEFORE CHILD ROUTES!
   ],
   providers: [
     {

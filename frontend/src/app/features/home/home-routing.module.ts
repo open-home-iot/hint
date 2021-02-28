@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeOverviewComponent } from './pages/home-overview/home-overview.component';
+import { HomeRoomOverviewComponent } from './pages/home-room-overview/home-room-overview.component';
+
 import { AuthGuard } from '../../core/auth/auth.guard';
 
 /*
@@ -18,7 +20,15 @@ NOTE! canDeactivate can be used to prevent navigation before saving changes.
  */
 
 const routes: Routes = [
-  { path: 'home', component: HomeOverviewComponent, canActivate: [AuthGuard] }
+  { path: 'home',
+    component: HomeOverviewComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'home/:id',
+    component: HomeRoomOverviewComponent,
+    canActivate: [AuthGuard]
+  }
 ];
 
 @NgModule({

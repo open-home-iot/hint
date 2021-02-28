@@ -1,6 +1,6 @@
 from django.urls import path
 
-from backend.home.views import Homes
+from backend.home.views import Homes, HomeRooms
 from backend.hume.views import HomeHumes
 
 
@@ -11,5 +11,6 @@ urlpatterns = [
     # to query for. Should create similar API view for devices of a given HUME.
     # Still, the view needs to enforce strict user checks to make sure some
     # other user is not querying for another user's HUMEs.
-    path("<int:home_id>/humes", HomeHumes.as_view())
+    path("<int:home_id>/humes", HomeHumes.as_view()),
+    path("<int:home_id>/rooms", HomeRooms.as_view())
 ]

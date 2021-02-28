@@ -6,7 +6,7 @@ from rest_framework import status
 # Refer to models under test with an absolute path as the root path of run
 # tests are from ../backend.
 from backend.user.models import User
-from backend.home.models import Home
+from backend.home.models import Home, Room
 
 
 class HomeModel(TestCase):
@@ -49,8 +49,7 @@ class HomeCreateApi(TestCase):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data, what's created here needs to be torn
-        down in tearDown().
+        Create shared test case data.
         """
         self.client = APIClient()
         # NOTE! Cannot test with CSRF and authentication at the same time for
@@ -183,3 +182,103 @@ class HomeGetApi(TestCase):
         ret = client_wo_authentication.get(HomeGetApi.HOME_GET_ALL_URL)
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class RoomCreateApi(TestCase):
+
+    HOME_BASE_URL = "/api/homes/"
+    ROOM_RESOURCE_SUFFIX = "/rooms"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data.
+        """
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
+
+    def test_create_room(self):
+        """Test creating a Room instance through the API."""
+        res = self.client.post(f"{RoomCreateApi.HOME_BASE_URL}{self.home.id}"
+                               f"{RoomCreateApi.ROOM_RESOURCE_SUFFIX}",
+                               {"name": "test"})
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res.data["name"], "test")
+        self.assertEqual(res.data["id"], 1)
+
+
+class RoomGetApi(TestCase):
+
+    HOME_BASE_URL = "/api/homes/"
+    ROOM_RESOURCE_SUFFIX = "/rooms"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data.
+        """
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
+        self.room = Room.objects.create(name="room", home=self.home)
+
+    def test_get_all_rooms_of_home(self):
+        """Verify that rooms associated to a home can be gotten."""
+        res = self.client.get(f"{RoomGetApi.HOME_BASE_URL}{self.home.id}"
+                              f"{RoomGetApi.ROOM_RESOURCE_SUFFIX}")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        [_room] = res.data
+
+    def test_verify_no_rooms_leak_between_homes(self):
+        """
+        Verify that if multiple homes exist, each with individual rooms, no
+        rooms leak when rooms of one home is queried for.
+        """
+        home2 = Home.objects.create(name="home2")
+        home2.users.add(User.objects.get(email="suite@t.se"))
+        home2.save()
+        Room.objects.create(name="living", home=home2)
+        Room.objects.create(name="toilet", home=home2)
+
+        res = self.client.get(f"{RoomGetApi.HOME_BASE_URL}{self.home.id}"
+                              f"{RoomGetApi.ROOM_RESOURCE_SUFFIX}")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        [room] = res.data
+        self.assertEqual(room["name"], "room")
+
+        # Fetch rooms associated to the other home, should be 2 of them.
+        res = self.client.get(f"{RoomGetApi.HOME_BASE_URL}{home2.id}"
+                              f"{RoomGetApi.ROOM_RESOURCE_SUFFIX}")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        [room1, room2] = res.data
+        if room1["name"] != "living" and room1["name"] != "toilet":
+            self.fail("room1 does not match either of the created rooms")
+
+        if room2["name"] != "living" and room2["name"] != "toilet":
+            self.fail("room2 does not match either of the created rooms")

@@ -1,0 +1,11 @@
+<form (ngSubmit)="createRoom()" [formGroup]="createRoomForm">
+  <h2>Add a new room</h2>
+  <div class="label_input_pair">
+    <label for="name">Room name</label>
+    <input id="name" name="name" type="text" formControlName="name" placeholder="Livingroom">
+  </div>
+  <button type="submit" class="btn btn-outline-dark">Save</button>
+  <div *ngIf="apiError" class="form_error">
+    {{ apiError }}
+  </div>
+</form>

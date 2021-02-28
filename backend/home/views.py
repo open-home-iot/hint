@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from backend.home.serializers import HomeSerializer, RoomSerializer
-from backend.home.models import Room
+from backend.home.models import Room, Home
 
 
 class Homes(views.APIView):
@@ -30,7 +30,7 @@ class Homes(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class Rooms(views.APIView):
+class HomeRooms(views.APIView):
     """Exposes Room fetching/creation"""
 
     def get(self, request, home_id, format=None):
@@ -45,3 +45,23 @@ class Rooms(views.APIView):
         serializer = RoomSerializer(rooms, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, home_id, format=None):
+        """
+        Create a new room.
+
+        :type home_id: integer
+        """
+        if Home.objects.filter(id=home_id,
+                               users__id=request.user.id).exists():
+            data_dict = {
+                "home": home_id,
+                "name": request.data["name"]
+            }
+            serializer = RoomSerializer(data=data_dict)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"error": "Unauthorized"},
+                            status=status.HTTP_401_UNAUTHORIZED)
