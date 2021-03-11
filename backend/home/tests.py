@@ -301,7 +301,7 @@ class RoomGetApi(TestCase):
 
     def test_no_rooms_leak_between_users(self):
         """Verify rooms cannot be gotten by users not owning the home."""
-        user = User.objects.create_user(email="t@t.se", password="password")
+        User.objects.create_user(email="t@t.se", password="password")
 
         client = APIClient()
         client.login(username="t@t.se", password="password")

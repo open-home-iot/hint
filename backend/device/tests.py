@@ -184,7 +184,7 @@ class RoomDeviceGetApi(TestCase):
         Verify devices can be gotten when they do not belong to a specific
         room.
         """
-        device = create_dummy_device(self.hume)
+        create_dummy_device(self.hume)
 
         res = self.client.get(f"/api/homes/{self.home.id}/devices")
 
@@ -253,7 +253,7 @@ class RoomDeviceGetApi(TestCase):
         # Device with no room assigned, belonging to the Home.
         create_dummy_device(self.hume)
 
-        user = User.objects.create_user(email="t@t.se", password="password")
+        User.objects.create_user(email="t@t.se", password="password")
         client = APIClient()
         client.login(username="t@t.se", password="password")
 
