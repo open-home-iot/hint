@@ -20,7 +20,7 @@ export class RoomOverviewComponent implements OnInit {
   ngOnInit(): void {
     this.homeID = Number(this.route.snapshot.paramMap.get('id'));
     if (isNaN(this.homeID)) {
-      console.log("Home ID was NOT A NUMBER")
+      console.error("Home ID was NOT A NUMBER")
       this.router.navigate(['/page-not-found']);
       return
     }

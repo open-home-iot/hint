@@ -298,3 +298,15 @@ class RoomGetApi(TestCase):
 
         if room2["name"] != "living" and room2["name"] != "toilet":
             self.fail("room2 does not match either of the created rooms")
+
+    def test_no_rooms_leak_between_users(self):
+        """Verify rooms cannot be gotten by users not owning the home."""
+        user = User.objects.create_user(email="t@t.se", password="password")
+
+        client = APIClient()
+        client.login(username="t@t.se", password="password")
+
+        # Not this user's home instance.
+        res = client.get(f"/api/homes/{self.home.id}/rooms")
+
+        self.assertEqual(len(res.data), 0)

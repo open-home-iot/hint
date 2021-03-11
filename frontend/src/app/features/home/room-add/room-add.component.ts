@@ -35,7 +35,6 @@ export class RoomAddComponent implements OnInit {
   }
 
   onRoomCreated(room: Room) {
-    console.log("Created room successfully: ", room)
     this.newRoomEvent.emit(room);
   }
 

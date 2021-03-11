@@ -1,20 +1,31 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 export class Device {
-  uuid: string
+  hume: string; // UUID
+  is_attached: boolean;
+  room: number;
+  uuid: string;
+  name: string;
+  description: string;
+  category: number;
+  type: number;
+  custom_type_name: string;
+  parent: number;
 }
 
 @Injectable()
 export class DeviceService {
-  id: number = 1;
-  devices: string[] = ["Device " + this.id.toString()];
 
-  addDevice(name: string) {
-    this.id++;
-    this.devices.push(name + " " + this.id.toString());
-  }
+  private deviceMap: {
+    (homeID: number): {
+      (roomName: string): [Device]
+    }
+  } | {} = {};
 
-  getAllDevices() {
-    return this.devices;
+  constructor(private httpClient: HttpClient) { }
+
+  getDevicesOfRoom(homeID: number, roomName: string) {
+    // TODO: continue here!
   }
 }
