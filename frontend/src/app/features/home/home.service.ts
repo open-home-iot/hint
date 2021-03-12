@@ -24,7 +24,7 @@ export class Room {
 export class HomeService {
 
   homes: Home[] = [];
-  rooms: Room[] = [];
+  rooms = new Map();
 
   constructor(private httpClient: HttpClient,
               private eventService: EventService) {
@@ -60,13 +60,17 @@ export class HomeService {
       );
   }
 
-  private addRoom(room: Room) {
-    this.rooms.push(room);
+  private addRoom(homeID: number, room: Room) {
+    this.rooms.get(homeID).push(room);
   }
 
-  private addRooms(rooms: Room[]) {
+  private addRooms(homeID: number, rooms: Room[]) {
+    if (!this.rooms.has(homeID)) {
+      this.rooms.set(homeID, []);
+    }
+
     for (let room of rooms) {
-      this.addRoom(room);
+      this.addRoom(homeID, room);
     }
   }
 
@@ -75,8 +79,8 @@ export class HomeService {
   }
 
   getHomeRooms(homeID: number): Promise<Room[]> {
-    if (this.rooms.length > 0) {
-      return Promise.resolve(this.rooms);
+    if (this.rooms.has(homeID)) {
+      return Promise.resolve(this.rooms.get(homeID));
     }
 
     // No rooms gotten yet, getting rooms...
@@ -84,11 +88,11 @@ export class HomeService {
       this.httpClient.get(this.getHomeRoomsUrl(homeID))
         .subscribe(
           (rooms: Room[]) => {
-            this.addRooms(rooms);
-            resolve(this.rooms);
+            this.addRooms(homeID, rooms);
+            resolve(this.rooms.get(homeID));
           },
           error => {
-            reject(error)
+            reject(error);
           }
         );
     });
@@ -100,7 +104,8 @@ export class HomeService {
                      {"name": roomName})
         .subscribe(
           (room: Room) => {
-            this.addRoom(room);
+            console.log("Adding room: ", room, " to room list: ", this.rooms.get(homeID))
+            this.addRoom(homeID, room);
             resolve(room);
           },
           error => {

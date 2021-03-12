@@ -17,15 +17,5 @@ export class Device {
 @Injectable()
 export class DeviceService {
 
-  private deviceMap: {
-    (homeID: number): {
-      (roomName: string): [Device]
-    }
-  } | {} = {};
-
   constructor(private httpClient: HttpClient) { }
-
-  getDevicesOfRoom(homeID: number, roomName: string) {
-    // TODO: continue here!
-  }
 }

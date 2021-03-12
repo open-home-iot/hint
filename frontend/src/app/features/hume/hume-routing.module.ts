@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { HumeOverviewComponent } from './pages/hume-overview/hume-overview.component';
 import { AuthGuard } from '../../core/auth/auth.guard';
 
 /*
@@ -18,7 +17,6 @@ NOTE! canDeactivate can be used to prevent navigation before saving changes.
  */
 
 const routes: Routes = [
-  { path: 'hume', component: HumeOverviewComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
