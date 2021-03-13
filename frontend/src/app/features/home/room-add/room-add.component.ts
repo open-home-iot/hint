@@ -29,8 +29,7 @@ export class RoomAddComponent implements OnInit {
 
   createRoom() {
     this.apiError = "";
-    // Unclear why this.homeID needs to be cast...
-    this.homeService.createRoom(Number(this.homeID), this.name.value)
+    this.homeService.createRoom(this.homeID, this.name.value)
       .then(this.onRoomCreated.bind(this))
       .catch(this.onRoomCreateFail.bind(this));
   }
