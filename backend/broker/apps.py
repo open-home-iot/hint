@@ -30,13 +30,9 @@ class BrokerConfig(AppConfig):
         # Development specific, due to Django code reload ...
         # DEBUG indicates development, RUN_MAIN indicates it's not the
         # reloader reaching this block.
-        run_main = os.environ.get("RUN_MAIN")
-        print(f"settings.DEBUG: {settings.DEBUG}")
-        print(f"RUN_MAIN: {run_main}")
-        if settings.DEBUG and not run_main:
+        if settings.DEBUG and not os.environ.get("RUN_MAIN"):
             return
 
-        print(f"BrokerConfig.has_started: {BrokerConfig.has_started}")
         if BrokerConfig.has_started:
             return
         BrokerConfig.has_started = True
