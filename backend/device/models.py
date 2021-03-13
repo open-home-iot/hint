@@ -88,7 +88,10 @@ class Device(models.Model):
 
     # When Rooms are deleted, do not delete devices, they belong to the general
     # Home now.
-    room = models.ForeignKey(Room, null=True, on_delete=models.SET_NULL)
+    room = models.ForeignKey(Room,
+                             null=True,
+                             blank=True,
+                             on_delete=models.SET_NULL)
 
     # Device specification
     uuid = models.UUIDField(primary_key=True)
