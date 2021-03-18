@@ -37,7 +37,7 @@ class HomeConsumer(WebsocketConsumer):
 
         :param text_data: JSON formatted string
         """
-        print(f"Websocket new message")
+        print("Websocket new message")
         decoded_data = json.loads(text_data)
 
         # TODO remove
