@@ -13,12 +13,14 @@ import { DeviceService } from './device.service';
 // MODULES
 import { DeviceRoutingModule } from './device-routing.module';
 import { DeviceListComponent } from './device-list/device-list.component';
+import { DeviceDetailComponent } from './device-detail/device-detail.component';
 
 @NgModule({
   declarations: [
     HomeDevicesComponent,
     RoomDevicesComponent,
-    DeviceListComponent
+    DeviceListComponent,
+    DeviceDetailComponent
   ],
   imports: [
     DeviceRoutingModule,

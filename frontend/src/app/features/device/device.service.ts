@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+const DEVICE_TYPE_NAMES = {
+  0: "Thermometer"
+};
+
 export class Device {
   hume: string; // UUID
   is_attached: boolean;
