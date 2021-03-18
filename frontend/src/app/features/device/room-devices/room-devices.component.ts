@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Device, DeviceService} from "../device.service";
 
 @Component({
   selector: 'app-room-devices',
@@ -8,10 +9,21 @@ import {Component, Input, OnInit} from '@angular/core';
 export class RoomDevicesComponent implements OnInit {
 
   @Input() roomID: number;
+  devices: Device[];
 
-  constructor() { }
+  constructor(private deviceService: DeviceService) { }
 
   ngOnInit(): void {
+    this.deviceService.getRoomDevices(this.roomID)
+      .then(this.onGetRoomDevices.bind(this))
+      .catch(this.onGetRoomDevicesFailed)
   }
 
+  onGetRoomDevices(devices: Device[]) {
+    this.devices = devices;
+  }
+
+  onGetRoomDevicesFailed(error) {
+    console.error(error);
+  }
 }

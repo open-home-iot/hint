@@ -14,7 +14,9 @@ class RoomDevices(views.APIView):
         Get all device of a specified room.
         """
         devices = Device.objects.filter(
+            # Requested room ID
             room__id=room_id,
+            # Does the device exist in a home the user owns?
             hume__home__users__id=request.user.id
         )
 
@@ -30,8 +32,11 @@ class HomeDevices(views.APIView):
         Get all device of a specified room.
         """
         devices = Device.objects.filter(
+            # No room assignment
             room=None,
+            # Requested home ID
             hume__home__id=home_id,
+            # Does the device exist in a home the user owns?
             hume__home__users__id=request.user.id
         )
 

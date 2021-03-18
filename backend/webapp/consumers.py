@@ -17,8 +17,6 @@ class HomeConsumer(WebsocketConsumer):
         TODO On connection, accept the connection. Authentication checks should
         already have been made?
         """
-        print("Connected to HomeConsumer")
-
         self.accept()
 
     def disconnect(self, close_code):
@@ -27,8 +25,6 @@ class HomeConsumer(WebsocketConsumer):
         group add on disconnect. If this is not done, or fails, a timeout will
         take care of the cleanup at some point.
         """
-        print("Disconnected from HomeConsumer")
-
         for home_id in self.home_ids:
             async_to_sync(self.channel_layer.group_discard)(
                 home_id, self.channel_name
@@ -41,7 +37,7 @@ class HomeConsumer(WebsocketConsumer):
 
         :param text_data: JSON formatted string
         """
-        print(f"New home consumer message: {json.loads(text_data)}")
+        print(f"Websocket new message")
         decoded_data = json.loads(text_data)
 
         # TODO remove
@@ -56,7 +52,7 @@ class HomeConsumer(WebsocketConsumer):
 
         home_id = str(decoded_data["home_id"])
         self.home_ids.append(home_id)
-        print(f"Currently monitored home_ids: {self.home_ids}")
+        print(f"Websocket monitored home IDs: {self.home_ids}")
         async_to_sync(self.channel_layer.group_add)(
             home_id, self.channel_name
         )

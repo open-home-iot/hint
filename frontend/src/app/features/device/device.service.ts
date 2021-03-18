@@ -15,11 +15,13 @@ export class Device {
 }
 
 const HOMES_URL = window.location.origin + "/api/homes/"
+const ROOMS_URL = window.location.origin + "/api/rooms/"
 
 @Injectable()
 export class DeviceService {
 
   homeDevices = new Map();
+  roomDevices = new Map();
 
   constructor(private httpClient: HttpClient) { }
 
@@ -52,6 +54,43 @@ export class DeviceService {
           (devices: Device[]) => {
             this.addHomeDevices(homeID, devices);
             resolve(this.homeDevices.get(homeID));
+          },
+          error => {
+            reject(error)
+          }
+        );
+    });
+  }
+
+  getRoomDevicesUrl(roomID: number) {
+    return ROOMS_URL + String(roomID) + "/devices";
+  }
+
+  addRoomDevice(roomID: number, device: Device) {
+    this.roomDevices.get(roomID).push(device);
+  }
+
+  addRoomDevices(roomID: number, devices: Device[]) {
+    if (!this.roomDevices.has(roomID)) {
+      this.roomDevices.set(roomID, []);
+    }
+
+    for (let device of devices) {
+      this.addRoomDevice(roomID, device);
+    }
+  }
+
+  getRoomDevices(roomID: number) {
+    if (this.roomDevices.has(roomID)) {
+      return Promise.resolve(this.roomDevices.get(roomID));
+    }
+
+    return new Promise<Device[]>((resolve, reject) => {
+      this.httpClient.get(this.getRoomDevicesUrl(roomID))
+        .subscribe(
+          (devices: Device[]) => {
+            this.addRoomDevices(roomID, devices);
+            resolve(this.roomDevices.get(roomID));
           },
           error => {
             reject(error)
