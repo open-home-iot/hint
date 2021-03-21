@@ -117,6 +117,15 @@ class Device(models.Model):
 
     category = models.IntegerField(choices=Category.CHOICES)
 
+    @property
+    def category_name(self):
+        """
+        The verbose category name of the device.
+
+        :return: verbose category name
+        """
+        return Device.Category.get_verbose_name(self.category)
+
     class Type(_Choices):
         """
         Device type, either custom or known. Custom devices have to report
@@ -132,18 +141,17 @@ class Device(models.Model):
             (CUSTOM, "Custom")
         ]
 
-    def get_type_name(self, device_type):
+    @property
+    def type_name(self):
         """
-        Since custom device types are possible, fetch the custom_type_name if
-        type is CUSTOM, otherwise default to get_verbose_name from _Choices.
+        The verbose type name of the device.
 
-        :param device_type: integer representation of a device type
         :return: verbose type name
         """
-        if device_type == self.Type.CUSTOM:
+        if self.type == Device.Type.CUSTOM:
             return self.custom_type_name
 
-        return self.Type.get_verbose_name(device_type)
+        return Device.Type.get_verbose_name(self.type)
 
     type = models.IntegerField(choices=Type.CHOICES)
     custom_type_name = models.CharField(max_length=25, null=True, blank=True)
@@ -161,7 +169,7 @@ class Device(models.Model):
                f"is_attached: {self.is_attached}, " \
                f"name: {self.name}, " \
                f"category: {Device.Category.get_verbose_name(self.category)}, " \
-               f"type: {self.get_type_name(self.type)}, " \
+               f"type: {self.type_name}, " \
                f"parent: {self.parent})>"  # noqa
 
 

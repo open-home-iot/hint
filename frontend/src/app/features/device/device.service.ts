@@ -1,25 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-const DEVICE_TYPE_NAMES = {
-  0: "Thermometer"
-};
 
-export class Device {
+export interface Device {
   hume: string; // UUID
   is_attached: boolean;
   room: number;
   uuid: string;
   name: string;
   description: string;
-  category: number;
-  type: number;
-  custom_type_name: string;
+  category_name: string;
+  type_name: string;
   parent: number;
 }
 
+
 const HOMES_URL = window.location.origin + "/api/homes/"
 const ROOMS_URL = window.location.origin + "/api/rooms/"
+
 
 @Injectable()
 export class DeviceService {
@@ -95,6 +93,7 @@ export class DeviceService {
           (devices: Device[]) => {
             this.addRoomDevices(roomID, devices);
             resolve(this.roomDevices.get(roomID));
+            console.log(devices);
           },
           error => {
             reject(error)
