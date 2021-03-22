@@ -35,11 +35,13 @@ export class DeviceService {
     this.homeDevices.get(homeID).push(device);
   }
 
-  addHomeDevices(homeID: number, devices: Device[]) {
+  replaceHomeDevices(homeID: number, devices: Device[]) {
     if (!this.homeDevices.has(homeID)) {
       this.homeDevices.set(homeID, []);
     }
 
+    // Maintain array reference
+    this.homeDevices.get(homeID).length = 0;
     for (let device of devices) {
       this.addHomeDevice(homeID, device);
     }
@@ -54,7 +56,7 @@ export class DeviceService {
       this.httpClient.get(this.getHomeDevicesUrl(homeID))
         .subscribe(
           (devices: Device[]) => {
-            this.addHomeDevices(homeID, devices);
+            this.replaceHomeDevices(homeID, devices);
             resolve(this.homeDevices.get(homeID));
           },
           error => {
@@ -72,11 +74,13 @@ export class DeviceService {
     this.roomDevices.get(roomID).push(device);
   }
 
-  addRoomDevices(roomID: number, devices: Device[]) {
+  replaceRoomDevices(roomID: number, devices: Device[]) {
     if (!this.roomDevices.has(roomID)) {
       this.roomDevices.set(roomID, []);
     }
 
+    // Maintain array reference
+    this.roomDevices.get(roomID).length = 0;
     for (let device of devices) {
       this.addRoomDevice(roomID, device);
     }
@@ -91,7 +95,7 @@ export class DeviceService {
       this.httpClient.get(this.getRoomDevicesUrl(roomID))
         .subscribe(
           (devices: Device[]) => {
-            this.addRoomDevices(roomID, devices);
+            this.replaceRoomDevices(roomID, devices);
             resolve(this.roomDevices.get(roomID));
           },
           error => {

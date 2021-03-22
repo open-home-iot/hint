@@ -1,0 +1,38 @@
+:host {
+  position: relative;
+  display: inline-block;
+
+  .dropdown_content {
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    z-index: 1;
+    padding: 0.5em;
+    background-color: white;
+    border-radius: 0.5em;
+    box-shadow: 0.2em 0.2em 0.2em gray;
+
+    .room_list_item {
+      display: flex;
+      margin-top: 0.3em;
+      margin-bottom: 0.3em;
+
+      a:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      .check_green {
+        color: #008c15;
+      }
+    }
+  }
+
+  .dropdown a {
+    cursor: pointer;
+  }
+
+  .dropdown:hover .dropdown_content {
+    display: flex;
+  }
+}

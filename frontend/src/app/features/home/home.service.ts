@@ -66,11 +66,13 @@ export class HomeService {
     this.roomMap.set(room.id, room);
   }
 
-  private addRooms(homeID: number, rooms: Room[]) {
+  private replaceRooms(homeID: number, rooms: Room[]) {
     if (!this.homeRoomMap.has(homeID)) {
       this.homeRoomMap.set(homeID, []);
     }
 
+    // Maintain array reference
+    this.homeRoomMap.get(homeID).length = 0;
     for (let room of rooms) {
       this.addRoom(homeID, room);
     }
@@ -90,7 +92,7 @@ export class HomeService {
       this.httpClient.get(this.getHomeRoomsUrl(homeID))
         .subscribe(
           (rooms: Room[]) => {
-            this.addRooms(homeID, rooms);
+            this.replaceRooms(homeID, rooms);
             resolve(this.homeRoomMap.get(homeID));
           },
           error => {
