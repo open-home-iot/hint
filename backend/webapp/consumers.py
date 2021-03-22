@@ -37,7 +37,7 @@ class HomeConsumer(WebsocketConsumer):
 
         :param text_data: JSON formatted string
         """
-        print("Websocket new message")
+        print("WebSocket new message")
         decoded_data = json.loads(text_data)
 
         # TODO remove
@@ -52,7 +52,7 @@ class HomeConsumer(WebsocketConsumer):
 
         home_id = str(decoded_data["home_id"])
         self.home_ids.append(home_id)
-        print(f"Websocket monitored home IDs: {self.home_ids}")
+        print(f"WebSocket monitored home IDs: {self.home_ids}")
         async_to_sync(self.channel_layer.group_add)(
             home_id, self.channel_name
         )

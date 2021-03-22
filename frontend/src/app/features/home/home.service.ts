@@ -3,28 +3,29 @@ import { HttpClient } from '@angular/common/http';
 
 import { EventService } from '../event/event.service';
 
+
+export interface Home {
+  id: number;
+  name: string;
+}
+
+
+export interface Room {
+  id: number;
+  home: number;
+  name: string;
+}
+
+
 const HOMES_URL = window.location.origin + "/api/homes/"
 
-export class Home {
-  id: number;
-  name: string;
-}
-
-export class Room {
-  id: number;
-  name: string;
-
-  constructor(id: number, name: string) {
-    this.id = id;
-    this.name = name;
-  }
-}
 
 @Injectable()
 export class HomeService {
 
   homes: Home[] = [];
-  rooms = new Map();
+  homeRoomMap = new Map(); // homeID => Room[]
+  roomMap = new Map();     // roomID => Room
 
   constructor(private httpClient: HttpClient,
               private eventService: EventService) {
@@ -61,12 +62,13 @@ export class HomeService {
   }
 
   private addRoom(homeID: number, room: Room) {
-    this.rooms.get(homeID).push(room);
+    this.homeRoomMap.get(homeID).push(room);
+    this.roomMap.set(room.id, room);
   }
 
   private addRooms(homeID: number, rooms: Room[]) {
-    if (!this.rooms.has(homeID)) {
-      this.rooms.set(homeID, []);
+    if (!this.homeRoomMap.has(homeID)) {
+      this.homeRoomMap.set(homeID, []);
     }
 
     for (let room of rooms) {
@@ -79,8 +81,8 @@ export class HomeService {
   }
 
   getHomeRooms(homeID: number): Promise<Room[]> {
-    if (this.rooms.has(homeID)) {
-      return Promise.resolve(this.rooms.get(homeID));
+    if (this.homeRoomMap.has(homeID)) {
+      return Promise.resolve(this.homeRoomMap.get(homeID));
     }
 
     // No rooms gotten yet, getting rooms...
@@ -89,7 +91,7 @@ export class HomeService {
         .subscribe(
           (rooms: Room[]) => {
             this.addRooms(homeID, rooms);
-            resolve(this.rooms.get(homeID));
+            resolve(this.homeRoomMap.get(homeID));
           },
           error => {
             reject(error);
@@ -104,7 +106,6 @@ export class HomeService {
                      {"name": roomName})
         .subscribe(
           (room: Room) => {
-            console.log("Adding room: ", room, " to room list: ", this.rooms.get(homeID))
             this.addRoom(homeID, room);
             resolve(room);
           },
@@ -113,5 +114,9 @@ export class HomeService {
           }
         );
     });
+  }
+
+  getRoom(roomID: number) {
+    return this.roomMap.get(roomID);
   }
 }

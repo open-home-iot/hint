@@ -93,7 +93,6 @@ export class DeviceService {
           (devices: Device[]) => {
             this.addRoomDevices(roomID, devices);
             resolve(this.roomDevices.get(roomID));
-            console.log(devices);
           },
           error => {
             reject(error)

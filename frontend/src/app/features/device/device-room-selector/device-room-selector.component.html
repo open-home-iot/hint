@@ -1,0 +1,4 @@
+<div *ngFor="let room of rooms">
+
+  {{ room.name }}<span *ngIf="room.id == roomID"> - This is the currently selected room!</span>
+</div>
