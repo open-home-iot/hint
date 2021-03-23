@@ -5,7 +5,7 @@
       <div class="space_taker">
         <i [hidden]="roomID != room.id" class="material-icons check_green">check</i>
       </div>
-      <a>{{ room.name }}</a>
+      <a (click)="selectNewRoom(room.id)">{{ room.name }}</a>
     </div>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {HomeService} from "../home/home.service";
 
 
 export interface Device {
@@ -25,7 +26,8 @@ export class DeviceService {
   homeDevices = new Map();
   roomDevices = new Map();
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private homeService: HomeService,
+              private httpClient: HttpClient) { }
 
   getHomeDevicesUrl(homeID: number) {
     return HOMES_URL + String(homeID) + "/devices";
@@ -33,6 +35,11 @@ export class DeviceService {
 
   addHomeDevice(homeID: number, device: Device) {
     this.homeDevices.get(homeID).push(device);
+  }
+
+  removeHomeDevice(homeID: number, device: Device) {
+    let homeDevices = this.homeDevices.get(homeID);
+    homeDevices.splice(homeDevices.indexOf(device), 1);
   }
 
   replaceHomeDevices(homeID: number, devices: Device[]) {
@@ -74,6 +81,11 @@ export class DeviceService {
     this.roomDevices.get(roomID).push(device);
   }
 
+  removeRoomDevice(roomID: number, device: Device) {
+    let roomDevices = this.roomDevices.get(roomID);
+    roomDevices.splice(roomDevices.indexOf(device), 1);
+  }
+
   replaceRoomDevices(roomID: number, devices: Device[]) {
     if (!this.roomDevices.has(roomID)) {
       this.roomDevices.set(roomID, []);
@@ -103,5 +115,39 @@ export class DeviceService {
           }
         );
     });
+  }
+
+  changeRoom(device: Device, roomID: number | undefined) {
+
+    if (device.room == undefined) {
+      // Fetch target room to get access to homeID
+      let room = this.homeService.getRoom(roomID);
+      console.log("Old home devices before: ", this.homeDevices.get(room.home));
+      this.removeHomeDevice(room.home, device);
+      console.log("Old home devices after: ", this.homeDevices.get(room.home));
+    } else {
+      console.log("Old room devices before: ", this.roomDevices.get(device.room));
+      this.removeRoomDevice(device.room, device);
+      console.log("Old room devices after: ", this.roomDevices.get(device.room));
+    }
+
+    // A device can change from belonging to a room to belonging to the home in
+    // general.
+    if (roomID == undefined) {
+      console.log("Target room non existent, setting as belonging to home.");
+      let room = this.homeService.getRoom(device.room);
+      console.log("Home devices before: ", this.homeDevices.get(room.home));
+      this.addHomeDevice(room.home, device);
+      console.log("Home devices after: ", this.homeDevices.get(room.home));
+    } else {
+      console.log("New room devices before: ", this.roomDevices.get(roomID));
+      this.addRoomDevice(roomID, device);
+      console.log("New room devices after: ", this.roomDevices.get(roomID));
+    }
+
+    // Set the device room
+    console.log("Device before: ", device);
+    device.room = roomID;
+    console.log("Device after: ", device);
   }
 }

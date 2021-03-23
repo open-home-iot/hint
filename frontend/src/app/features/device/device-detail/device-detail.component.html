@@ -3,7 +3,9 @@
     <h4>{{ device.name }}</h4>
     <h5>{{ device.type_name }}</h5>
   </div>
-  <app-device-room-selector [roomID]="device.room"></app-device-room-selector>
+  <app-device-room-selector [roomID]="device.room"
+                            (roomSelectedEvent)="onRoomSelected($event)">
+  </app-device-room-selector>
 </div>
 
 <div class="device_footer">

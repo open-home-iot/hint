@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Device} from "../device.service";
+import {Device, DeviceService} from "../device.service";
+import {HomeService} from "../../home/home.service";
 
 
 @Component({
@@ -11,8 +12,14 @@ export class DeviceDetailComponent implements OnInit {
 
   @Input() device: Device;
 
-  constructor() { }
+  constructor(private homeService: HomeService,
+              private deviceService: DeviceService) { }
 
   ngOnInit(): void { }
 
+  onRoomSelected(roomID: number) {
+    console.log("Changing the room of device to: ",
+                this.homeService.getRoom(roomID).name);
+    this.deviceService.changeRoom(this.device, roomID);
+  }
 }
