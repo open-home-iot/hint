@@ -2,7 +2,10 @@
   <a class="p-2 text-dark">Rooms</a>
   <div class="dropdown_content">
     <div class="room_list_item" *ngFor="let room of rooms">
-      <i *ngIf="room.id == roomID" class="material-icons check_green">check</i><a>{{ room.name }}</a>
+      <div class="space_taker">
+        <i [hidden]="roomID != room.id" class="material-icons check_green">check</i>
+      </div>
+      <a>{{ room.name }}</a>
     </div>
   </div>
 </div>

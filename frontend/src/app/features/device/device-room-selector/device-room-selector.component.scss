@@ -1,6 +1,10 @@
-:host {
+.dropdown {
   position: relative;
   display: inline-block;
+
+  a {
+    cursor: pointer;
+  }
 
   .dropdown_content {
     position: absolute;
@@ -9,6 +13,7 @@
     z-index: 1;
     padding: 0.5em;
     background-color: white;
+    border: 1px solid gray;
     border-radius: 0.5em;
     box-shadow: 0.2em 0.2em 0.2em gray;
 
@@ -16,6 +21,11 @@
       display: flex;
       margin-top: 0.3em;
       margin-bottom: 0.3em;
+
+      .space_taker {
+        display: inline;
+        width: 1.5em;
+      }
 
       a:hover {
         text-decoration: underline;
@@ -27,12 +37,8 @@
       }
     }
   }
+}
 
-  .dropdown a {
-    cursor: pointer;
-  }
-
-  .dropdown:hover .dropdown_content {
-    display: flex;
-  }
+.dropdown:hover .dropdown_content {
+  display: flex;
 }
