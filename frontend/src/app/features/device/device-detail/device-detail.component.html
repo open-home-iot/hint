@@ -1,6 +1,12 @@
+<div class="device_header">
+  <div class="device_heading">
+    <h4>{{ device.name }}</h4>
+    <h5>{{ device.type_name }}</h5>
+  </div>
+  <app-device-room-selector [roomID]="device.room"></app-device-room-selector>
+</div>
+
 {{ device.uuid }}
 {{ device.category_name }}
-{{ device.type_name }}
-{{ device.name }}
 
-<app-device-room-selector [roomID]="device.room"></app-device-room-selector>
+

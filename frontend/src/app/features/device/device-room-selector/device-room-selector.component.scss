@@ -1,3 +1,7 @@
+:host {
+  display: inline;
+}
+
 .dropdown {
   position: relative;
   display: inline-block;
@@ -19,6 +23,7 @@
 
     .room_list_item {
       display: flex;
+      height: 1.5em;
       margin-top: 0.3em;
       margin-bottom: 0.3em;
 
@@ -34,6 +39,7 @@
 
       .check_green {
         color: #008c15;
+        font-size: 1.5em;
       }
     }
   }
