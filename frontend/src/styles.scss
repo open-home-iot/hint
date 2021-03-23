@@ -3,6 +3,8 @@
 
 /* GLOBAL CSS RESET */
 html {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   font-size: 16px;
 }
@@ -29,7 +31,7 @@ img {
 
 /* GLOBAL CSS RULES */
 html {
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
@@ -40,5 +42,6 @@ body {
 .col-md-12 {
   padding: 0;
 }
+
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
