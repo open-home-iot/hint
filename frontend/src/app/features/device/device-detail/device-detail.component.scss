@@ -1,4 +1,5 @@
 :host {
+  min-width: 33vw;
   margin: 1em 0 0 1em;
   padding: 0.5em;
   background-color: white;
@@ -9,5 +10,16 @@
   .device_header {
     display: flex;
     justify-content: space-between;
+  }
+
+  .device_footer {
+
+    .device_details {
+      display: block;
+      margin: 0;
+      padding: 0;
+      font-size: 0.5em;
+      color: lightgray;
+    }
   }
 }

@@ -6,7 +6,8 @@
   <app-device-room-selector [roomID]="device.room"></app-device-room-selector>
 </div>
 
-{{ device.uuid }}
-{{ device.category_name }}
-
-
+<div class="device_footer">
+  <hr>
+  <span class="device_details">UUID: {{ device.uuid }}</span>
+  <span class="device_details">Category: {{ device.category_name }}</span>
+</div>
