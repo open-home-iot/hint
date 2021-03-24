@@ -18,6 +18,7 @@ export interface Device {
 
 const HOMES_URL = window.location.origin + "/api/homes/"
 const ROOMS_URL = window.location.origin + "/api/rooms/"
+const DEVICES_URL = window.location.origin + "/api/devices/"
 
 
 @Injectable()
@@ -117,37 +118,37 @@ export class DeviceService {
     });
   }
 
+  getRoomChangeUrl(device: Device) {
+    return DEVICES_URL + device.uuid + "/change-room";
+  }
+
   changeRoom(device: Device, roomID: number | undefined) {
+    this.httpClient.patch(this.getRoomChangeUrl(device),
+                    {"old_id": device.room, "new_id": roomID})
+      .subscribe(
+        success => {
+          if (device.room == undefined) {
+            // Fetch target room to get access to homeID
+            let room = this.homeService.getRoom(roomID);
+            this.removeHomeDevice(room.home, device);
+          } else {
+            this.removeRoomDevice(device.room, device);
+          }
 
-    if (device.room == undefined) {
-      // Fetch target room to get access to homeID
-      let room = this.homeService.getRoom(roomID);
-      console.log("Old home devices before: ", this.homeDevices.get(room.home));
-      this.removeHomeDevice(room.home, device);
-      console.log("Old home devices after: ", this.homeDevices.get(room.home));
-    } else {
-      console.log("Old room devices before: ", this.roomDevices.get(device.room));
-      this.removeRoomDevice(device.room, device);
-      console.log("Old room devices after: ", this.roomDevices.get(device.room));
-    }
-
-    // A device can change from belonging to a room to belonging to the home in
-    // general.
-    if (roomID == undefined) {
-      console.log("Target room non existent, setting as belonging to home.");
-      let room = this.homeService.getRoom(device.room);
-      console.log("Home devices before: ", this.homeDevices.get(room.home));
-      this.addHomeDevice(room.home, device);
-      console.log("Home devices after: ", this.homeDevices.get(room.home));
-    } else {
-      console.log("New room devices before: ", this.roomDevices.get(roomID));
-      this.addRoomDevice(roomID, device);
-      console.log("New room devices after: ", this.roomDevices.get(roomID));
-    }
-
-    // Set the device room
-    console.log("Device before: ", device);
-    device.room = roomID;
-    console.log("Device after: ", device);
+          // A device can change from belonging to a room to belonging to the home in
+          // general.
+          if (roomID == undefined) {
+            let room = this.homeService.getRoom(device.room);
+            this.addHomeDevice(room.home, device);
+          } else {
+            this.addRoomDevice(roomID, device);
+          }
+          // Set the device room
+          device.room = roomID;
+        },
+        error => {
+          console.error(error);
+        }
+      );
   }
 }

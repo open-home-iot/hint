@@ -33,6 +33,10 @@ html, body {
   min-height: 100%;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 // Global bootstrap
 .col-md-12 {
   padding: 0;

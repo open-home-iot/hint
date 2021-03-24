@@ -18,8 +18,6 @@ export class DeviceDetailComponent implements OnInit {
   ngOnInit(): void { }
 
   onRoomSelected(roomID: number) {
-    console.log("Changing the room of device to: ",
-                this.homeService.getRoom(roomID).name);
     this.deviceService.changeRoom(this.device, roomID);
   }
 }

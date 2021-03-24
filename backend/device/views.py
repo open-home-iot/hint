@@ -4,6 +4,7 @@ from rest_framework import status
 
 from backend.device.models import Device
 from backend.device.serializers import DeviceSerializer
+from backend.home.models import Room
 
 
 class RoomDevices(views.APIView):
@@ -42,3 +43,25 @@ class HomeDevices(views.APIView):
 
         serializer = DeviceSerializer(devices, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ChangeDeviceRoom(views.APIView):
+    """Change the room a device belongs to."""
+
+    def patch(self, request, device_uuid, format=None):
+        """
+        Change which room a device belongs to.
+        """
+        try:
+            device = Device.objects.get(uuid=device_uuid)
+
+            room = None
+            if request.data["new_id"] is not None:
+                room = Room.objects.get(id=request.data["new_id"])
+
+            device.room = room
+            device.save()
+        except Device.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
