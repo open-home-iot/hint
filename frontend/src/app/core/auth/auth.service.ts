@@ -49,7 +49,7 @@ export class AuthService {
   }
 
   loginWithPromise(username: string, password: string) {
-    var promise = new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.sendLoginRequest(username, password)
         .subscribe(
           next => {
@@ -57,15 +57,13 @@ export class AuthService {
             resolve();
           },
           (error: HttpErrorResponse) => {
-            console.log("Failed to log in");
+            console.log('Failed to log in');
             console.log(error);
             this.updateAuthService(false);
             reject(error);
           }
         );
     });
-
-    return promise;
   }
 
   logout() {

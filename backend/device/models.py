@@ -84,7 +84,6 @@ def create_device(hume, device_spec):
 class Device(models.Model):
 
     hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
-    is_attached = models.BooleanField(default=False)
 
     # When Rooms are deleted, do not delete devices, they belong to the general
     # Home now.
@@ -166,7 +165,6 @@ class Device(models.Model):
         """str representation of a Device instance"""
         return f"<{self.__class__.__name__} instance {self.uuid} (" \
                f"hume owner: {self.hume.uuid}, " \
-               f"is_attached: {self.is_attached}, " \
                f"name: {self.name}, " \
                f"category: {Device.Category.get_verbose_name(self.category)}, " \
                f"type: {self.type_name}, " \

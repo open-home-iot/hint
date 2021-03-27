@@ -8,7 +8,6 @@ class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
         fields = ('hume',
-                  'is_attached',
                   'room',
                   'uuid',
                   'name',
