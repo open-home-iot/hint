@@ -30,7 +30,6 @@ def create_dummy_device(hume: Hume):
     """
     device = Device.objects.create(
         hume=hume,
-        is_attached=True,
         uuid=str(uuid.uuid4()),
         name="dummy_device",
         category=random.choice(Device.Category.CHOICES)[0],
