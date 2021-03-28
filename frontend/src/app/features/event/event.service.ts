@@ -17,8 +17,8 @@ export class HumeEvent {
 export class EventService {
 
   private subscriptionMap: {
-    (subscriptionKey: string): {
-      subscription_id: string
+    (subscription_id: string): {
+      subscription_key: string
       callback: Function,
       event_type: string
     }[] 
@@ -41,7 +41,26 @@ export class EventService {
   onEvent(event: string) {
     let decoded_event: HumeEvent = JSON.parse(event);
     console.log(decoded_event);
+
+    for (let sub_id in this.subscriptionMap){
+      let subMap = this.subscriptionMap[sub_id];
+      if(subMap.subscription_key.equals(decoded_event.hume_uuid)){
+        if (subMap.event_type.equals(decoded_event.event_type)){
+        let megaObject = subMap.callback;
+        megaObject(decoded_event);
+      }
+    }
+  }
     
+
+/*
+   for (let callbackObject of subMap.hume_uuid) {
+          if (subMap.event_type == callbackObject.event_type){
+             callbackObject(decoded_event);
+          }
+       }
+*/
+
     if (decoded_event.hume_uuid in this.subscriptionMap) {
       for (let callbackObject of this.subscriptionMap[decoded_event.hume_uuid]) {
          if (decoded_event.event_type == callbackObject.event_type){
@@ -51,21 +70,21 @@ export class EventService {
     }
   }
 
-  subscribe(subscriptionKey: string, subscriptionId: string, eventType: string, callback: Function) {
+  subscribe(subscriptionId: string, subscriptionKey: string,  eventType: string, callback: Function) {
     console.log("Subscribing to key: " + String(subscriptionKey));
-    if (!(subscriptionKey in this.subscriptionMap)) {
-      this.subscriptionMap[subscriptionKey] = [];
+    if (!(subscriptionId in this.subscriptionMap)) {
+      this.subscriptionMap[subscriptionId] = [];
     }
-    this.subscriptionMap[subscriptionKey].push(callback);
+    this.subscriptionMap[subscriptionId].push(callback, subscriptionKey, eventType);
     console.log("this is the subscriptionmap")
     console.log(this.subscriptionMap)
     console.log("end of subscriptionmap")
   }
 
-  unsubscribe(subscriptionKey: string, subscriptionId: string, eventType: string, callback: Function) {
+  unsubscribe(subscriptionId: string) {
     console.log(this.subscriptionMap);
 
-    delete this.subscriptionMap[subscriptionKey];
+    delete this.subscriptionMap[subscriptionId];
     console.log(this.subscriptionMap);
   }
 

@@ -49,7 +49,8 @@ export class HumeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    
+    console.log("Shutting down HUME list component");
+    this.eventService.unsubscribe("12345", "1", "discover_devices", this.onDevicesDiscovered.bind(this))
 
   }
 }
