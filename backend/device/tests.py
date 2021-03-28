@@ -261,3 +261,53 @@ class RoomDeviceGetApi(TestCase):
 
         res = client.get(f"/api/rooms/{self.room.id}/devices")
         self.assertEqual(len(res.data), 0)
+
+
+class DeviceRoomAssignmentAPI(TestCase):
+    """Test the room assignment endpoint."""
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        Create shared test case data.
+        """
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
+        self.room = Room.objects.create(name="room", home=self.home)
+
+        self.hume = Hume.objects.create(uuid=uuid.uuid4(),
+                                        home=self.home)
+
+    def test_assign_device_to_a_room(self):
+        """Verify device room assignment works."""
+        device = create_dummy_device(self.hume)
+
+        self.client.patch(f"/api/devices/{device.uuid}/change-room",
+                          {"new_id": self.room.id, "old_id": None})
+
+        device = Device.objects.get(uuid=device.uuid)
+        self.assertEqual(device.room.id, self.room.id)
+
+    def test_assign_device_to_a_home(self):
+        """Verify assigning a device no room works."""
+        device = create_dummy_device(self.hume)
+        device.room = self.room
+        device.save()
+
+        self.client.patch(f"/api/devices/{device.uuid}/change-room",
+                          {"new_id": None, "old_id": self.room.id})
+
+        device = Device.objects.get(uuid=device.uuid)
+
+        self.assertEqual(device.room, None)

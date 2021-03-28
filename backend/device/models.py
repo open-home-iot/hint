@@ -166,7 +166,7 @@ class Device(models.Model):
         return f"<{self.__class__.__name__} instance {self.uuid} (" \
                f"hume owner: {self.hume.uuid}, " \
                f"name: {self.name}, " \
-               f"category: {Device.Category.get_verbose_name(self.category)}, " \
+               f"category: {self.category_name}, " \
                f"type: {self.type_name}, " \
                f"parent: {self.parent})>"  # noqa
 
