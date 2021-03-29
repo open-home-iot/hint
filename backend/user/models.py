@@ -5,6 +5,13 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, \
 
 class CustomUserManager(BaseUserManager):
 
+    def create_hume_user(self, hume_uuid, generated_password):
+        """Used to create Hume users."""
+        return self.create_user(
+            email=f"{str(hume_uuid).replace('-', '')}@fake.com",
+            password=generated_password
+        )
+
     def create_user(self,
                     email,
                     password='',

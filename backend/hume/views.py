@@ -40,10 +40,8 @@ class Humes(views.APIView):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
             generated_password = str(uuid.uuid1())
-            hume_user = User.objects.create_user(
-                email=f"{str(hume_uuid).replace('-', '')}@fake.com",
-                password=generated_password
-            )
+            hume_user = User.objects.create_hume_user(hume_uuid,
+                                                      generated_password)
 
             hume = serializer.save()
             hume.hume_user = hume_user

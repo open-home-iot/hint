@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom
+    'backend.core.apps.CoreConfig',
     'backend.broker.apps.BrokerConfig',
     'backend.user.apps.UserConfig',
     'backend.home.apps.HomeConfig',
