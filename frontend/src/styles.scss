@@ -1,4 +1,4 @@
-@import "/src/variables";
+@import "./src/variables";
 /* You can add global styles to this file, and also import other style files */
 
 /* GLOBAL CSS RESET */
@@ -28,17 +28,19 @@ img {
 /* GLOBAL CSS RESET */
 
 /* GLOBAL CSS RULES */
-html {
+html, body {
   height: 100%;
+  min-height: 100%;
 }
 
-body {
-  height: 100%;
+[hidden] {
+  display: none !important;
 }
 
-//Global bootstrap
+// Global bootstrap
 .col-md-12 {
   padding: 0;
 }
+
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';

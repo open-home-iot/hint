@@ -25,7 +25,6 @@ export class HumeListComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.log("Init HUME list component");
     this.humes = this.humeService.initHomeHumes(this.homeId);
   }
 
@@ -38,14 +37,8 @@ export class HumeListComponent implements OnInit, OnDestroy {
     this.deviceList = [];
   }
 
-  onDevicesDiscovered(deviceDiscoredEvent: HumeEvent){
-    for (let device of deviceDiscoredEvent.content){
-      let newDevice = new Device();
-      newDevice.uuid = device.uuid;
-      newDevice.humeUuid = deviceDiscoredEvent.hume_uuid;
-      this.deviceList.push(newDevice);
-      
-    }    
+  onDevicesDiscovered(deviceDiscoveredEvent: HumeEvent){
+    this.deviceList = deviceDiscoveredEvent.content;
     console.log("the device list ");
     console.log(this.deviceList.length);
   }

@@ -1,35 +1,43 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-import { HttpService } from '../../core/http/http.service';
 import { EventService } from '../event/event.service';
 
 
-const HOME_URL = window.location.origin + "/api/homes/"
-
-
-export class Home {
+export interface Home {
   id: number;
   name: string;
 }
+
+
+export interface Room {
+  id: number;
+  home: number;
+  name: string;
+}
+
+
+const HOMES_URL = window.location.origin + "/api/homes/"
+
 
 @Injectable()
 export class HomeService {
 
   homes: Home[] = [];
+  homeRoomMap = new Map(); // homeID => Room[]
+  roomMap = new Map();     // roomID => Room
 
-  constructor(private httpService: HttpService,
+  constructor(private httpClient: HttpClient,
               private eventService: EventService) {
-    console.log("Constructing HomeService");
-    this.httpService.get(HOME_URL)
+    this.httpClient.get(HOMES_URL)
       .subscribe(
         (homes: Home[]) => {
-          console.log("Successfully got all HOMES!");
           for (let home of homes) {
             this.addHome(home);
           }
         },
         error => {
-          console.log(error);
+          console.error(error);
         }
       );
   }
@@ -42,17 +50,75 @@ export class HomeService {
   }
 
   createHome(name: string) {
-    console.log("HomeService: Creating HOME");
-    this.httpService.post(HOME_URL, {name: name})
+    this.httpClient.post(HOMES_URL, {name: name})
       .subscribe(
         (home: Home) => {
-          console.log("Successfully created HOME instance!");
           this.addHome(home);
         },
         error => {
-          console.log(error);
+          console.error(error);
         }
       );
   }
 
+  private addRoom(homeID: number, room: Room) {
+    this.homeRoomMap.get(homeID).push(room);
+    this.roomMap.set(room.id, room);
+  }
+
+  private replaceRooms(homeID: number, rooms: Room[]) {
+    if (!this.homeRoomMap.has(homeID)) {
+      this.homeRoomMap.set(homeID, []);
+    }
+
+    // Maintain array reference
+    this.homeRoomMap.get(homeID).length = 0;
+    for (let room of rooms) {
+      this.addRoom(homeID, room);
+    }
+  }
+
+  private getHomeRoomsUrl(homeID: number) {
+    return HOMES_URL + String(homeID) + "/rooms";
+  }
+
+  getHomeRooms(homeID: number): Promise<Room[]> {
+    if (this.homeRoomMap.has(homeID)) {
+      return Promise.resolve(this.homeRoomMap.get(homeID));
+    }
+
+    // No rooms gotten yet, getting rooms...
+    return new Promise<Room[]>((resolve, reject) => {
+      this.httpClient.get(this.getHomeRoomsUrl(homeID))
+        .subscribe(
+          (rooms: Room[]) => {
+            this.replaceRooms(homeID, rooms);
+            resolve(this.homeRoomMap.get(homeID));
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  createRoom(homeID: number, roomName: string): Promise<Room> {
+    return new Promise<Room>((resolve, reject) => {
+      this.httpClient.post(this.getHomeRoomsUrl(homeID),
+                     {"name": roomName})
+        .subscribe(
+          (room: Room) => {
+            this.addRoom(homeID, room);
+            resolve(room);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  getRoom(roomID: number) {
+    return this.roomMap.get(roomID);
+  }
 }

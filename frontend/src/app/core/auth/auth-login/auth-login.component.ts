@@ -50,18 +50,17 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
   login() {
     this.authService.loginWithPromise(this.email.value, this.password.value)
       .then(() => {
-        console.log("Manual login succeeded!");
         this.apiLoginError = false;
         this.apiLoginSuccess = true;
       },
       (error: HttpErrorResponse) => {
-        console.log("Manual login failed!")
+        console.error("Manual login failed!")
         this.apiLoginError = true;
         this.apiLoginErrorMessages = Object.assign([], error.error.auth);
       });
   }
-  
+
   open(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result
-    };
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'})
+  };
 }

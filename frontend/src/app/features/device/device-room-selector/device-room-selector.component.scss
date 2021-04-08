@@ -1,0 +1,50 @@
+:host {
+  display: inline;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+  a {
+    cursor: pointer;
+  }
+
+  .dropdown_content {
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    z-index: 1;
+    padding: 0.5em;
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 0.5em;
+    box-shadow: 0.2em 0.2em 0.2em gray;
+
+    .room_list_item {
+      display: flex;
+      height: 1.5em;
+      margin-top: 0.3em;
+      margin-bottom: 0.3em;
+
+      .space_taker {
+        display: inline;
+        width: 1.5em;
+      }
+
+      a:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      .check_green {
+        color: #008c15;
+        font-size: 1.5em;
+      }
+    }
+  }
+}
+
+.dropdown:hover .dropdown_content {
+  display: flex;
+}

@@ -1,4 +1,1 @@
-<div class="device_instance" *ngFor="let device of deviceList">
-    UUID: {{ device.uuid }}
-    Hume_UUID : {{ device.humeUuid}}
-</div>
+<app-device-detail *ngFor="let device of devices" [device]="device"></app-device-detail>

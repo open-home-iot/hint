@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { DeviceOverviewComponent } from './pages/device-overview/device-overview.component';
 import { AuthGuard } from '../../core/auth/auth.guard';
 
 /*
@@ -17,9 +16,7 @@ Or for all children:
 NOTE! canDeactivate can be used to prevent navigation before saving changes.
  */
 
-const routes: Routes = [
-  { path: 'device', component: DeviceOverviewComponent, canActivate: [AuthGuard] }
-];
+const routes: Routes = [];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

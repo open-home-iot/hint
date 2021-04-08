@@ -27,8 +27,6 @@ import { AuthRequestInterceptor } from './core/auth/auth.interceptor';
 import { HomeModule } from './features/home/home.module';
 import { HumeModule } from './features/hume/hume.module';
 import { DeviceModule } from './features/device/device.module';
-import { DashboardModule } from './features/dashboard/dashboard.module';
-import { StatisticsModule } from './features/statistics/statistics.module';
 import { UserModule } from './features/user/user.module';
 import { EventModule } from './features/event/event.module';
 import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.component';
@@ -53,21 +51,18 @@ import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.compo
     HttpClientModule,
 
     //BOOTSTRAP IMPORT
-    NgbModule,  
+    NgbModule,
 
     // FEATURE MODULE IMPORTS
     HomeModule,
     HumeModule,
     DeviceModule,
-    DashboardModule,
-    StatisticsModule,
     UserModule,
     EventModule,
 
     // CORE ROUTING MODULE, DO NOT REMOVE!
     // NEEDS TO DECLARED LAST OR CATCH ALL ROUTE REGISTERS BEFORE CHILD ROUTES!
     AppRoutingModule
-    // NEEDS TO DECLARED LAST OR CATCH ALL ROUTE REGISTERS BEFORE CHILD ROUTES!
   ],
   providers: [
     {

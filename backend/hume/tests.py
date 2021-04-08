@@ -16,14 +16,15 @@ HUME_BASE_URL = "/api/humes/"
 
 
 class HumePairApi(TestCase):
+    """Verifies a Hume pairing itself to HINT"""
+
     HUME_PAIR_URL = HUME_BASE_URL
 
     def setUp(self):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data, what's created here needs to be torn
-        down in tearDown().
+        Create shared test case data.
         """
         self.client = APIClient()
 
@@ -58,7 +59,7 @@ class HumePairApi(TestCase):
                                {"uuid": uid})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
 
-        [hume] = Hume.objects.all()
+        [_hume] = Hume.objects.all()
 
     def test_api_pair_hume_fail_invalid_fields(self):
         """
@@ -87,6 +88,10 @@ class HumePairApi(TestCase):
 
 
 class HumeFindApi(TestCase):
+    """
+    Verifies the find API when a user is about to pair a Hume with one of
+    their Homes
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -156,6 +161,7 @@ class HumeFindApi(TestCase):
 
 
 class HumeConfirmPairingApi(TestCase):
+    """Verifies the pairing confirmation endpoint"""
 
     @classmethod
     def setUpClass(cls):
@@ -274,6 +280,10 @@ class HumeConfirmPairingApi(TestCase):
 
 
 class HomeHumesApi(TestCase):
+    """
+    Verifies that all Humes can be gotten based on the input Home
+    """
+
     HOME_BASE_URL = "/api/homes/"
 
     @classmethod
@@ -354,6 +364,7 @@ class HomeHumesApi(TestCase):
                          str(home.id) + "/humes")
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(ret.data), 1)
         self.assertEqual(ret.data[0]["uuid"],
                          "14a19f7e-0fd9-11eb-97a0-60f81dbb505c")
 

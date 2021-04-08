@@ -7,7 +7,6 @@ import { HumeFindComponent } from './hume-find/hume-find.component';
 import { HumeListComponent } from './hume-list/hume-list.component';
 
 // PAGES
-import { HumeOverviewComponent } from './pages/hume-overview/hume-overview.component';
 
 // SERVICES
 import { HumeService } from './hume.service';
@@ -18,7 +17,6 @@ import { DeviceModule } from '../device/device.module';
 
 @NgModule({
   declarations: [
-    HumeOverviewComponent,
     HumeFindComponent,
     HumeListComponent
   ],
