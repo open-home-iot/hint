@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -6,13 +8,13 @@ from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
-import json
-
-from .serializers import UserSerializer
-from .models import User
+from backend.user.serializers import UserSerializer
+from backend.user.models import User
 
 
 class UserSignup(views.APIView):
+    """Allows (human) users to create new accounts"""
+
     # Default is IsAuthenticated, but we don't need to be authenticated to
     # create an account.
     permission_classes = []
@@ -29,6 +31,7 @@ class UserSignup(views.APIView):
 
 
 class UserSelf(views.APIView):
+    """Get information about the currently authenticated user"""
 
     def get(self, request, format=None):
         """
@@ -67,11 +70,11 @@ def login_user(request):
         login(request, user)
         return JsonResponse({'auth': ['Signed in successfully.']},
                             status=status.HTTP_200_OK)
-    else:
-        response = JsonResponse({'auth': ['Invalid credentials']},
-                                status=status.HTTP_401_UNAUTHORIZED)
-        response['WWW-Authenticate'] = 'Invalid username or password'
-        return response
+
+    response = JsonResponse({'auth': ['Invalid credentials']},
+                            status=status.HTTP_401_UNAUTHORIZED)
+    response['WWW-Authenticate'] = 'Invalid username or password'
+    return response
 
 
 @csrf_exempt
@@ -79,6 +82,7 @@ def logout_user(request):
     """
     Log out a user.
     """
+
     if request.method == 'POST':
         logout(request)
         return JsonResponse({'auth': ['Signed out successfully.']}, status=200)

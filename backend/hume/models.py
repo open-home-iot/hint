@@ -5,6 +5,7 @@ from backend.home.models import Home
 
 
 class Hume(models.Model):
+
     # HUME originated info
     uuid = models.UUIDField(unique=True, primary_key=True)
     heartbeat = models.DateTimeField(auto_now_add=True)
@@ -23,4 +24,5 @@ class Hume(models.Model):
 
 
 class ValidHume(models.Model):
-    uuid = models.UUIDField(unique=True)
+
+    uuid = models.UUIDField(primary_key=True)

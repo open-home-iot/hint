@@ -17,8 +17,6 @@ export class AuthService {
 
   constructor(private httpService: HttpService,
               private router: Router) {
-    console.log("Constructing AuthService");
-
     this.initiated = false; // Initially, we do not have up-to-date information.
     this.authSubject = new BehaviorSubject<boolean>(false);
 
@@ -40,7 +38,6 @@ export class AuthService {
 
     observable.subscribe(
       next => {
-        console.log("Success logging in!");
         this.updateAuthService(true);
       },
       (error: HttpErrorResponse) => {
@@ -52,24 +49,21 @@ export class AuthService {
   }
 
   loginWithPromise(username: string, password: string) {
-    var promise = new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.sendLoginRequest(username, password)
         .subscribe(
           next => {
-            console.log("Success logging in!");
             this.updateAuthService(true);
             resolve();
           },
           (error: HttpErrorResponse) => {
-            console.log("Failed to log in");
+            console.log('Failed to log in');
             console.log(error);
             this.updateAuthService(false);
             reject(error);
           }
         );
     });
-
-    return promise;
   }
 
   logout() {

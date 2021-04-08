@@ -13,6 +13,8 @@ from backend.user.models import User
 
 
 class UserModel(TestCase):
+    """Verifies model behavior for the User model"""
+
     def setUp(self):
         """
         CALLED PER TEST CASE!
@@ -48,6 +50,8 @@ class UserModel(TestCase):
 
 
 class UserCreateApi(TestCase):
+    """Verifies the User creation API"""
+
     USER_CREATE_URL = "/api/users/signup"
 
     def setUp(self):
@@ -166,6 +170,8 @@ class UserCreateApi(TestCase):
 
 
 class UserGetApi(TestCase):
+    """Verifies the User fetching API endpoint"""
+
     USER_GET_SELF_URL = "/api/users/self"
 
     @classmethod
@@ -214,6 +220,8 @@ class UserGetApi(TestCase):
 
 
 class UserAuthApi(TestCase):
+    """Verifies User authentication endpoints"""
+
     USER_AUTH_LOGIN_URL = "/api/users/login"
     USER_AUTH_LOGOUT_URL = "/api/users/logout"
 

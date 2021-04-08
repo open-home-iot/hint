@@ -14,9 +14,9 @@ export class WebSocketService {
   private messageBuffer: {"home_id": number}[] = [];
 
   constructor() {
-    console.log("Constructing WebSocketService");
-
-    this.ws = new WebSocket(WS_BASE_URL.replace("http://", "ws://"));
+    this.ws = new WebSocket(
+      WS_BASE_URL.replace("http://", "ws://")
+    );
     this.ws.onopen = this.onSocketOpen.bind(this);
     this.ws.onclose = this.onSocketClose.bind(this);
     this.ws.onerror = this.onSocketError.bind(this);
@@ -26,7 +26,6 @@ export class WebSocketService {
   private onSocketOpen(event: Event) {
     console.log(event);
     while (this.messageBuffer.length > 0) {
-      console.log("Sending buffered WS message...")
       this.send(this.messageBuffer.pop());
     }
   }
@@ -36,7 +35,7 @@ export class WebSocketService {
   }
 
   private onSocketError(event: Event) {
-    console.log(event);
+    console.error(event);
   }
 
   private onSocketMessage(event: MessageEvent) {
@@ -45,7 +44,6 @@ export class WebSocketService {
   }
 
   registerCallback(callback) {
-    console.log("registerCallback was called");
     this.callback = callback;
   }
 

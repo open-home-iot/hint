@@ -3,6 +3,7 @@ from abc import ABC
 from django.db import models
 
 from backend.hume.models import Hume
+from backend.home.models import Room
 
 
 class _Choices(ABC):
@@ -24,6 +25,11 @@ class _Choices(ABC):
 
 
 class DataType(_Choices):
+    """
+    Specifies data types a device can report it supports for a data source/
+    action input.
+    """
+
     STR = 0
     INT = 1
     FLOAT = 2
@@ -76,8 +82,15 @@ def create_device(hume, device_spec):
 
 
 class Device(models.Model):
+
     hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
-    is_attached = models.BooleanField(default=False)
+
+    # When Rooms are deleted, do not delete devices, they belong to the general
+    # Home now.
+    room = models.ForeignKey(Room,
+                             null=True,
+                             blank=True,
+                             on_delete=models.SET_NULL)
 
     # Device specification
     uuid = models.UUIDField(primary_key=True)
@@ -85,6 +98,12 @@ class Device(models.Model):
     description = models.CharField(max_length=258, null=True, blank=True)
 
     class Category(_Choices):
+        """
+        Specifies the different device categories, it is an inner class to
+        enhance code readability through the referencing format:
+        Device.Category.SENSOR. It reads really well.
+        """
+
         SENSOR = 0
         ACTUATOR = 1
         COLLECTION = 2
@@ -97,7 +116,22 @@ class Device(models.Model):
 
     category = models.IntegerField(choices=Category.CHOICES)
 
+    @property
+    def category_name(self):
+        """
+        The verbose category name of the device.
+
+        :return: verbose category name
+        """
+        return Device.Category.get_verbose_name(self.category)
+
     class Type(_Choices):
+        """
+        Device type, either custom or known. Custom devices have to report
+        a custom_device_name. This is an inner class for the same reason as
+        the device category.
+        """
+
         THERMOMETER = 0
         CUSTOM = 666
 
@@ -106,18 +140,17 @@ class Device(models.Model):
             (CUSTOM, "Custom")
         ]
 
-    def get_type_name(self, device_type):
+    @property
+    def type_name(self):
         """
-        Since custom device types are possible, fetch the custom_type_name if
-        type is CUSTOM, otherwise default to get_verbose_name from _Choices.
+        The verbose type name of the device.
 
-        :param device_type: integer representation of a device type
         :return: verbose type name
         """
-        if device_type == self.Type.CUSTOM:
+        if self.type == Device.Type.CUSTOM:
             return self.custom_type_name
 
-        return self.Type.get_verbose_name(device_type)
+        return Device.Type.get_verbose_name(self.type)
 
     type = models.IntegerField(choices=Type.CHOICES)
     custom_type_name = models.CharField(max_length=25, null=True, blank=True)
@@ -131,14 +164,15 @@ class Device(models.Model):
     def __str__(self):
         """str representation of a Device instance"""
         return f"<{self.__class__.__name__} instance {self.uuid} (" \
-               f"hume owner: {self.hume.uuid}, is_attached: {self.is_attached}" \
-               f", name: {self.name}, category: " \
-               f"{Device.Category.get_verbose_name(self.category)}" \
-               f", type: {self.get_type_name(self.type)}, " \
-               f"parent: {self.parent})>"
+               f"hume owner: {self.hume.uuid}, " \
+               f"name: {self.name}, " \
+               f"category: {self.category_name}, " \
+               f"type: {self.type_name}, " \
+               f"parent: {self.parent})>"  # noqa
 
 
 class DeviceDataSource(models.Model):
+
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     data_type = models.IntegerField(choices=DataType.CHOICES)
@@ -151,12 +185,14 @@ class DeviceDataSource(models.Model):
 
 
 class DeviceReading(models.Model):
+
     data_source = models.ForeignKey(DeviceDataSource, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
     data = models.CharField(max_length=25)
 
     def __str__(self):
         """str representation of a DeviceReading instance"""
-        return f"<{self.__class__.__name__} instance {self.id} (data_source: " \
-               f"{self.data_source.id}, timestamp: {self.timestamp}, data: " \
+        return f"<{self.__class__.__name__} instance {self.id} (" \
+               f"data_source: {self.data_source.id}, " \
+               f"timestamp: {self.timestamp}, data: " \
                f"{self.data})>"

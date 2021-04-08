@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+import { Device } from '../device.service';
 
 @Component({
   selector: 'app-device-list',
@@ -7,9 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DeviceListComponent implements OnInit {
 
+  @Input() devices: Device[];
+
   constructor() { }
 
-  ngOnInit() {
-  }
-
+  ngOnInit(): void {}
 }

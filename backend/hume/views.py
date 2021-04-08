@@ -1,5 +1,4 @@
 import uuid
-import json
 
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -18,6 +17,8 @@ from backend.broker import producer
 
 
 class Humes(views.APIView):
+    """Allows Humes to instantiate themselves with HINT."""
+
     permission_classes = []  # Implies no CSRF check.
 
     def post(self, request, format=None):
@@ -39,10 +40,8 @@ class Humes(views.APIView):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
             generated_password = str(uuid.uuid1())
-            hume_user = User.objects.create_user(
-                email=f"{str(hume_uuid).replace('-', '')}@fake.com",
-                password=generated_password
-            )
+            hume_user = User.objects.create_hume_user(hume_uuid,
+                                                      generated_password)
 
             hume = serializer.save()
             hume.hume_user = hume_user
@@ -62,6 +61,7 @@ class Humes(views.APIView):
 
 
 class BrokerCredentials(views.APIView):
+    """Allows Humes to get central broker authentication details"""
 
     def get(self, request, format=None):
         """
@@ -77,6 +77,7 @@ class BrokerCredentials(views.APIView):
 # AJAX VIEWS
 ###############################################################################
 class HumeFind(views.APIView):
+    """Search endpoint to find an unpaired Hume."""
 
     def get(self, request, hume_uuid, format=None):
         """
@@ -97,6 +98,7 @@ class HumeFind(views.APIView):
 
 
 class HumeConfirmPairing(views.APIView):
+    """Confirm an unpaired hume as paired with a home."""
 
     def post(self, request, hume_uuid, format=None):
         """
@@ -123,6 +125,7 @@ class HumeConfirmPairing(views.APIView):
 
 
 class HomeHumes(views.APIView):
+    """Get all Humes associated with a home"""
 
     def get(self, request, home_id, format=None):
         """
@@ -142,6 +145,7 @@ class HomeHumes(views.APIView):
 
 
 class HumeDiscoverDevices(views.APIView):
+    """Discover devices nearby a Hume."""
 
     def get(self, request, hume_uuid, format=None):
         """

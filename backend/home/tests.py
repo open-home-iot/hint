@@ -6,30 +6,20 @@ from rest_framework import status
 # Refer to models under test with an absolute path as the root path of run
 # tests are from ../backend.
 from backend.user.models import User
-from backend.home.models import Home
+from backend.home.models import Home, Room
 
 
 class HomeModel(TestCase):
+    """Verifies Home model behavior"""
+
     def setUp(self):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data, what's created here needs to be torn
-        down in tearDown().
+        Create shared test case data. DB instances are automatically deleted
+        when each test case ends and do not need to be removed.
         """
         self.user = User.objects.create_user("t@t.se", password="pw")
-
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        for user in User.objects.all():
-            user.delete()
-
-        for home in Home.objects.all():
-            home.delete()
 
     def test_create_home(self):
         """
@@ -39,8 +29,12 @@ class HomeModel(TestCase):
         home.users.add(self.user)
         home.save()
 
+        [_user] = home.users.all()
+
 
 class HomeCreateApi(TestCase):
+    """Verifies API endpoints related to creating Homes"""
+
     HOME_CREATE_URL = "/api/homes/"
 
     @classmethod
@@ -55,8 +49,7 @@ class HomeCreateApi(TestCase):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data, what's created here needs to be torn
-        down in tearDown().
+        Create shared test case data.
         """
         self.client = APIClient()
         # NOTE! Cannot test with CSRF and authentication at the same time for
@@ -124,6 +117,8 @@ class HomeCreateApi(TestCase):
 
 
 class HomeGetApi(TestCase):
+    """Verifies the Home-getting API endpoint"""
+
     HOME_GET_ALL_URL = "/api/homes/"
 
     @classmethod
@@ -135,33 +130,14 @@ class HomeGetApi(TestCase):
         User.objects.create_user(email="suite@t.se", password="pw")
         User.objects.create_user(email="some_dude@t.se", password="pw")
 
-    @classmethod
-    def tearDownClass(cls):
-        """
-        Remove global user.
-        """
-        super().tearDownClass()
-        for user in User.objects.all():
-            user.delete()
-
     def setUp(self):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data, what's created here needs to be torn
-        down in tearDown().
+        Create shared test case data.
         """
         self.client = APIClient()
         self.client.login(username="suite@t.se", password="pw")
-
-    def tearDown(self):
-        """
-        CALLED PER TEST CASE!
-
-        Clear all created data from setUp() and the run test case.
-        """
-        for home in Home.objects.all():
-            home.delete()
 
     def test_api_get_all_homes(self):
         """
@@ -178,7 +154,7 @@ class HomeGetApi(TestCase):
         ret = self.client.get(HomeGetApi.HOME_GET_ALL_URL)
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
-        [home1, home2] = ret.data
+        [_home, _home2] = ret.data
 
     def test_api_get_all_homes_only_user_specific_homes(self):
         """
@@ -206,3 +182,131 @@ class HomeGetApi(TestCase):
         ret = client_wo_authentication.get(HomeGetApi.HOME_GET_ALL_URL)
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class RoomCreateApi(TestCase):
+
+    HOME_BASE_URL = "/api/homes/"
+    ROOM_RESOURCE_SUFFIX = "/rooms"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data.
+        """
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
+
+    def test_create_room(self):
+        """Test creating a Room instance through the API."""
+        res = self.client.post(f"{RoomCreateApi.HOME_BASE_URL}{self.home.id}"
+                               f"{RoomCreateApi.ROOM_RESOURCE_SUFFIX}",
+                               {"name": "test"})
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res.data["name"], "test")
+        self.assertEqual(res.data["id"], 1)
+
+    def test_verify_other_users_cannot_create_room(self):
+        """
+        Verify that a user cannot create a room for a home that user does not
+        own.
+        """
+        user = User.objects.create_user(email="o@o.se", password="pw")
+        home2 = Home.objects.create(name="home2")
+        home2.users.add(user)
+        home2.save()
+
+        res = self.client.post(f"{RoomCreateApi.HOME_BASE_URL}{home2.id}"
+                               f"{RoomCreateApi.ROOM_RESOURCE_SUFFIX}",
+                               {"name": "test"})
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class RoomGetApi(TestCase):
+
+    HOME_BASE_URL = "/api/homes/"
+    ROOM_RESOURCE_SUFFIX = "/rooms"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data.
+        """
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
+        self.room = Room.objects.create(name="room", home=self.home)
+
+    def test_get_all_rooms_of_home(self):
+        """Verify that rooms associated to a home can be gotten."""
+        res = self.client.get(f"{RoomGetApi.HOME_BASE_URL}{self.home.id}"
+                              f"{RoomGetApi.ROOM_RESOURCE_SUFFIX}")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        [_room] = res.data
+
+    def test_verify_no_rooms_leak_between_homes(self):
+        """
+        Verify that if multiple homes exist, each with individual rooms, no
+        rooms leak when rooms of one home is queried for.
+        """
+        home2 = Home.objects.create(name="home2")
+        home2.users.add(User.objects.get(email="suite@t.se"))
+        home2.save()
+        Room.objects.create(name="living", home=home2)
+        Room.objects.create(name="toilet", home=home2)
+
+        res = self.client.get(f"{RoomGetApi.HOME_BASE_URL}{self.home.id}"
+                              f"{RoomGetApi.ROOM_RESOURCE_SUFFIX}")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        [room] = res.data
+        self.assertEqual(room["name"], "room")
+
+        # Fetch rooms associated to the other home, should be 2 of them.
+        res = self.client.get(f"{RoomGetApi.HOME_BASE_URL}{home2.id}"
+                              f"{RoomGetApi.ROOM_RESOURCE_SUFFIX}")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        [room1, room2] = res.data
+        if room1["name"] != "living" and room1["name"] != "toilet":
+            self.fail("room1 does not match either of the created rooms")
+
+        if room2["name"] != "living" and room2["name"] != "toilet":
+            self.fail("room2 does not match either of the created rooms")
+
+    def test_no_rooms_leak_between_users(self):
+        """Verify rooms cannot be gotten by users not owning the home."""
+        User.objects.create_user(email="t@t.se", password="password")
+
+        client = APIClient()
+        client.login(username="t@t.se", password="password")
+
+        # Not this user's home instance.
+        res = client.get(f"/api/homes/{self.home.id}/rooms")
+
+        self.assertEqual(len(res.data), 0)

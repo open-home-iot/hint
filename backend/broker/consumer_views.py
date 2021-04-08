@@ -1,12 +1,10 @@
+"""
+This module defines handling for incoming hub (HUME) events.
+"""
 import json
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-
-
-"""
-This module defines handling for incoming hub (HUME) events.
-"""
 
 
 def incoming_command(command):

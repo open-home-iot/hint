@@ -1,1 +1,15 @@
-<p>device-detail works!</p>
+<div class="device_header">
+  <div class="device_heading">
+    <h4>{{ device.name }}</h4>
+    <h5>{{ device.type_name }}</h5>
+  </div>
+  <app-device-room-selector [roomID]="device.room"
+                            (roomSelectedEvent)="onRoomSelected($event)">
+  </app-device-room-selector>
+</div>
+
+<div class="device_footer">
+  <hr>
+  <span class="device_details">UUID: {{ device.uuid }}</span>
+  <span class="device_details">Category: {{ device.category_name }}</span>
+</div>
