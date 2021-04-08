@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 
 import { WebSocketService } from '../../core/websocket/websocket.service';
+import { Hume } from '../hume/hume.service';
 
-export class HomeEvent {
+export class HumeEvent {
   home_id: number;
   hume_uuid: string;
   device_uuid: string;
+  event_type: string;
+  content: any;
 }
+
+export const HUB_DISCOVER_DEVICES = 0;
 
 @Injectable({
   providedIn: 'root'
@@ -14,48 +19,57 @@ export class HomeEvent {
 export class EventService {
 
   private subscriptionMap: {
-    (subscriptionKey: (number | string)): Function[]
+    (subscription_id: string): {
+      subscription_key: string
+      callback: Function,
+      event_type: number
+    } 
   } | {} = {};
+
+  
+
+  /*
+{ "hubIDX2": [function1, function2, function3] }
+
+  { "hubIDX2": [
+    {"consumer": hume_list, "eventType": "discover_devices", "callback": function1},
+    {"eventType": "discover_devices" ,"callback": function2}
+    ] 
+  }
+  */
 
   constructor(private webSocketService: WebSocketService) {
     this.webSocketService.registerCallback(this.onEvent.bind(this));
   }
 
   onEvent(event: string) {
-    let decoded_event: HomeEvent = JSON.parse(event);
-    console.log(decoded_event);
+    let decoded_event: HumeEvent = JSON.parse(event);
+    for (let subscription_id in this.subscriptionMap){
+      let subMap = this.subscriptionMap[subscription_id];
+ 
+      if(subMap.subscription_key === decoded_event.hume_uuid){
+       
+        if (subMap.event_type === decoded_event.event_type){
+          
+        let callbackObject = subMap.callback;
+        callbackObject(decoded_event);
+        }
+      }
+    }
+  } 
 
-    if (decoded_event.home_id in this.subscriptionMap) {
-      for (let callback of this.subscriptionMap[decoded_event.home_id]) {
-        callback(decoded_event)
-      }
-    }
-    if (decoded_event.hume_uuid in this.subscriptionMap) {
-      for (let callback of this.subscriptionMap[decoded_event.hume_uuid]) {
-        callback(decoded_event)
-      }
-    }
-    if (decoded_event.device_uuid in this.subscriptionMap) {
-      for (let callback of this.subscriptionMap[decoded_event.device_uuid]) {
-        callback(decoded_event)
-      }
+  subscribe(subscriptionId: string, subscriptionKey: string,  eventType: number, callback: Function) {
+    console.log("Subscribing to key: " + String(subscriptionKey));  
+
+    this.subscriptionMap[subscriptionId] = {
+      subscription_key : subscriptionKey,
+      event_type : eventType,
+      callback : callback
     }
   }
 
-  subscribe(subscriptionKey: number | string, callback: Function) {
-    console.log("Subscribing to key: " + String(subscriptionKey));
-    if (!(subscriptionKey in this.subscriptionMap)) {
-      this.subscriptionMap[subscriptionKey] = [];
-    }
-
-    this.subscriptionMap[subscriptionKey].push(callback);
-    console.log(this.subscriptionMap)
-  }
-
-  unsubscribe(subscriptionKey: number | string) {
-    console.log(this.subscriptionMap);
-    delete this.subscriptionMap[subscriptionKey];
-    console.log(this.subscriptionMap);
+  unsubscribe(subscriptionId: string) {
+    delete this.subscriptionMap[subscriptionId];
   }
 
   monitorHome(homeId: number) {

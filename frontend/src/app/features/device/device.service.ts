@@ -4,7 +4,7 @@ import {HomeService} from "../home/home.service";
 
 
 export interface Device {
-  hume: string; // UUID
+  humeUuid: string; // UUID
   is_attached: boolean;
   room: number;
   uuid: string;

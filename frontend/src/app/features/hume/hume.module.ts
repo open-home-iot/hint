@@ -13,6 +13,7 @@ import { HumeService } from './hume.service';
 
 // MODULES
 import { HumeRoutingModule } from './hume-routing.module';
+import { DeviceModule } from '../device/device.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HumeRoutingModule } from './hume-routing.module';
   imports: [
     HumeRoutingModule,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DeviceModule
   ],
   exports: [
     HumeFindComponent,

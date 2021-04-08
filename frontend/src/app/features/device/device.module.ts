@@ -31,7 +31,8 @@ import { DeviceRoutingModule } from './device-routing.module';
   ],
   exports: [
     HomeDevicesComponent,
-    RoomDevicesComponent
+    RoomDevicesComponent,
+    DeviceListComponent
   ],
   providers: [DeviceService]
 })
