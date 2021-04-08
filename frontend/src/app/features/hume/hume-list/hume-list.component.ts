@@ -6,7 +6,9 @@ import {EventService} from '../../event/event.service';
 
 import { Device } from '../../device/device.service';
 
-import { HumeEvent } from '../../event/event.service'
+import { HumeEvent } from '../../event/event.service';
+
+import {HUB_DISCOVER_DEVICES} from '../../event/event.service';
 
 @Component({
   selector: 'app-hume-list',
@@ -28,10 +30,10 @@ export class HumeListComponent implements OnInit, OnDestroy {
   }
 
   discoverDevices(humeUUID: string) {
-    this.eventService.unsubscribe(humeUUID, "1", "discover_devices", this.onDevicesDiscovered.bind(this))
+    this.eventService.unsubscribe("123456789")
     console.log("HUME to discover devices for: " + humeUUID);
     this.humeService.discoverDevices(humeUUID).subscribe();
-    this.eventService.subscribe(humeUUID, "1", "discover_devices", this.onDevicesDiscovered.bind(this));
+    this.eventService.subscribe("123456789", humeUUID, HUB_DISCOVER_DEVICES, this.onDevicesDiscovered.bind(this));
 
     this.deviceList = [];
   }
@@ -50,7 +52,6 @@ export class HumeListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log("Shutting down HUME list component");
-    this.eventService.unsubscribe("12345", "1", "discover_devices", this.onDevicesDiscovered.bind(this))
-
+    this.eventService.unsubscribe("123456789")
   }
 }
