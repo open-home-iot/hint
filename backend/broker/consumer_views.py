@@ -29,7 +29,8 @@ def incoming_command(command):
         str(home.id),
         {
             "type": "home.event",  # Will lead to home_event being called
-            "event_type": decoded_command["type"], #TODO Maybe change to eventType or messageType
+            # TODO Maybe change to eventType or messageType
+            "event_type": decoded_command["type"],
             "home_id": home.id,
             "hume_uuid": decoded_command["uuid"],
             "content": decoded_command["content"]
