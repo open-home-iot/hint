@@ -1,176 +1,79 @@
 # HOME-interface
 [![Build](https://github.com/megacorpincorporated/hint/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/megacorpincorporated/hint/actions/workflows/build.yml)
 
-## Get started
+This is the cloud part of the HOME project, a home automation open source initiative. The project consists of a frontend
+and backend part. The backend is based on the [Django](https://www.djangoproject.com/) framework, frontend uses
+[Angular](https://angular.io/). Part of the HOME cloud is also a central [RabbitMQ](https://www.rabbitmq.com/) broker to
+mediate messages sent from [hubs](https://github.com/megacorpincorporated/hume) part of the HOME network. To manage 
+frontend websocket topic updates, [Redis](https://redis.io/) is used as a backend to dispatch websocket events to
+consumers.
 
-### Install Python3
-Install a recent version of Python3, get it from [here](https://www.python.org/downloads/) or whatever package manager you're using.
+## Python
+This project currently uses Python `3.9.2`. Install all dependencies from the project `requirements.txt`.
 
-### Checking 'pip' versions
-Check which version of the Python Package Index (pip) you should use to proceed. You need to check this since many systems have Python installed by default and the command line tool "pip" usually defaults to a Python version less than 3.
+### Tips
+Use [pyenv](https://github.com/pyenv/pyenv) to manage your Python versions.
 
+Use [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) to manage project Python dependencies.
 
-```
-$ which pip
+## NodeJS
+Currently used NodeJS version is `14.16.1`.
 
-# If the output displays some local path to a pre-existing version of Python located in /usr/local/... then try 'pip3' instead.
+### Tips
+Use [NVM](https://github.com/nvm-sh/nvm) to manage your NodeJS versions.
 
-$ which pip3
+## Development
+Here follows some instructions to start development on the HINT project. This section consists of getting RabbitMQ, 
+Redis, Django, and Angular up and running so that code changes trigger reloads that are useable directly.
 
-# Depending on your system, this should give you the path to where the newly installed version of Python3 was installed, and in 
-# which case, this is the pip command you want to use when proceeding. 'pip3' is usually more safe to use since it can only be 
-# associated with Python 3.
-```
+### Backend
+Serve the Django project as you would with any other Django project: `./manage.py runserver`.
 
-### Python virtual environment setup
-To separate Python packages you'll need for this project from other projects, install a Python virtual environment manager. Its documentation can be found [here](https://virtualenvwrapper.readthedocs.io/en/latest/install.html).
+#### Create local settings
+Django settings are managed through a set of base settings `backend/settings/base.py` and local user settings. Local settings
+override the base settings.
 
-```
-# Assuming that 'pip3' was the correct one!
-
-$ pip3 install virtualenvwrapper
-...
-
-# This will install a wrapper for ease of use around the basic Python virtual environment manager. Now, check what Python packages 
-# are installed! NOTE that the version may differ since these packages are well maintained.
-
-$ pip3 list
-Package           Version
------------------ -------
-pbr               5.4.1  <--
-pip               19.2.1 
-setuptools        28.8.0 
-six               1.12.0 <--
-stevedore         1.30.1 <--
-virtualenv        16.7.2 <--
-virtualenv-clone  0.5.3  <--
-virtualenvwrapper 4.8.4  <--
-...
-# The six packages above come with the installation of 'virtualenvwrapper' and are the ones we want to see here.
-```
-
-Now, in order to make the newly installed package 'virtualenvwrapper' available for use in any new terminal window you start (without having to use `export` and `source` to set environment locations each time a new shell is started), you will need to edit your shell startup file. The file to edit depends on your system, for a Mac it would be the `.bash_profile` file.
-```
-# Insert the following into your shell startup file
-
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/Devel
-source /usr/local/bin/virtualenvwrapper.sh
-```
-
-Sometimes, when you have multiple Python versions on your $PATH variable, virtualenvwrapper will behave weirdly. This is because it by default looks for the first version of Python it can find from the $PATH variable. If you have multiple Python versions on the $PATH variable (test by `echo $PATH` in your terminal and check manually) it can be good to also add the line `export VIRTUALENVWRAPPER_PYTHON=<path to your Python3 version>` in order to make sure that the wrapper uses the Python version you want it to.
-
-### Create a virtual environment
-Now, after installing all the necessary Python utilities, go ahead and create a virtual environment where all Python packages related to this project can be installed.
-
-```
-# NOTE! If the below command does not work (your terminal can't find it) try opening a new shell so that you shell startup file
-# gets executed and the virtualenvwrapper variable gets exported and the script sourced.
-
-$ mkvirtualenv <name of virtual environment>
-```
-
-The command should output some installation information.
-
-### Interacting with the virtual environment
-Now that the virtual environment is created, you can exit out of it by using `deactivate`, and go back into it by using `workon <name of virtual environment>`. Make sure that you have used `workon` *before* installing any packages related to this project.
-
-### Installing project Python dependencies
-Assuming that the virtual environment related to this project is active (through `workon <name of virtual environment>`) then go ahead and install this project's dependencies.
-
-```
-# NOTE! Inside your virtual environment 'pip' will point to the Python version in use for this environment, so you do not have to
-# Both 'pip' and 'pip3' should yield the same output.
-
-$ pip install -r requirements.txt
-```
-And that's it, all Python dependencies are now installed into the project's virtual Python environment and will not affect any other project on your system!
-
-### Installing Postgres as the backend database
-From installing the project requirements with `pip install -r requirements.txt` you now have support for Python to interact with Postgres databases.
-
-First, install Postgres on your system. Next, create the database which you will be developing against:
-
-```
-$ psql
-psql (10.9)
-Type "help" for help.
-
-user=# CREATE DATABASE hint;
-CREATE DATABASE
-
-# Ctrl-D to exit
-```
-
-Now, create a Postgres user which Django can use to authenticate with the database.
-
-```
-# Installing Postgres should yield you the 'createuser' command in your terminal!
-
-$ createuser --interactive --pwprompt
-```
-Just follow the instructions and remember both the username and password you supplied during the setup. Make sure to create a super-user!
-
-Now, you will need to instruct Django that this new database is to be used, which will require a few steps. First, create a new Python file under `backend/settings/`, and call it `local.py`. 
-
-`settings/` is a directory intended to keep all settings for the project, but it by default only contains the `base.py` and `__init__.py` files. `base.py` contains base settings, which you can override easily with your own, local, settings by simply re-defining fields in the separate file `local.py`. This works by the `settings/` directory actually being a Python package, you can see that by the `__init__.py` file, which indicates that the folder is to be treated as a Python package. The `__init__.py` file contains only one line: `from .local import *  # noqa`. This import ensures that all settings in `local.py` gets imported as soon as Django starts up. Django is pre-configured to, upon startup, import the `settings` Python module, which triggers the import in the `__init__.py` file. The comment `# noqa` is used to ignore the line (which is normally flagged as 'unused' by most static analysis tools/IDEs), which is useful when running linters to check your code for compliance and makes sure that those tools do not complain about this "unused" line (even though it is actually in use...).
-
-Create the `local.py` file inside the `settings/` directory and insert the following:
+In order to create local user settings, create a `local.py` file under `backend/settings/` and insert the following:
 
 ```
 from .base import *  # noqa
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hint',
-        'USER': '<the username you specified when creating the postgres user>',
-        'PASSWORD': '<the password you specified when creating the postgres user>'
-    }
-}
+
+HUME_BROKER_USERNAME = <Central RabbitMQ Username>
+HUME_BROKER_PASSWORD = <Central RabbitMQ Password>
+
+HUME_BROKER_IP = <Central RabbitMQ IP>
+HUME_BROKER_PORT = <Central RabbitMQ Port>
+
+MASTER_COMMAND_QUEUE_NAME = "hint_master"  # Or another queue name of your choosing
 ```
-The first line ensures that all settings defined in `base.py` get activated as well. `local.py` can now be used to both extend `base.py`, or to re-define settings specific to *your* development environment. The `DATABASES` dictionary contains connection information to the database that Django uses. You will need to input the username and password that you chose for the Postgres user you created above. `django.db.backends.postgresql_psycopg2` refers to that Django will use the `psycopg2` Python package to communicate with the Postgres database, this package is installed in your virtual environment after you installed the project's dependencies in a previous step using `pip install -r requirements.txt`. If you look in the `requirements.txt` you will see an entry stating `psycopg2=<current version of psycopg2 used>`.
+`local.py` should be updated whenever you need custom settings to your local environment. For example, if a custom SQL
+database is to be used locally. Any settings that should be shared must be stated in `base.py` as `local.py` is not
+under version control.
 
-### Frontend dependencies
-The frontend part of this project is build with Angular. To use Angular we opted to use their Command Line Interface (Angular CLI). The Angular CLI is nice to use since it does a lot for you and is necessary to, upon code changes, immediately see the changes in the browser. It can also quickly create bare-bones Angular files for you.
+#### RabbitMQ
+HINT requires a RabbitMQ instance that it can listen to messages from hubs on. Make sure the address and port of the
+RabbitMQ instance correspond to the `HUME_BROKER_IP` and `HUME_BROKER_PORT` settings, as well as the
+`HUME_BROKER_USERNAME` and `HUME_BROKER_PASSWORD` shall correspond to a user with sufficient rights to create a
+message queue. `MASTER_COMMAND_QUEUE_NAME` is customizeable, but ensure it corresponds to the queue name where HOME hubs
+will post messages.
 
-To install the Angular CLI, you will first need to install both `node` and `npm`. In particular, `npm` is used as the package manager for all things Angular. By installing `node`, you'll by default also get `npm`. Install `node` by going [here](https://nodejs.org/en/) or some other way I don't know about.
+#### Redis
+Redis is used to enable pub/sub for websocket frontend updates, to update users in real time of hub events. By default,
+HINT expects a local Redis instance running on port `6379`.
 
-### Installing the Angular CLI
-Instructions taken from [here](https://angular.io/cli).
+#### Database
+By default, HINT uses SQLite for development purposes. Other SQL databases can be used just as well. Override Django
+settings in your `local.py` file if you want to use something else. 
 
-When you have `npm`, install the Angular CLI globally on your system.
+### Frontend
 
-```
-$ npm install -g @angular/cli
-```
+#### Angular
+Install the [Angular CLI](https://cli.angular.io/) through [npm](https://www.npmjs.com/). It's useful for creating new
+components etc. Install all dependencies from the frontend `package-lock.json` as with any other NodeJS project. Use
+the Angular CLI to update project dependencies.
 
-Now, having the Angular CLI, you should be able to use the `ng` command to access its utility functions.
-
-### Installing project frontend dependencies
-To install the project's frontend dependencies, navigate to the `frontend/` directory to place yourself in the root of the frontend part of the project. From here run `npm install` to install all dependencies, the installed packages will end up under `frontend/node_modules/` if you want to have a look. `node_modules/` will contain both dependencies stated by the `frontend/package.json` and any other dependencies of those dependencies and so on, which is why `node_modules/` tends to get extremely large.
-
-## Running the project
-In order to run the development servers needed to work on this project, both the Django development server needs to be run and the Angular code needs to be set up to be automatically compiled upon code changes.
-
-### Running the Django development server
-To start the Django development server, locate the `manage.py` file which is used to command the start of the server. `manage.py` is located at the very root of the hint project. Execute the following command while *inside* the virtual Python environment you created in the previous installation steps, this is important since your Python environment must recognize that there is a version of Django installed.
-
-```
-$ python manage.py runserver
-```
-
-Running this command should start the Django development server, maybe with a few errors complaining that there are 'unapplied migrations'. The server can be reached at localhost:8000.
-
-### Setting up automatic re-compilation for Angular code
-The automatic re-compilation command needs to be run from inside the Angular project structure (frontend/ or below that is), otherwise the command will complain that is needs to be run from inside an Angular project. Note that the directories pointed out here do depend on where you have cloned this project on your file system.
-
-```
-# --watch=true will ensure that re-compilation occurs on code change.
-
-$ ng build --watch=true --outputPath=<ABSOLUTE PATH TO GIT PROJECT>/hint/backend/static/ang
-```
-
-It is *important* that an absolute path is pointed out and supplied as an argument to the `--outputPath` flag. If you supply a relative path (including `..` to navigate to another directory) this will not work and will crash with an extremely terrible "informative" message. Start the path with `/` to ensure it is an absolute path, and supply the entire chain of directories to the hint project and finally into `backend/static/ang`. For example `/Users/mike/my_git_projects/hint/backend/static/ang`. Note that the `ang/` directory does not exist by default, which is fine. It will be created by the above command.
-
-That should do it!
+#### Watch for file changes
+Issue `ng build --watch --output-path=<path-to-hint>/backend/static/ang/` to compile the frontend project to get served
+by the Django development server. The command will make sure the compiled JS files get served from a known Django static
+directory.
