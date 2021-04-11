@@ -1,4 +1,5 @@
 # HOME-interface
+[![Build](https://github.com/megacorpincorporated/hint/actions/workflows/build.yml/badge.svg?branch=master&event=push)](https://github.com/megacorpincorporated/hint/actions/workflows/build.yml)
 
 ## Get started
 
