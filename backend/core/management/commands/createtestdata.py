@@ -56,6 +56,9 @@ class Command(BaseCommand):
             User.objects.create_hume_user(hume_uuid, str(uuid.uuid4()))
             Hume.objects.create(uuid=hume_uuid, home=home1)
 
+        # One more ValidHume for testing pairing procedure
+        ValidHume.objects.create(uuid=uuid.uuid4())
+
         # Hume for home2
         hume_uuid = uuid.uuid4()
         ValidHume.objects.create(uuid=hume_uuid)
