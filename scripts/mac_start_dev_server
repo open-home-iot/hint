@@ -1,9 +1,9 @@
-#! /bin/zsh
+#!/bin/zsh
 
 # First Terminal for running the django dev server
 osascript -e 'tell app "Terminal"
   do script "
-    source ~/.pyenv/versions/3.9.0/bin/virtualenvwrapper.sh &&
+    source ~/.pyenv/versions/3.9.2/bin/virtualenvwrapper.sh &&
       workon hint &&
       cd ~/repos/hint &&
       python manage.py runserver
