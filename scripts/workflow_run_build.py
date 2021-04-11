@@ -5,8 +5,8 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Must define $GITHUB_USERNAME and $HINT_WORKFLOW_TOKEN. The token should be a GitHub PAT with repo"
-                    "access."
+        description="Must define $GITHUB_USERNAME and $HINT_WORKFLOW_TOKEN. "
+                    "The token should be a GitHub PAT with repo access."
     )
     parser.add_argument(
         "ref",
@@ -23,5 +23,7 @@ if gh_username is None or hint_wf_token is None:
     raise SystemError("Missing $GITHUB_USERNAME or $HINT_WORKFLOW_TOKEN")
 
 subprocess.run(["curl", "-X", "POST",
-                "https://api.github.com/repos/megacorpincorporated/hint/actions/workflows/5880406/dispatches",
-                "-u", f"{gh_username}:{hint_wf_token}", "-d", f"{{\"ref\": \"{args.ref}\"}}"])
+                "https://api.github.com/repos/megacorpincorporated/hint/"
+                "actions/workflows/5880406/dispatches",
+                "-u", f"{gh_username}:{hint_wf_token}", "-d",
+                f"{{\"ref\": \"{args.ref}\"}}", "-i"])
