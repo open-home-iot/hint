@@ -1,6 +1,12 @@
 import os
-import subprocess
+import requests
 import argparse
+
+from requests.auth import HTTPBasicAuth
+
+
+BUILD_WF_URL = ("https://api.github.com/repos/megacorpincorporated/hint/"
+                "actions/workflows/5880406/dispatches")
 
 
 def parse_args():
@@ -22,8 +28,11 @@ hint_wf_token = os.environ.get("HINT_WORKFLOW_TOKEN")
 if gh_username is None or hint_wf_token is None:
     raise SystemError("Missing $GITHUB_USERNAME or $HINT_WORKFLOW_TOKEN")
 
-subprocess.run(["curl", "-X", "POST",
-                "https://api.github.com/repos/megacorpincorporated/hint/"
-                "actions/workflows/5880406/dispatches",
-                "-u", f"{gh_username}:{hint_wf_token}", "-d",
-                f"{{\"ref\": \"{args.ref}\"}}", "-i"])
+response = requests.post(BUILD_WF_URL,
+                         json={"ref": args.ref},
+                         auth=HTTPBasicAuth(gh_username, hint_wf_token))
+
+if response.status_code == 204:
+    print("Workflow successfully triggered!")
+else:
+    print(response.text)
