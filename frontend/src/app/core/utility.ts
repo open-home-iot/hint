@@ -1,12 +1,12 @@
 export class Utility {
 
   static getCSRFToken() {
-    const cookies = document.cookie.split(';');
+    const COOKIES = document.cookie.split(';');
     let csrfToken;
-    for (let cookie of cookies) {
+    for (let cookie of COOKIES) {
       cookie = cookie.trim();
-      const re = new RegExp('^csrftoken');
-      if (re.test(cookie)) {
+      const RE = new RegExp('^csrftoken');
+      if (RE.test(cookie)) {
         csrfToken = decodeURIComponent(cookie.substr(10, cookie.length)); // remove csrftoken=
         break;
       }

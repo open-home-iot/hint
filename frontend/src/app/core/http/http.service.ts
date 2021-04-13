@@ -13,15 +13,15 @@ export class HttpService {
     return this.httpClient.get(url);
   }
 
-  getWithOptions(url: string, options: {}) {
+  getWithOptions(url: string, options) {
     return this.httpClient.get(url, options);
   }
 
-  post(url: string, data: {}) {
+  post(url: string, data) {
     return this.httpClient.post(url, data);
   }
 
-  put(url: string, data: {}) {
+  put(url: string, data) {
     return this.httpClient.put(url, data);
   }
 }

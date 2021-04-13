@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {HomeService} from "../home/home.service";
+import {HomeService} from '../home/home.service';
 
 
 export interface Device {
@@ -16,22 +16,22 @@ export interface Device {
 }
 
 
-const HOMES_URL = window.location.origin + "/api/homes/"
-const ROOMS_URL = window.location.origin + "/api/rooms/"
-const DEVICES_URL = window.location.origin + "/api/devices/"
+const HOMES_URL = window.location.origin + '/api/homes/';
+const ROOMS_URL = window.location.origin + '/api/rooms/';
+const DEVICES_URL = window.location.origin + '/api/devices/';
 
 
 @Injectable()
 export class DeviceService {
 
-  homeDevices = new Map();
-  roomDevices = new Map();
+  private homeDevices = new Map();
+  private roomDevices = new Map();
 
   constructor(private homeService: HomeService,
               private httpClient: HttpClient) { }
 
   getHomeDevicesUrl(homeID: number) {
-    return HOMES_URL + String(homeID) + "/devices";
+    return HOMES_URL + String(homeID) + '/devices';
   }
 
   addHomeDevice(homeID: number, device: Device) {
@@ -39,8 +39,8 @@ export class DeviceService {
   }
 
   removeHomeDevice(homeID: number, device: Device) {
-    let homeDevices = this.homeDevices.get(homeID);
-    homeDevices.splice(homeDevices.indexOf(device), 1);
+    const HOME_DEVICES = this.homeDevices.get(homeID);
+    HOME_DEVICES.splice(HOME_DEVICES.indexOf(device), 1);
   }
 
   replaceHomeDevices(homeID: number, devices: Device[]) {
@@ -50,8 +50,8 @@ export class DeviceService {
 
     // Maintain array reference
     this.homeDevices.get(homeID).length = 0;
-    for (let device of devices) {
-      this.addHomeDevice(homeID, device);
+    for (const DEVICE of devices) {
+      this.addHomeDevice(homeID, DEVICE);
     }
   }
 
@@ -68,14 +68,14 @@ export class DeviceService {
             resolve(this.homeDevices.get(homeID));
           },
           error => {
-            reject(error)
+            reject(error);
           }
         );
     });
   }
 
   getRoomDevicesUrl(roomID: number) {
-    return ROOMS_URL + String(roomID) + "/devices";
+    return ROOMS_URL + String(roomID) + '/devices';
   }
 
   addRoomDevice(roomID: number, device: Device) {
@@ -83,8 +83,8 @@ export class DeviceService {
   }
 
   removeRoomDevice(roomID: number, device: Device) {
-    let roomDevices = this.roomDevices.get(roomID);
-    roomDevices.splice(roomDevices.indexOf(device), 1);
+    const ROOM_DEVICES = this.roomDevices.get(roomID);
+    ROOM_DEVICES.splice(ROOM_DEVICES.indexOf(device), 1);
   }
 
   replaceRoomDevices(roomID: number, devices: Device[]) {
@@ -94,8 +94,8 @@ export class DeviceService {
 
     // Maintain array reference
     this.roomDevices.get(roomID).length = 0;
-    for (let device of devices) {
-      this.addRoomDevice(roomID, device);
+    for (const DEVICE of devices) {
+      this.addRoomDevice(roomID, DEVICE);
     }
   }
 
@@ -112,34 +112,34 @@ export class DeviceService {
             resolve(this.roomDevices.get(roomID));
           },
           error => {
-            reject(error)
+            reject(error);
           }
         );
     });
   }
 
   getRoomChangeUrl(device: Device) {
-    return DEVICES_URL + device.uuid + "/change-room";
+    return DEVICES_URL + device.uuid + '/change-room';
   }
 
   changeRoom(device: Device, roomID: number | undefined) {
     this.httpClient.patch(this.getRoomChangeUrl(device),
-                    {"old_id": device.room, "new_id": roomID})
+                    {old_id: device.room, new_id: roomID})
       .subscribe(
         success => {
-          if (device.room == undefined) {
+          if (device.room === undefined) {
             // Fetch target room to get access to homeID
-            let room = this.homeService.getRoom(roomID);
-            this.removeHomeDevice(room.home, device);
+            const ROOM = this.homeService.getRoom(roomID);
+            this.removeHomeDevice(ROOM.home, device);
           } else {
             this.removeRoomDevice(device.room, device);
           }
 
           // A device can change from belonging to a room to belonging to the home in
           // general.
-          if (roomID == undefined) {
-            let room = this.homeService.getRoom(device.room);
-            this.addHomeDevice(room.home, device);
+          if (roomID === undefined) {
+            const ROOM = this.homeService.getRoom(device.room);
+            this.addHomeDevice(ROOM.home, device);
           } else {
             this.addRoomDevice(roomID, device);
           }

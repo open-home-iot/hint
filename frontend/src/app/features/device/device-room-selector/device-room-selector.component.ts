@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import { Room, HomeService } from '../../home/home.service';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute} from '@angular/router';
 
 
 @Component({
@@ -11,7 +11,7 @@ import {ActivatedRoute} from "@angular/router";
 export class DeviceRoomSelectorComponent implements OnInit {
 
   @Input() roomID: number;
-  @Output() roomSelectedEvent = new EventEmitter<number>()
+  @Output() roomSelectedEvent = new EventEmitter<number>();
 
   homeID: number;
   rooms: Room[];
@@ -34,12 +34,12 @@ export class DeviceRoomSelectorComponent implements OnInit {
   }
 
   onGetRoomsFailed(error) {
-    console.error(error)
+    console.error(error);
   }
 
   selectNewRoom(roomID: number) {
-    if (roomID == this.roomID) {
-      return
+    if (roomID === this.roomID) {
+      return;
     }
 
     this.roomSelectedEvent.emit(roomID);

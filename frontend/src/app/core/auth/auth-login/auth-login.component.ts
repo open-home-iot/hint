@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { AuthService } from '../auth.service'
+import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -15,9 +15,9 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 export class AuthLoginComponent implements OnInit, OnDestroy {
   authenticated: boolean;
 
-  apiLoginError: boolean = false;
+  apiLoginError = false;
   apiLoginErrorMessages: [] = [];
-  apiLoginSuccess: boolean = false;
+  apiLoginSuccess = false;
 
   loginForm: FormGroup;
 
@@ -44,8 +44,8 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
     this.authSubscription.unsubscribe();
   }
 
-  get email() { return this.loginForm.get('email') }
-  get password() { return this.loginForm.get('password') }
+  get email() { return this.loginForm.get('email'); }
+  get password() { return this.loginForm.get('password'); }
 
   login() {
     this.authService.loginWithPromise(this.email.value, this.password.value)
@@ -54,13 +54,13 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
         this.apiLoginSuccess = true;
       },
       (error: HttpErrorResponse) => {
-        console.error("Manual login failed!")
+        console.error('Manual login failed!');
         this.apiLoginError = true;
         this.apiLoginErrorMessages = Object.assign([], error.error.auth);
       });
   }
 
   open(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'})
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
   };
 }

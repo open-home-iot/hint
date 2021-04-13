@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 // COMPONENTS
-import { EventIconsComponent } from './event-icons/event-icons.component';
-
 
 // SERVICES
 import { EventService } from './event.service';
@@ -14,17 +12,13 @@ import { EventRoutingModule } from './event-routing.module';
 
 
 @NgModule({
-  declarations: [
-    EventIconsComponent
-  ],
+  declarations: [],
   imports: [
     EventRoutingModule,
     CommonModule,
     FormsModule
   ],
-  exports: [
-    EventIconsComponent,
-  ],
+  exports: [],
   providers: [EventService]
 })
 export class EventModule {}

@@ -11,16 +11,28 @@ export class WebSocketService {
 
   private ws: WebSocket;
   private callback: any;
-  private messageBuffer: {"home_id": number}[] = [];
+  private messageBuffer: {'home_id': number}[] = [];
 
   constructor() {
     this.ws = new WebSocket(
-      WS_BASE_URL.replace("http://", "ws://")
+      WS_BASE_URL.replace('http://', 'ws://')
     );
     this.ws.onopen = this.onSocketOpen.bind(this);
     this.ws.onclose = this.onSocketClose.bind(this);
     this.ws.onerror = this.onSocketError.bind(this);
     this.ws.onmessage = this.onSocketMessage.bind(this);
+  }
+
+  registerCallback(callback) {
+    this.callback = callback;
+  }
+
+  send(message) {
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(message);
+    } else {
+      this.messageBuffer.push(message);
+    }
   }
 
   private onSocketOpen(event: Event) {
@@ -41,17 +53,5 @@ export class WebSocketService {
   private onSocketMessage(event: MessageEvent) {
     console.log(event);
     this.callback(event.data);
-  }
-
-  registerCallback(callback) {
-    this.callback = callback;
-  }
-
-  send(message) {
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(message);
-    } else {
-      this.messageBuffer.push(message);
-    }
   }
 }

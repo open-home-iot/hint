@@ -21,10 +21,10 @@ export class HomeAddComponent implements OnInit {
     });
   }
 
-  get name() { return this.addHomeForm.get('name') }
+  get name() { return this.addHomeForm.get('name'); }
 
   createHome() {
-    console.log("HOME name:");
+    console.log('HOME name:');
     console.log(this.name.value);
     this.homeService.createHome(this.name.value);
   }

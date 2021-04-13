@@ -5,9 +5,9 @@ import { HttpService } from '../../core/http/http.service';
 import { Device } from '../device/device.service';
 
 
-const HUME_URL = window.location.origin + "/api/humes/";
+const HUME_URL = window.location.origin + '/api/humes/';
 
-const HOME_URL = window.location.origin + "/api/homes/";
+const HOME_URL = window.location.origin + '/api/homes/';
 
 export class Hume {
   uuid: string;
@@ -27,7 +27,7 @@ export class HumeService {
     if (homeId in this.humes) {
       return this.humes[homeId];
     } else {
-      this.humes[homeId] = []
+      this.humes[homeId] = [];
       return this.humes[homeId];
     }
   }
@@ -46,6 +46,49 @@ export class HumeService {
     });
   }
 
+  initHomeHumes(homeId: number): Hume[] {
+    if (homeId in this.humes) {
+      return this.humes[homeId];
+    } else {
+      this.humes[homeId] = [];
+
+      const OBS = this.httpService.get(this.homeHumesUrl(homeId));
+      OBS.subscribe(
+        (humes: Hume[]) => {
+          for (const HUME of humes) {
+            this.pushHume(HUME, homeId);
+          }
+        },
+        error => {
+          console.error('Get HOME HUMEs failed: ', error);
+        }
+      );
+
+      return this.humes[homeId];
+    }
+  }
+
+  pairHume(homeId: number, hume: Hume) {
+    this.httpService.post(this.humePairUrl(hume.uuid),
+                          {home_id: homeId})
+      .subscribe(
+        () => {
+          this.humePaired(homeId, hume);
+        },
+        () => {
+          console.log('HUME pairing failed.');
+        }
+      );
+  }
+
+  humePaired(homeId: number, hume: Hume) {
+    this.humes[homeId].push(hume);
+  }
+
+  discoverDevices(humeUUID: string) {
+    return this.httpService.get(this.discoverDevicesUrl(humeUUID));
+  }
+
   private pushHume(hume: Hume, homeId: number) {
     if (homeId in this.humes) {
       this.humes[homeId].push(hume);
@@ -55,57 +98,14 @@ export class HumeService {
   }
 
   private homeHumesUrl(homeId: number): string {
-    return HOME_URL + String(homeId) + "/humes";
-  }
-
-  initHomeHumes(homeId: number): Hume[] {
-    if (homeId in this.humes) {
-      return this.humes[homeId];
-    } else {
-      this.humes[homeId] = [];
-
-      let obs = this.httpService.get(this.homeHumesUrl(homeId));
-      obs.subscribe(
-        (humes: Hume[]) => {
-          for (let hume of humes) {
-            this.pushHume(hume, homeId);
-          }
-        },
-        error => {
-          console.error("Get HOME HUMEs failed: ", error);
-        }
-      );
-
-      return this.humes[homeId];
-    }
+    return HOME_URL + String(homeId) + '/humes';
   }
 
   private humePairUrl(humeUuid: string): string {
-    return HUME_URL + humeUuid + "/confirm-pairing";
-  }
-
-  pairHume(homeId: number, hume: Hume) {
-    this.httpService.post(this.humePairUrl(hume.uuid),
-                          {"home_id": homeId})
-      .subscribe(
-        () => {
-          this.humePaired(homeId, hume);
-        },
-        () => {
-          console.log("HUME pairing failed.")
-        }
-      );
-  }
-
-  humePaired(homeId: number, hume: Hume) {
-    this.humes[homeId].push(hume);
+    return HUME_URL + humeUuid + '/confirm-pairing';
   }
 
   private discoverDevicesUrl(humeUUID: string) {
-    return HUME_URL + humeUUID + "/devices/discover";
-  }
-
-  discoverDevices(humeUUID: string) {
-    return this.httpService.get(this.discoverDevicesUrl(humeUUID));
+    return HUME_URL + humeUUID + '/devices/discover';
   }
 }

@@ -31,18 +31,18 @@ export class HumeFindComponent implements OnInit {
   get homeId() { return this.pairHumeForm.get('home_id'); }
 
   findHume() {
-    console.log("HUME UUID:");
+    console.log('HUME UUID:');
     console.log(this.uuid.value);
-    var promise = this.humeService.findHume(this.uuid.value);
+    const PROMISE = this.humeService.findHume(this.uuid.value);
 
-    promise.then(
+    PROMISE.then(
       (hume: Hume) => {
-        console.log("Got hume:");
+        console.log('Got hume:');
         console.log(hume);
         this.foundHume = hume;
       },
       () => {
-        console.log("Find HUME failed!");
+        console.log('Find HUME failed!');
       }
     );
   }

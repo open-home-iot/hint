@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { StartComponent } from './core/start/start.component';
 import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.component';
-import { PageNotFoundComponent } from './core/page-not-found/page-not-found.component'
+import { PageNotFoundComponent } from './core/page-not-found/page-not-found.component';
 
 /*
 To add child routes of a parent path:
@@ -18,14 +18,14 @@ Or for all children:
 NOTE! canDeactivate can be used to prevent navigation before saving changes.
  */
 
-const routes: Routes = [
+const ROUTES: Routes = [
   { path: '', component: StartComponent },
   { path: 'sign-up', component: AuthSignUpComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(ROUTES, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

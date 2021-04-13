@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Device, DeviceService} from "../device.service";
+import {Device, DeviceService} from '../device.service';
 
 @Component({
   selector: 'app-room-devices',
@@ -16,7 +16,7 @@ export class RoomDevicesComponent implements OnInit {
   ngOnInit(): void {
     this.deviceService.getRoomDevices(this.roomID)
       .then(this.onGetRoomDevices.bind(this))
-      .catch(this.onGetRoomDevicesFailed)
+      .catch(this.onGetRoomDevicesFailed);
   }
 
   onGetRoomDevices(devices: Device[]) {

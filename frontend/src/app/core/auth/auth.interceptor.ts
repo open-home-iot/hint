@@ -31,10 +31,10 @@ export class AuthRequestInterceptor implements HttpInterceptor {
    */
   intercept(req: HttpRequest<any>,
             next: HttpHandler): Observable<HttpEvent<any>> {
-    const clonedReq = req.clone({
+    const CLONED_REQ = req.clone({
       headers: req.headers.set('X-CSRFToken', Utility.getCSRFToken())
     });
 
-    return next.handle(clonedReq);
+    return next.handle(CLONED_REQ);
   }
 }

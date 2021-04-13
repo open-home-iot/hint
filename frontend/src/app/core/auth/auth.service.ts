@@ -4,8 +4,8 @@ import { HttpService } from '../http/http.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
-const LOGIN_URL = window.location.origin + "/api/users/login";
-const LOGOUT_URL = window.location.origin + "/api/users/logout";
+const LOGIN_URL = window.location.origin + '/api/users/login';
+const LOGOUT_URL = window.location.origin + '/api/users/logout';
 
 @Injectable({
   providedIn: 'root'
@@ -25,23 +25,23 @@ export class AuthService {
     // identifier for the session that the user was given upon his/her last
     // login. And the CSRF token cookie always gets set on outgoing HTTP
     // requests, see the AuthInterceptor for more information.
-    this.login("", "");
+    this.login('', '');
   }
 
   sendLoginRequest(username: string, password: string) {
-    return this.httpService.post(LOGIN_URL, { username: username, password: password })
+    return this.httpService.post(LOGIN_URL, { username, password });
 
   }
 
   login(username: string, password: string) {
-    var observable = this.sendLoginRequest(username, password);
+    const OBS = this.sendLoginRequest(username, password);
 
-    observable.subscribe(
+    OBS.subscribe(
       next => {
         this.updateAuthService(true);
       },
       (error: HttpErrorResponse) => {
-        console.log("Failed to log in");
+        console.log('Failed to log in');
         console.log(error);
         this.updateAuthService(false);
       }
@@ -70,12 +70,12 @@ export class AuthService {
     this.httpService.post(LOGOUT_URL, {})
       .subscribe(
         next => {
-          console.log("Success logging out!");
+          console.log('Success logging out!');
           this.updateAuthService(false);
           this.router.navigate(['/']);
         },
         error => {
-          console.log("Failed to log out");
+          console.log('Failed to log out');
           this.updateAuthService(false);
           this.router.navigate(['/']);
         }

@@ -17,12 +17,12 @@ Or for all children:
 NOTE! canDeactivate can be used to prevent navigation before saving changes.
  */
 
-const routes: Routes = [
+const ROUTES: Routes = [
   { path: 'user', component: UserOverviewComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(ROUTES)],
   exports: [RouterModule]
 })
 export class UserRoutingModule {}

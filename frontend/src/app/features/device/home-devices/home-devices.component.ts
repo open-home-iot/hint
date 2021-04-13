@@ -17,7 +17,7 @@ export class HomeDevicesComponent implements OnInit {
   ngOnInit(): void {
     this.deviceService.getHomeDevices(this.homeID)
       .then(this.onGetHomeDevices.bind(this))
-      .catch(this.onGetHomeDevicesFailed)
+      .catch(this.onGetHomeDevicesFailed);
   }
 
   onGetHomeDevices(devices: Device[]) {

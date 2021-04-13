@@ -17,7 +17,7 @@ export interface Room {
 }
 
 
-const HOMES_URL = window.location.origin + "/api/homes/"
+const HOMES_URL = window.location.origin + '/api/homes/';
 
 
 @Injectable()
@@ -32,8 +32,8 @@ export class HomeService {
     this.httpClient.get(HOMES_URL)
       .subscribe(
         (homes: Home[]) => {
-          for (let home of homes) {
-            this.addHome(home);
+          for (const HOME of homes) {
+            this.addHome(HOME);
           }
         },
         error => {
@@ -50,7 +50,7 @@ export class HomeService {
   }
 
   createHome(name: string) {
-    this.httpClient.post(HOMES_URL, {name: name})
+    this.httpClient.post(HOMES_URL, {name})
       .subscribe(
         (home: Home) => {
           this.addHome(home);
@@ -61,26 +61,6 @@ export class HomeService {
       );
   }
 
-  private addRoom(homeID: number, room: Room) {
-    this.homeRoomMap.get(homeID).push(room);
-    this.roomMap.set(room.id, room);
-  }
-
-  private replaceRooms(homeID: number, rooms: Room[]) {
-    if (!this.homeRoomMap.has(homeID)) {
-      this.homeRoomMap.set(homeID, []);
-    }
-
-    // Maintain array reference
-    this.homeRoomMap.get(homeID).length = 0;
-    for (let room of rooms) {
-      this.addRoom(homeID, room);
-    }
-  }
-
-  private getHomeRoomsUrl(homeID: number) {
-    return HOMES_URL + String(homeID) + "/rooms";
-  }
 
   getHomeRooms(homeID: number): Promise<Room[]> {
     if (this.homeRoomMap.has(homeID)) {
@@ -105,7 +85,7 @@ export class HomeService {
   createRoom(homeID: number, roomName: string): Promise<Room> {
     return new Promise<Room>((resolve, reject) => {
       this.httpClient.post(this.getHomeRoomsUrl(homeID),
-                     {"name": roomName})
+                     {name: roomName})
         .subscribe(
           (room: Room) => {
             this.addRoom(homeID, room);
@@ -120,5 +100,26 @@ export class HomeService {
 
   getRoom(roomID: number) {
     return this.roomMap.get(roomID);
+  }
+
+  private addRoom(homeID: number, room: Room) {
+    this.homeRoomMap.get(homeID).push(room);
+    this.roomMap.set(room.id, room);
+  }
+
+  private replaceRooms(homeID: number, rooms: Room[]) {
+    if (!this.homeRoomMap.has(homeID)) {
+      this.homeRoomMap.set(homeID, []);
+    }
+
+    // Maintain array reference
+    this.homeRoomMap.get(homeID).length = 0;
+    for (const ROOM of rooms) {
+      this.addRoom(homeID, ROOM);
+    }
+  }
+
+  private getHomeRoomsUrl(homeID: number) {
+    return HOMES_URL + String(homeID) + '/rooms';
   }
 }

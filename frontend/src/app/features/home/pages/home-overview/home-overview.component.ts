@@ -8,8 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeOverviewComponent implements OnInit {
 
-  showAddHomeForm: boolean = false;
-  showFindHumeForm: boolean = false;
+  showAddHomeForm = false;
+  showFindHumeForm = false;
 
   constructor() { }
 

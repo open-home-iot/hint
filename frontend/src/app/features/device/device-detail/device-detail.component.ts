@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Device, DeviceService} from "../device.service";
-import {HomeService} from "../../home/home.service";
+import {Device, DeviceService} from '../device.service';
+import {HomeService} from '../../home/home.service';
 
 
 @Component({

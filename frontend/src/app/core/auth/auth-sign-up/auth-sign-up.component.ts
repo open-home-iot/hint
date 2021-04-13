@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 
 import { HttpService } from '../../http/http.service';
 
-import { passwordValidator } from '../../directives/validators/confirm-password.directive';
+import { PASSWORD_VALIDATOR } from '../../directives/validators/confirm-password.directive';
 
-const SIGN_UP_URL = window.location.origin + "/api/users/signup"
+const SIGN_UP_URL = window.location.origin + '/api/users/signup';
 
 @Component({
   selector: 'app-auth-sign-up',
@@ -17,7 +17,7 @@ const SIGN_UP_URL = window.location.origin + "/api/users/signup"
 export class AuthSignUpComponent implements OnInit {
 
   signUpForm: FormGroup;
-  apiEmailError: boolean = false;
+  apiEmailError = false;
   apiEmailErrorMessages: [] = [];
 
   constructor(private router: Router,
@@ -36,7 +36,7 @@ export class AuthSignUpComponent implements OnInit {
         lastName: ['', Validators.maxLength(50)]
       })
     },
-    { validators: passwordValidator });
+    { validators: PASSWORD_VALIDATOR });
   }
 
   get email() { return this.signUpForm.get('auth.email'); }
@@ -57,7 +57,7 @@ export class AuthSignUpComponent implements OnInit {
       })
       .subscribe(
         response => {
-          console.log("Sign up succeeded!");
+          console.log('Sign up succeeded!');
           this.router.navigate(['/']);
         },
         (error: HttpErrorResponse) => {

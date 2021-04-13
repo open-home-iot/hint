@@ -25,10 +25,10 @@ export class RoomAddComponent implements OnInit {
     });
   }
 
-  get name() { return this.createRoomForm.get("name"); }
+  get name() { return this.createRoomForm.get('name'); }
 
   createRoom() {
-    this.apiError = "";
+    this.apiError = '';
     this.homeService.createRoom(this.homeID, this.name.value)
       .then(this.onRoomCreated.bind(this))
       .catch(this.onRoomCreateFail.bind(this));
@@ -39,11 +39,11 @@ export class RoomAddComponent implements OnInit {
   }
 
   onRoomCreateFail(error) {
-    console.error("Room creation failed: ", error);
+    console.error('Room creation failed: ', error);
     if (error.error.name) {
       this.apiError = error.error.name;
     } else {
-      this.apiError = "Something went wrong."
+      this.apiError = 'Something went wrong.';
     }
   }
 }

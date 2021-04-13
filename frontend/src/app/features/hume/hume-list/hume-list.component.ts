@@ -29,22 +29,22 @@ export class HumeListComponent implements OnInit, OnDestroy {
   }
 
   discoverDevices(humeUUID: string) {
-    this.eventService.unsubscribe("123456789")
-    console.log("HUME to discover devices for: " + humeUUID);
+    this.eventService.unsubscribe('123456789');
+    console.log('HUME to discover devices for: ' + humeUUID);
     this.humeService.discoverDevices(humeUUID).subscribe();
-    this.eventService.subscribe("123456789", humeUUID, HUB_DISCOVER_DEVICES, this.onDevicesDiscovered.bind(this));
+    this.eventService.subscribe('123456789', humeUUID, HUB_DISCOVER_DEVICES, this.onDevicesDiscovered.bind(this));
 
     this.deviceList = [];
   }
 
   onDevicesDiscovered(deviceDiscoveredEvent: HumeEvent){
     this.deviceList = deviceDiscoveredEvent.content;
-    console.log("the device list ");
+    console.log('the device list ');
     console.log(this.deviceList.length);
   }
 
   ngOnDestroy(): void {
-    console.log("Shutting down HUME list component");
-    this.eventService.unsubscribe("123456789")
+    console.log('Shutting down HUME list component');
+    this.eventService.unsubscribe('123456789');
   }
 }
