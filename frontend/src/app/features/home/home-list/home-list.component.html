@@ -3,5 +3,5 @@
   ID: {{ home.id }}
 
   <a routerLink="/home/{{ home.id }}">Rooms</a>
-  <app-hume-list homeId="{{ home.id }}"></app-hume-list>
+  <app-hume-list [homeID]="home.id"></app-hume-list>
 </div>

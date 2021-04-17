@@ -4,7 +4,6 @@ import { WebSocketService } from '../../core/websocket/websocket.service';
 
 
 export interface HumeEvent {
-  home_id: number;
   hume_uuid: string;
   device_uuid: string;
   event_type: number;
@@ -30,14 +29,13 @@ export class EventService {
     this.webSocketService.registerCallback(this.onEvent.bind(this));
   }
 
-  onEvent(event: string) {
-    const DECODED_EVENT: HumeEvent = JSON.parse(event);
-
+  onEvent(event: HumeEvent) {
     this.subscriptionMap.forEach((subscription: Subscription, _) => {
-      if(subscription.hume_uuid === DECODED_EVENT.hume_uuid) {
 
-        if (subscription.event_type === DECODED_EVENT.event_type) {
-          subscription.callback(DECODED_EVENT);
+      if (subscription.hume_uuid === event.hume_uuid) {
+
+        if (subscription.event_type === event.event_type) {
+          subscription.callback(event);
         }
       }
     });
@@ -47,22 +45,25 @@ export class EventService {
             humeUUID: string,
             eventType: number,
             callback: (event) => void) {
-    console.log('Subscribing to key: ' + humeUUID);
+    console.debug('Subscribing to HUME UUID: ' + humeUUID);
 
-    this.subscriptionMap[subscriptionId] = {
-      hume_uuid: humeUUID,
-      event_type: eventType,
-      callback
-    };
+    this.subscriptionMap.set(
+      subscriptionId,
+      {
+        hume_uuid:  humeUUID,
+        event_type: eventType,
+        callback:   callback
+      }
+    );
   }
 
   unsubscribe(subscriptionId: string) {
     delete this.subscriptionMap[subscriptionId];
   }
 
-  monitorHome(homeId: number) {
+  monitorHume(humeUUID: string) {
     // This will cause events related to this home to arrive as WS messages
     // in the onEvent method.
-    this.webSocketService.send(JSON.stringify({home_id: homeId}));
+    this.webSocketService.send(JSON.stringify({ hume_uuid: humeUUID }));
   }
 }

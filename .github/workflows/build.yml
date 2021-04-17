@@ -71,6 +71,10 @@ jobs:
     # Build
     #
 
+    - name: Check Django project
+      run: |
+        ./manage.py check
+
     - name: Build Angular project
       run: |
         cd frontend && ng build

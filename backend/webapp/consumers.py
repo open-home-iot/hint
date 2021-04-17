@@ -3,61 +3,76 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
+from django.conf import settings
 
-class HomeConsumer(WebsocketConsumer):
+
+class HumeConsumer(WebsocketConsumer):
     """Allows frontend users to subscribe to events related to a Home"""
 
     def __init__(self, *args, **kwargs):
         """"""
-        self.home_ids = []
+        self.hume_uuids = set()
         super().__init__(*args, **kwargs)
 
     def connect(self):
         """
         TODO On connection, accept the connection. Authentication checks should
-        already have been made?
+         already have been made?
         """
         self.accept()
 
     def disconnect(self, close_code):
         """
-        Not strictly necessary, but spares performance to discard the home_id
-        group add on disconnect. If this is not done, or fails, a timeout will
-        take care of the cleanup at some point.
+        Not strictly necessary, but spares performance to discard the UUID
+        group add on disconnect. If this is not done, or fails, the channel
+        will be cleaned up after group_expiry seconds. See the CHANNEL_LAYER
+        Django setting to find exactly what it is set to.
         """
-        for home_id in self.home_ids:
+        for hume_uuid in self.hume_uuids:
             async_to_sync(self.channel_layer.group_discard)(
-                home_id, self.channel_name
+                hume_uuid, self.channel_name
             )
 
-    def receive(self, text_data=None):
+    def receive(self, text_data=None, **kwargs):
         """
         Called on receiving an event from the socket connection. Currently, the
         only expected event is a subscription for a home ID.
-
-        :param text_data: JSON formatted string
         """
-        print("WebSocket new message")
-        decoded_data = json.loads(text_data)
-
-        # TODO remove
-        if decoded_data.get("testing"):
-            self.send(json.dumps(
-                {
-                    "home_id": decoded_data["home_id"],
-                    "hume_uuid": decoded_data["hume_uuid"],
-                }
-            ))
+        if text_data == "get_connection_timeout_seconds":
+            ges = settings.CHANNEL_LAYERS["default"]["CONFIG"]["group_expiry"]
+            self.send(
+                json.dumps({"connection_timeout_seconds": ges})
+            )
             return
 
-        home_id = str(decoded_data["home_id"])
-        self.home_ids.append(home_id)
-        print(f"WebSocket monitored home IDs: {self.home_ids}")
+        if text_data == "ping":
+            self.refresh_group_memberships()
+            return
+
+        decoded_data = json.loads(text_data)
+        hume_uuid = decoded_data["hume_uuid"]
+
+        self.monitor_new_hume_uuid(hume_uuid)
+
+    def monitor_new_hume_uuid(self, hume_uuid):
+        """
+        Adds the input hume_uuid to the consumers list of monitored UUIDs.
+        """
+        self.hume_uuids.add(hume_uuid)
         async_to_sync(self.channel_layer.group_add)(
-            home_id, self.channel_name
+            hume_uuid, self.channel_name
         )
 
-    def home_event(self, event):
+    def refresh_group_memberships(self):
+        """
+        Refreshes group memberships for the channel in question.
+        """
+        for hume_uuid in self.hume_uuids:
+            async_to_sync(self.channel_layer.group_add)(
+                hume_uuid, self.channel_name
+            )
+
+    def hume_event(self, event):
         """
         Called when an event occurs for a particular home through:
 
@@ -81,6 +96,7 @@ class HomeConsumer(WebsocketConsumer):
             :param event: dict with event information
             :returns: formatted JSON string
             """
-            event.pop("type")
+            event.pop("type")  # Remove type, it's always "hume.event"
             return json.dumps(event)
+
         self.send(format_event(event))

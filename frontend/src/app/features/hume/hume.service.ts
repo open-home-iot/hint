@@ -1,9 +1,9 @@
+import { Observable } from 'rxjs';
+
 import { Injectable } from '@angular/core';
 
 import { HttpService } from '../../core/http/http.service';
-
-import { Device } from '../device/device.service';
-
+import { EventService } from '../event/event.service';
 
 const HUME_URL = window.location.origin + '/api/humes/';
 
@@ -19,21 +19,32 @@ export class Hume {
 @Injectable()
 export class HumeService {
 
-  private humes: { [homeId: number]: Hume[]  } = {};
+  private homeHumeMap = new Map<number, Hume[]>()
 
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService,
+              private eventService: EventService) { }
 
-  getHomeHumes(homeId: number) {
-    if (homeId in this.humes) {
-      return this.humes[homeId];
-    } else {
-      this.humes[homeId] = [];
-      return this.humes[homeId];
+  getHomeHumes(homeID: number): Promise<Hume[]> {
+    if (this.homeHumeMap.has(homeID)) {
+      return Promise.resolve(this.homeHumeMap.get(homeID));
     }
+
+    return new Promise<Hume[]>((resolve, reject) => {
+      this.httpService.get(this.homeHumesUrl(homeID))
+        .subscribe(
+          (humes: Hume[]) => {
+            this.replaceHomeHumes(homeID, humes);
+            resolve(this.homeHumeMap.get(homeID));
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
   }
 
-  findHume(uuid: string) {
-    return new Promise((resolve, reject) => {
+  findHume(uuid: string): Promise<Hume> {
+    return new Promise<Hume>((resolve, reject) => {
       this.httpService.get(HUME_URL + uuid)
         .subscribe(
           (hume: Hume) => {
@@ -44,28 +55,6 @@ export class HumeService {
           }
         );
     });
-  }
-
-  initHomeHumes(homeId: number): Hume[] {
-    if (homeId in this.humes) {
-      return this.humes[homeId];
-    } else {
-      this.humes[homeId] = [];
-
-      const OBS = this.httpService.get(this.homeHumesUrl(homeId));
-      OBS.subscribe(
-        (humes: Hume[]) => {
-          for (const HUME of humes) {
-            this.pushHume(HUME, homeId);
-          }
-        },
-        error => {
-          console.error('Get HOME HUMEs failed: ', error);
-        }
-      );
-
-      return this.humes[homeId];
-    }
   }
 
   pairHume(homeId: number, hume: Hume) {
@@ -81,19 +70,29 @@ export class HumeService {
       );
   }
 
-  humePaired(homeId: number, hume: Hume) {
-    this.humes[homeId].push(hume);
+  humePaired(homeID: number, hume: Hume): void {
+    this.addHomeHume(homeID, hume);
   }
 
-  discoverDevices(humeUUID: string) {
+  discoverDevices(humeUUID: string): Observable<any> {
     return this.httpService.get(this.discoverDevicesUrl(humeUUID));
   }
 
-  private pushHume(hume: Hume, homeId: number) {
-    if (homeId in this.humes) {
-      this.humes[homeId].push(hume);
-    } else {
-      this.humes[homeId] = [hume];
+  private addHomeHume(homeID: number, hume: Hume) {
+    this.homeHumeMap.get(homeID).push(hume);
+
+    // Make sure the event service gets updates of all events for the added HUME.
+    this.eventService.monitorHume(hume.uuid);
+  }
+
+  private replaceHomeHumes(homeID: number, humes: Hume[]): void {
+    if (!this.homeHumeMap.has(homeID)) {
+      this.homeHumeMap.set(homeID, [])
+    }
+
+    this.homeHumeMap.get(homeID).length = 0;
+    for (const HUME of humes) {
+      this.addHomeHume(homeID, HUME)
     }
   }
 

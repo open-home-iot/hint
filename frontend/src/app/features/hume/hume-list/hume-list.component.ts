@@ -1,14 +1,10 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 
+import { Utility } from '../../../core/utility';
 import { HumeService, Hume } from '../hume.service';
-
-import {EventService} from '../../event/event.service';
+import { EventService, HumeEvent, HUB_DISCOVER_DEVICES } from '../../event/event.service';
 
 import { Device } from '../../device/device.service';
-
-import { HumeEvent } from '../../event/event.service';
-
-import {HUB_DISCOVER_DEVICES} from '../../event/event.service';
 
 @Component({
   selector: 'app-hume-list',
@@ -17,34 +13,46 @@ import {HUB_DISCOVER_DEVICES} from '../../event/event.service';
 })
 export class HumeListComponent implements OnInit, OnDestroy {
 
-  @Input() homeId: number;
+  @Input() homeID: number;
   humes: Hume[];
   deviceList: Device[] = [];
 
+  private subscriptionID: string
+
   constructor(private humeService: HumeService, private eventService: EventService) { }
 
-
   ngOnInit(): void {
-    this.humes = this.humeService.initHomeHumes(this.homeId);
-  }
-
-  discoverDevices(humeUUID: string) {
-    this.eventService.unsubscribe('123456789');
-    console.log('HUME to discover devices for: ' + humeUUID);
-    this.humeService.discoverDevices(humeUUID).subscribe();
-    this.eventService.subscribe('123456789', humeUUID, HUB_DISCOVER_DEVICES, this.onDevicesDiscovered.bind(this));
-
-    this.deviceList = [];
-  }
-
-  onDevicesDiscovered(deviceDiscoveredEvent: HumeEvent){
-    this.deviceList = deviceDiscoveredEvent.content;
-    console.log('the device list ');
-    console.log(this.deviceList.length);
+    this.humeService.getHomeHumes(this.homeID)
+      .then(this.onGetHumes.bind(this))
+      .catch(this.onGetHumesFailed);
+    this.subscriptionID = Utility.generateRandomID();
   }
 
   ngOnDestroy(): void {
-    console.log('Shutting down HUME list component');
-    this.eventService.unsubscribe('123456789');
+    this.eventService.unsubscribe(this.subscriptionID);
+  }
+
+  discoverDevices(humeUUID: string) {
+    this.deviceList = [];
+    this.eventService.unsubscribe(this.subscriptionID);
+
+    this.subscriptionID = Utility.generateRandomID()
+    this.eventService.subscribe(
+      this.subscriptionID, humeUUID, HUB_DISCOVER_DEVICES, this.onDevicesDiscovered.bind(this)
+    );
+
+    this.humeService.discoverDevices(humeUUID).subscribe();
+  }
+
+  private onGetHumes(humes: Hume[]): void {
+    this.humes = humes;
+  }
+
+  private onGetHumesFailed(error) {
+    console.log('Get humes failed: ', error)
+  }
+
+  private onDevicesDiscovered(deviceDiscoveredEvent: HumeEvent) {
+    this.deviceList = deviceDiscoveredEvent.content;
   }
 }
