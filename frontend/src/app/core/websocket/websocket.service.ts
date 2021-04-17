@@ -4,10 +4,10 @@ const WS_BASE_URL = window.location.origin;
 
 const EVENT_WS_CLOSE_REOPEN_MS = 3000;
 
-const MSG_PING = "ping";
-const MSG_GET_CONNECTION_TIMEOUT_SECONDS = "get_connection_timeout_seconds";
+const MSG_PING = 'ping';
+const MSG_GET_CONNECTION_TIMEOUT_SECONDS = 'get_connection_timeout_seconds';
 
-const KEY_CONNECTION_TIMEOUT_SECONDS = "connection_timeout_seconds";
+const KEY_CONNECTION_TIMEOUT_SECONDS = 'connection_timeout_seconds';
 
 @Injectable({
   providedIn: 'root'
@@ -46,14 +46,13 @@ export class WebSocketService {
   }
 
   private onSocketOpen(event: Event) {
-    console.debug(event);
     while (this.messageBuffer.length > 0) {
       this.send(this.messageBuffer.pop());
     }
 
     if (!this.connectionTimeoutSeconds) {
       this.send(MSG_GET_CONNECTION_TIMEOUT_SECONDS);
-      return
+      return;
     }
 
     this.startConnectionRefreshTimer();
@@ -67,13 +66,11 @@ export class WebSocketService {
   }
 
   private refreshConnection() {
-    console.log("refreshConnection()");
     this.send(MSG_PING);
     this.startConnectionRefreshTimer();
   }
 
   private onSocketClose(event: CloseEvent) {
-    console.debug(event);
     setTimeout(
       this.initializeWebSocket.bind(this),
       EVENT_WS_CLOSE_REOPEN_MS
@@ -81,13 +78,11 @@ export class WebSocketService {
   }
 
   private onSocketError(event: Event) {
-    console.error(event);
+    // console.error(event);
   }
 
   private onSocketMessage(event: MessageEvent) {
-    console.debug(event);
-
-    const DECODED_DATA = JSON.parse(event.data)
+    const DECODED_DATA = JSON.parse(event.data);
 
     if (KEY_CONNECTION_TIMEOUT_SECONDS in DECODED_DATA) {
       this.connectionTimeoutSeconds = DECODED_DATA.connection_timeout_seconds;

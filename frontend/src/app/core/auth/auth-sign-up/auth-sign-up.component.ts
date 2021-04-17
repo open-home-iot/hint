@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-
-import { HttpService } from '../../http/http.service';
 
 import { PASSWORD_VALIDATOR } from '../../directives/validators/confirm-password.directive';
 
@@ -21,7 +19,7 @@ export class AuthSignUpComponent implements OnInit {
   apiEmailErrorMessages: [] = [];
 
   constructor(private router: Router,
-              private httpService: HttpService,
+              private httpClient: HttpClient,
               private formBuilder: FormBuilder) { }
 
   ngOnInit() {
@@ -48,7 +46,7 @@ export class AuthSignUpComponent implements OnInit {
   signUp() {
     console.log(this.signUpForm.value);
 
-    this.httpService.post(
+    this.httpClient.post(
       SIGN_UP_URL,
       { email: this.email.value,
         first_name: this.firstName.value,

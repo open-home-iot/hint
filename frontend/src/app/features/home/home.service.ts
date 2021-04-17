@@ -25,7 +25,7 @@ export class HomeService {
     this.httpClient.get(HOMES_URL)
       .subscribe(
         (homes: Home[]) => {
-          this.replaceHomes(homes)
+          this.replaceHomes(homes);
         },
         error => {
           console.error(error);
@@ -95,9 +95,9 @@ export class HomeService {
   }
 
   private replaceHomes(homes: Home[]) {
-    this.homes.length = 0
+    this.homes.length = 0;
     for (const HOME of homes) {
-      this.addHome(HOME)
+      this.addHome(HOME);
     }
   }
 

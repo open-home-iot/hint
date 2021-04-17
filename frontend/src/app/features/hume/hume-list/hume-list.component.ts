@@ -17,7 +17,7 @@ export class HumeListComponent implements OnInit, OnDestroy {
   humes: Hume[];
   deviceList: Device[] = [];
 
-  private subscriptionID: string
+  private subscriptionID: string;
 
   constructor(private humeService: HumeService, private eventService: EventService) { }
 
@@ -36,7 +36,7 @@ export class HumeListComponent implements OnInit, OnDestroy {
     this.deviceList = [];
     this.eventService.unsubscribe(this.subscriptionID);
 
-    this.subscriptionID = Utility.generateRandomID()
+    this.subscriptionID = Utility.generateRandomID();
     this.eventService.subscribe(
       this.subscriptionID, humeUUID, HUB_DISCOVER_DEVICES, this.onDevicesDiscovered.bind(this)
     );
@@ -49,7 +49,7 @@ export class HumeListComponent implements OnInit, OnDestroy {
   }
 
   private onGetHumesFailed(error) {
-    console.log('Get humes failed: ', error)
+    console.log('Get humes failed: ', error);
   }
 
   private onDevicesDiscovered(deviceDiscoveredEvent: HumeEvent) {

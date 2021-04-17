@@ -1,8 +1,8 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
 import { Observable } from 'rxjs';
 
-import { Injectable } from '@angular/core';
-
-import { HttpService } from '../../core/http/http.service';
 import { EventService } from '../event/event.service';
 
 const HUME_URL = window.location.origin + '/api/humes/';
@@ -19,9 +19,9 @@ export class Hume {
 @Injectable()
 export class HumeService {
 
-  private homeHumeMap = new Map<number, Hume[]>()
+  private homeHumeMap = new Map<number, Hume[]>();
 
-  constructor(private httpService: HttpService,
+  constructor(private httpClient: HttpClient,
               private eventService: EventService) { }
 
   getHomeHumes(homeID: number): Promise<Hume[]> {
@@ -30,7 +30,7 @@ export class HumeService {
     }
 
     return new Promise<Hume[]>((resolve, reject) => {
-      this.httpService.get(this.homeHumesUrl(homeID))
+      this.httpClient.get(this.homeHumesUrl(homeID))
         .subscribe(
           (humes: Hume[]) => {
             this.replaceHomeHumes(homeID, humes);
@@ -45,7 +45,7 @@ export class HumeService {
 
   findHume(uuid: string): Promise<Hume> {
     return new Promise<Hume>((resolve, reject) => {
-      this.httpService.get(HUME_URL + uuid)
+      this.httpClient.get(HUME_URL + uuid)
         .subscribe(
           (hume: Hume) => {
             resolve(hume);
@@ -58,8 +58,8 @@ export class HumeService {
   }
 
   pairHume(homeId: number, hume: Hume) {
-    this.httpService.post(this.humePairUrl(hume.uuid),
-                          {home_id: homeId})
+    this.httpClient.post(this.humePairUrl(hume.uuid),
+                   {home_id: homeId})
       .subscribe(
         () => {
           this.humePaired(homeId, hume);
@@ -75,7 +75,7 @@ export class HumeService {
   }
 
   discoverDevices(humeUUID: string): Observable<any> {
-    return this.httpService.get(this.discoverDevicesUrl(humeUUID));
+    return this.httpClient.get(this.discoverDevicesUrl(humeUUID));
   }
 
   private addHomeHume(homeID: number, hume: Hume) {
@@ -87,12 +87,12 @@ export class HumeService {
 
   private replaceHomeHumes(homeID: number, humes: Hume[]): void {
     if (!this.homeHumeMap.has(homeID)) {
-      this.homeHumeMap.set(homeID, [])
+      this.homeHumeMap.set(homeID, []);
     }
 
     this.homeHumeMap.get(homeID).length = 0;
     for (const HUME of humes) {
-      this.addHomeHume(homeID, HUME)
+      this.addHomeHume(homeID, HUME);
     }
   }
 

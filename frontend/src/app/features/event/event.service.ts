@@ -41,24 +41,26 @@ export class EventService {
     });
   }
 
-  subscribe(subscriptionId: string,
+  subscribe(subscriptionID: string,
             humeUUID: string,
             eventType: number,
             callback: (event) => void) {
-    console.debug('Subscribing to HUME UUID: ' + humeUUID);
+    if (this.subscriptionMap.has(subscriptionID)) {
+      throw new Error('Input subscriptionID already taken');
+    }
 
     this.subscriptionMap.set(
-      subscriptionId,
+      subscriptionID,
       {
         hume_uuid:  humeUUID,
         event_type: eventType,
-        callback:   callback
+        callback,
       }
     );
   }
 
-  unsubscribe(subscriptionId: string) {
-    delete this.subscriptionMap[subscriptionId];
+  unsubscribe(subscriptionID: string) {
+    delete this.subscriptionMap[subscriptionID];
   }
 
   monitorHume(humeUUID: string) {
