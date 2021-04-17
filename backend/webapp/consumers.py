@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 
 
 class HumeConsumer(WebsocketConsumer):
@@ -19,6 +20,12 @@ class HumeConsumer(WebsocketConsumer):
         TODO On connection, accept the connection. Authentication checks should
          already have been made?
         """
+        user = self.scope["user"]
+
+        if isinstance(user, AnonymousUser):
+            self.disconnect(close_code=1000)
+            return
+
         self.accept()
 
     def disconnect(self, close_code):
@@ -32,6 +39,7 @@ class HumeConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_discard)(
                 hume_uuid, self.channel_name
             )
+        self.close(close_code)
 
     def receive(self, text_data=None, **kwargs):
         """
