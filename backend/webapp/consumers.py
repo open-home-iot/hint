@@ -22,13 +22,12 @@ class HumeConsumer(WebsocketConsumer):
         """
         user = self.scope["user"]
 
+        self.accept()
         if isinstance(user, AnonymousUser):
-            self.disconnect(close_code=1000)
+            self.disconnect()
             return
 
-        self.accept()
-
-    def disconnect(self, close_code):
+    def disconnect(self, close_code=1000):
         """
         Not strictly necessary, but spares performance to discard the UUID
         group add on disconnect. If this is not done, or fails, the channel
