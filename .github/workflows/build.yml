@@ -55,6 +55,10 @@ jobs:
         export PYTHONPATH=$PWD
         echo $PYTHONPATH
 
+    - name: Generate local.py
+      run: |
+        echo "from .base import *  # noqa" > backend/settings/local.py
+
     #
     # Lint backend and frontend
     #
