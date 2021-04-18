@@ -17,15 +17,24 @@ def incoming_command(command):
     """
     decoded_command = json.loads(command.decode('utf-8'))
 
+    # Extract message fields.
+    hume_uuid = decoded_command["uuid"]
+    command_type = decoded_command["type"]
+    content = decoded_command["content"]
+
+    # Perform message-specific handling here...
+    # ...
+
+    # Dispatch message to websocket consumers.
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        str(decoded_command["uuid"]),
+        hume_uuid,
         {
             # Setting the "type" field here will lead to hume_event being
-            # invoked for consumers listening on the HUME's UUID group.
+            # invoked for consumers listening on the HUME's UUID group/topic.
             "type": "hume.event",
-            "event_type": decoded_command["type"],
-            "hume_uuid": decoded_command["uuid"],
-            "content": decoded_command["content"]
+            "hume_uuid": hume_uuid,
+            "event_type": command_type,
+            "content": content
         }
     )
