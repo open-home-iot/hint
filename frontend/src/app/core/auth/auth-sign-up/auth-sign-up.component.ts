@@ -44,8 +44,6 @@ export class AuthSignUpComponent implements OnInit {
   get lastName() { return this.signUpForm.get('personalInfo.lastName'); }
 
   signUp() {
-    console.log(this.signUpForm.value);
-
     this.httpClient.post(
       SIGN_UP_URL,
       { email: this.email.value,
@@ -55,7 +53,6 @@ export class AuthSignUpComponent implements OnInit {
       })
       .subscribe(
         response => {
-          console.log('Sign up succeeded!');
           this.router.navigate(['/']);
         },
         (error: HttpErrorResponse) => {

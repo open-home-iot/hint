@@ -51,7 +51,7 @@ export class HumeService {
             resolve(hume);
           },
           error => {
-            reject();
+            reject(error);
           }
         );
     });
@@ -64,8 +64,8 @@ export class HumeService {
         () => {
           this.humePaired(homeId, hume);
         },
-        () => {
-          console.log('HUME pairing failed.');
+        error => {
+          console.error(error);
         }
       );
   }

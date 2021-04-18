@@ -46,14 +46,14 @@ export class EventService {
   subscribe(humeUUID: string,
             eventType: number,
             callback: (event) => void): string {
-    let subscriptionID = Utility.generateRandomID();
+    const SUBSCRIPTION_ID = Utility.generateRandomID();
 
-    if (this.subscriptionMap.has(subscriptionID)) {
+    if (this.subscriptionMap.has(SUBSCRIPTION_ID)) {
       throw new Error('Input subscriptionID already taken');
     }
 
     this.subscriptionMap.set(
-      subscriptionID,
+      SUBSCRIPTION_ID,
       {
         hume_uuid:  humeUUID,
         event_type: eventType,
@@ -61,7 +61,7 @@ export class EventService {
       }
     );
 
-    return subscriptionID;
+    return SUBSCRIPTION_ID;
   }
 
   unsubscribe(subscriptionID: string) {

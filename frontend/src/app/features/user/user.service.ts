@@ -59,23 +59,7 @@ export class UserService {
     });
   }
 
-  fetchCurrentUser() {
-    this.httpClient.get(USER_SELF_URL)
-      .subscribe(
-        (gottenUser: User) => {
-          console.log('Successfully got user:');
-          console.log(gottenUser);
-          this.user = gottenUser;
-        },
-        error => {
-          console.log('Failed to get user:');
-          console.log(error);
-        }
-      );
-  }
-
-  resetUser() {
-    console.log('Clearing user information');
+  resetUser(): void {
     this.user = undefined;
   }
 }

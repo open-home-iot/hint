@@ -41,8 +41,7 @@ export class AuthService {
         this.updateAuthService(true);
       },
       (error: HttpErrorResponse) => {
-        console.log('Failed to log in');
-        console.log(error);
+        console.error(error);
         this.updateAuthService(false);
       }
     );
@@ -57,8 +56,7 @@ export class AuthService {
             resolve();
           },
           (error: HttpErrorResponse) => {
-            console.log('Failed to log in');
-            console.log(error);
+            console.error(error);
             this.updateAuthService(false);
             reject(error);
           }
@@ -70,12 +68,11 @@ export class AuthService {
     this.httpClient.post(LOGOUT_URL, {})
       .subscribe(
         next => {
-          console.log('Success logging out!');
           this.updateAuthService(false);
           this.router.navigate(['/']);
         },
         error => {
-          console.log('Failed to log out');
+          console.error(error);
           this.updateAuthService(false);
           this.router.navigate(['/']);
         }
