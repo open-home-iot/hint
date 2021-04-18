@@ -25,13 +25,13 @@ export class AuthSignUpComponent implements OnInit {
   ngOnInit() {
     this.signUpForm = this.formBuilder.group({
       auth: this.formBuilder.group({
-        email: ['', Validators.required],
-        password: ['', Validators.required],
+        email:           ['', Validators.required],
+        password:        ['', Validators.required],
         confirmPassword: ['', Validators.required]
       }),
       personalInfo: this.formBuilder.group({
         firstName: ['', Validators.maxLength(50)],
-        lastName: ['', Validators.maxLength(50)]
+        lastName:  ['', Validators.maxLength(50)]
       })
     },
     { validators: PASSWORD_VALIDATOR });
@@ -46,10 +46,11 @@ export class AuthSignUpComponent implements OnInit {
   signUp() {
     this.httpClient.post(
       SIGN_UP_URL,
-      { email: this.email.value,
+      {
+        email:      this.email.value,
         first_name: this.firstName.value,
-        last_name: this.lastName.value,
-        password: this.password.value
+        last_name:  this.lastName.value,
+        password:   this.password.value
       })
       .subscribe(
         response => {
