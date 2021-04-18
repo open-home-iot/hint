@@ -15,8 +15,16 @@ export class UserOverviewComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit() {
-    console.log(this.userService.user);
-    this.user = this.userService.user;
+    this.userService.getUser()
+      .then(this.onGetUser.bind(this))
+      .catch(this.onGetUserFailed);
   }
 
+  private onGetUser(user: User): void {
+    this.user = user;
+  }
+
+  private onGetUserFailed(error) {
+    console.error(error);
+  }
 }

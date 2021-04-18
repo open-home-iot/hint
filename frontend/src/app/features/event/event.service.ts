@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { Utility } from '../../core/utility';
 import { WebSocketService } from '../../core/websocket/websocket.service';
 
 
@@ -30,21 +31,23 @@ export class EventService {
   }
 
   onEvent(event: HumeEvent) {
-    this.subscriptionMap.forEach((subscription: Subscription, _) => {
+    this.subscriptionMap.forEach(
+      (subscription: Subscription, _) => {
+        if (subscription.hume_uuid === event.hume_uuid) {
 
-      if (subscription.hume_uuid === event.hume_uuid) {
-
-        if (subscription.event_type === event.event_type) {
-          subscription.callback(event);
+          if (subscription.event_type === event.event_type) {
+            subscription.callback(event);
+          }
         }
       }
-    });
+    );
   }
 
-  subscribe(subscriptionID: string,
-            humeUUID: string,
+  subscribe(humeUUID: string,
             eventType: number,
-            callback: (event) => void) {
+            callback: (event) => void): string {
+    let subscriptionID = Utility.generateRandomID();
+
     if (this.subscriptionMap.has(subscriptionID)) {
       throw new Error('Input subscriptionID already taken');
     }
@@ -57,10 +60,12 @@ export class EventService {
         callback,
       }
     );
+
+    return subscriptionID;
   }
 
   unsubscribe(subscriptionID: string) {
-    delete this.subscriptionMap[subscriptionID];
+    this.subscriptionMap.delete(subscriptionID);
   }
 
   monitorHume(humeUUID: string) {

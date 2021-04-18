@@ -6,6 +6,8 @@ from channels.generic.websocket import WebsocketConsumer
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 
+from backend.hume.models import Hume
+
 
 class HumeConsumer(WebsocketConsumer):
     """Allows frontend users to subscribe to events related to a Home"""
@@ -65,10 +67,18 @@ class HumeConsumer(WebsocketConsumer):
         """
         Adds the input hume_uuid to the consumers list of monitored UUIDs.
         """
-        self.hume_uuids.add(hume_uuid)
-        async_to_sync(self.channel_layer.group_add)(
-            hume_uuid, self.channel_name
-        )
+        # IMPORTANT
+        # Verify the consumer user owns the hub in question, do NOT allow
+        # information leaks through the websocket consumer!
+        if Hume.objects.filter(uuid=hume_uuid,
+                               home__users__id=self.scope["user"].id).exists():
+            self.hume_uuids.add(hume_uuid)
+            async_to_sync(self.channel_layer.group_add)(
+                hume_uuid, self.channel_name
+            )
+        else:
+            # Websocket connection is up to no good, close it.
+            self.disconnect()
 
     def refresh_group_memberships(self):
         """
@@ -79,14 +89,14 @@ class HumeConsumer(WebsocketConsumer):
                 hume_uuid, self.channel_name
             )
 
-    def hume_event(self, event):
+    def hume_event(self, event: dict):
         """
-        Called when an event occurs for a particular home through:
+        Called when an event occurs for a particular hume through:
 
         async_to_sync(channel_layer.group_send)(
-            "1337",  # This is the home id (group name)
+            <UUID>,
             {
-                "type": "home.event",  # Ensures the home_event def is called
+                "type": "hume.event",
                 ...
             }
         )
@@ -94,16 +104,15 @@ class HumeConsumer(WebsocketConsumer):
         :param event: contains event information to be propagated to websocket
                       listener. Format of the event can be found in the
                       consumer_views module in the broker app
-        :type event: dict
         """
-        def format_event(event):
+        def format_event(dictionary):
             """
             Formats an incoming event for dispatch to a websocket client.
 
-            :param event: dict with event information
+            :param dictionary: dict with event information
             :returns: formatted JSON string
             """
-            event.pop("type")  # Remove type, it's always "hume.event"
-            return json.dumps(event)
+            dictionary.pop("type")  # Remove type, it's always "hume.event"
+            return json.dumps(dictionary)
 
         self.send(format_event(event))

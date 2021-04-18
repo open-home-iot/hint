@@ -9,8 +9,8 @@ const USER_SELF_URL = window.location.origin + '/api/users/self';
 
 export interface User {
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 }
 
 @Injectable({
@@ -18,23 +18,45 @@ export interface User {
 })
 export class UserService {
 
-  user: User;
-
+  private user: User;
   private authSubscription: Subscription;
 
   constructor(private httpClient: HttpClient,
               private authService: AuthService) {
-    console.log('Constructing user service');
-
     this.authSubscription = this.authService.authSubject.subscribe(
       authenticated => {
         if (authenticated) {
-          this.fetchCurrentUser();
+          this.getUser()
+            .then((user: User) => {
+              this.user = user;
+            })
+            .catch(error => {
+              console.error(error);
+            });
         } else {
           this.resetUser();
         }
       }
     );
+  }
+
+  getUser(): Promise<User> {
+    if (this.user) {
+      return Promise.resolve(this.user);
+    }
+
+    return new Promise<User>((resolve, reject) => {
+      this.httpClient.get(USER_SELF_URL)
+        .subscribe(
+          (user: User) => {
+            this.user = user;
+            resolve(this.user);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
   }
 
   fetchCurrentUser() {

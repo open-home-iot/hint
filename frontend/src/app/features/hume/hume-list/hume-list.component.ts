@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 
-import { Utility } from '../../../core/utility';
 import { HumeService, Hume } from '../hume.service';
 import { EventService, HumeEvent, HUB_DISCOVER_DEVICES } from '../../event/event.service';
 
@@ -19,13 +18,13 @@ export class HumeListComponent implements OnInit, OnDestroy {
 
   private subscriptionID: string;
 
-  constructor(private humeService: HumeService, private eventService: EventService) { }
+  constructor(private humeService: HumeService,
+              private eventService: EventService) { }
 
   ngOnInit(): void {
     this.humeService.getHomeHumes(this.homeID)
       .then(this.onGetHumes.bind(this))
       .catch(this.onGetHumesFailed);
-    this.subscriptionID = Utility.generateRandomID();
   }
 
   ngOnDestroy(): void {
@@ -34,11 +33,15 @@ export class HumeListComponent implements OnInit, OnDestroy {
 
   discoverDevices(humeUUID: string) {
     this.deviceList = [];
-    this.eventService.unsubscribe(this.subscriptionID);
 
-    this.subscriptionID = Utility.generateRandomID();
-    this.eventService.subscribe(
-      this.subscriptionID, humeUUID, HUB_DISCOVER_DEVICES, this.onDevicesDiscovered.bind(this)
+    if (this.subscriptionID) {
+      this.eventService.unsubscribe(this.subscriptionID);
+    }
+
+    this.subscriptionID = this.eventService.subscribe(
+      humeUUID,
+      HUB_DISCOVER_DEVICES,
+      this.onDevicesDiscovered.bind(this)
     );
 
     this.humeService.discoverDevices(humeUUID).subscribe();
@@ -49,7 +52,7 @@ export class HumeListComponent implements OnInit, OnDestroy {
   }
 
   private onGetHumesFailed(error) {
-    console.log('Get humes failed: ', error);
+    console.error(error);
   }
 
   private onDevicesDiscovered(deviceDiscoveredEvent: HumeEvent) {
