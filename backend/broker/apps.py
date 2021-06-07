@@ -82,24 +82,20 @@ class BrokerConfig(AppConfig):
 
         def stop_func(_s,
                       _f,
-                      rmq_client=None,
-                      client_log_queue=None,
-                      log_queue_listener=None):
+                      consumer=None,
+                      producer=None):
             """
             :param _s: signal leading to stop
             :param _f: frame when stop was called
-            :param rmq_client: RMQClient
-            :param client_log_queue: Log queue
-            :param log_queue_listener: Log queue listener
+            :param consumer: rabbitmq_client.RMQConsumer
+            :param producer: rabbitmq_client.RMQProducer
             """
-            rmq_client.stop()
-            log_queue_listener.stop()
-            client_log_queue.close()
+            consumer.stop()
+            producer.stop()
 
         stop_callback = functools.partial(stop_func,
-                                          rmq_client=client,
-                                          client_log_queue=log_queue,
-                                          log_queue_listener=listener)
+                                          consumer=consumer,
+                                          producer=producer)
 
         signal.signal(signal.SIGINT, stop_callback)
         signal.signal(signal.SIGTERM, stop_callback)
