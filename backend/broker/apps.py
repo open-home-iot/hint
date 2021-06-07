@@ -3,18 +3,20 @@ import os
 import signal
 import functools
 
-from logging.handlers import QueueHandler, QueueListener
-from multiprocessing import Queue
-
 import pika
 
 from django.apps import AppConfig
 from django.conf import settings
 
-from rabbitmq_client.client import RMQClient
+from rabbitmq_client import (
+    RMQProducer,
+    RMQConsumer,
+    ConsumeParams,
+    QueueParams
+)
 
 from backend.broker.consumer_views import incoming_command
-from backend.broker import producer
+from backend.broker import producer as producer_module
 
 
 class BrokerConfig(AppConfig):
@@ -43,27 +45,16 @@ class BrokerConfig(AppConfig):
         logger = logging.getLogger("rabbitmq_client")
         logger.setLevel(rmq_client_log_level)
 
-        log_queue = Queue()
-        handler = QueueHandler(log_queue)
-        handler.setLevel(rmq_client_log_level)
-        logger.addHandler(handler)
-
         # Create handler to actually print something
         stream_handler = logging.StreamHandler()
+        logger.addHandler(stream_handler)
+
         formatter = logging.Formatter(fmt="{asctime} {levelname:^8} "
                                       "{name} - {message}",
                                       style="{",
                                       datefmt="%d/%m/%Y %H:%M:%S")
         stream_handler.setFormatter(formatter)
         stream_handler.setLevel(rmq_client_log_level)
-
-        # Start queue monitor
-        listener = QueueListener(
-            log_queue,
-            stream_handler,
-            respect_handler_level=True
-        )
-        listener.start()
 
         credentials = pika.PlainCredentials(settings.HUME_BROKER_USERNAME,
                                             settings.HUME_BROKER_PASSWORD)
@@ -74,13 +65,20 @@ class BrokerConfig(AppConfig):
             credentials=credentials
         )
 
-        client = RMQClient(log_queue=log_queue,
-                           connection_parameters=connection_params,
-                           daemonize=True)
-        client.start()
-        client.command_queue(settings.MASTER_COMMAND_QUEUE_NAME,
-                             incoming_command)
-        producer.init(client)
+        hint_master_queue_parameters = QueueParams(
+            settings.MASTER_COMMAND_QUEUE_NAME,
+            durable=True
+        )
+
+        consumer = RMQConsumer(connection_parameters=connection_params)
+        consumer.consume(ConsumeParams(incoming_command),
+                         queue_params=hint_master_queue_parameters)
+
+        producer = RMQProducer(connection_parameters=connection_params)
+        producer_module.init(producer)
+
+        consumer.start()
+        producer.start()
 
         def stop_func(_s,
                       _f,
