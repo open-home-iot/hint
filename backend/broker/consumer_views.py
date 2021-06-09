@@ -5,6 +5,7 @@ import json
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from rabbitmq_client import ConsumeOK
 
 
 def incoming_command(command):
@@ -15,6 +16,9 @@ def incoming_command(command):
     :param command: message from the HINT master command queue
     :type command: bytes
     """
+    if isinstance(command, ConsumeOK):
+        return
+
     decoded_command = json.loads(command.decode('utf-8'))
 
     # Extract message fields.
