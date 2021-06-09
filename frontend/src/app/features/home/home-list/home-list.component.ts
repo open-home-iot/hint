@@ -15,7 +15,6 @@ export class HomeListComponent implements OnInit {
   constructor(private homeService: HomeService) { }
 
   ngOnInit() {
-    this.homes = this.homeService.homes;
+    this.homes = this.homeService.getHomes();
   }
-
 }

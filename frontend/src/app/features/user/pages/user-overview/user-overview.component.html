@@ -1,5 +1,4 @@
-<div id="user_information">
+<div *ngIf="user" id="user_information">
   <p>{{ user.email }}</p>
-  <p>{{ user.firstName }}</p>
-  <p>{{ user.lastName }}</p>
+  <p>{{ user.first_name }} {{ user.last_name }}</p>
 </div>

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {HomeService} from '../home/home.service';
-
+import { HomeService } from '../home/home.service';
 
 export interface Device {
   humeUuid: string; // UUID
@@ -15,11 +14,9 @@ export interface Device {
   parent: number;
 }
 
-
 const HOMES_URL = window.location.origin + '/api/homes/';
 const ROOMS_URL = window.location.origin + '/api/rooms/';
 const DEVICES_URL = window.location.origin + '/api/devices/';
-
 
 @Injectable()
 export class DeviceService {
@@ -127,7 +124,9 @@ export class DeviceService {
                     {old_id: device.room, new_id: roomID})
       .subscribe(
         success => {
-          if (device.room === undefined) {
+          // Check if device's current room is null (meaning it belongs to the
+          // HOME).
+          if (typeof device.room !== 'number') {
             // Fetch target room to get access to homeID
             const ROOM = this.homeService.getRoom(roomID);
             this.removeHomeDevice(ROOM.home, device);
@@ -135,9 +134,9 @@ export class DeviceService {
             this.removeRoomDevice(device.room, device);
           }
 
-          // A device can change from belonging to a room to belonging to the home in
-          // general.
-          if (roomID === undefined) {
+          // A device can change from belonging to a room to belonging to the
+          // home in general.
+          if (typeof roomID !== 'number') {
             const ROOM = this.homeService.getRoom(device.room);
             this.addHomeDevice(ROOM.home, device);
           } else {

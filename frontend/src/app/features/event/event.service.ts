@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
+import { Utility } from '../../core/utility';
 import { WebSocketService } from '../../core/websocket/websocket.service';
 
 
 export interface HumeEvent {
-  home_id: number;
   hume_uuid: string;
   device_uuid: string;
   event_type: number;
@@ -30,39 +30,47 @@ export class EventService {
     this.webSocketService.registerCallback(this.onEvent.bind(this));
   }
 
-  onEvent(event: string) {
-    const DECODED_EVENT: HumeEvent = JSON.parse(event);
+  onEvent(event: HumeEvent) {
+    this.subscriptionMap.forEach(
+      (subscription: Subscription, _) => {
+        if (subscription.hume_uuid === event.hume_uuid) {
 
-    this.subscriptionMap.forEach((subscription: Subscription, _) => {
-      if(subscription.hume_uuid === DECODED_EVENT.hume_uuid) {
-
-        if (subscription.event_type === DECODED_EVENT.event_type) {
-          subscription.callback(DECODED_EVENT);
+          if (subscription.event_type === event.event_type) {
+            subscription.callback(event);
+          }
         }
       }
-    });
+    );
   }
 
-  subscribe(subscriptionId: string,
-            humeUUID: string,
+  subscribe(humeUUID: string,
             eventType: number,
-            callback: (event) => void) {
-    console.log('Subscribing to key: ' + humeUUID);
+            callback: (event) => void): string {
+    const SUBSCRIPTION_ID = Utility.generateRandomID();
 
-    this.subscriptionMap[subscriptionId] = {
-      hume_uuid: humeUUID,
-      event_type: eventType,
-      callback
-    };
+    if (this.subscriptionMap.has(SUBSCRIPTION_ID)) {
+      throw new Error('Input subscriptionID already taken');
+    }
+
+    this.subscriptionMap.set(
+      SUBSCRIPTION_ID,
+      {
+        hume_uuid:  humeUUID,
+        event_type: eventType,
+        callback,
+      }
+    );
+
+    return SUBSCRIPTION_ID;
   }
 
-  unsubscribe(subscriptionId: string) {
-    delete this.subscriptionMap[subscriptionId];
+  unsubscribe(subscriptionID: string) {
+    this.subscriptionMap.delete(subscriptionID);
   }
 
-  monitorHome(homeId: number) {
+  monitorHume(humeUUID: string) {
     // This will cause events related to this home to arrive as WS messages
     // in the onEvent method.
-    this.webSocketService.send(JSON.stringify({home_id: homeId}));
+    this.webSocketService.send(JSON.stringify({ hume_uuid: humeUUID }));
   }
 }

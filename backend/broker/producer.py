@@ -1,45 +1,38 @@
 import json
 
-from rabbitmq_client.client import RMQClient
+from rabbitmq_client import RMQProducer, QueueParams
+
+from backend.broker.defs import (
+    DISCOVER_DEVICES
+)
 
 
-DISCOVER_DEVICES = 0
+# Producer instance with which to publish messages.
+producer: RMQProducer
 
 
-class Producer:
-    """Static class to host client producing utilities"""
-
-    client: RMQClient
-
-    @staticmethod
-    def command(hume_uuid, message):
-        """
-        :type hume_uuid: str
-        :type message: bytes
-        """
-        Producer.client.command(hume_uuid, message)
-
-
-def init(client):
+def init(producer_instance):
     """
     Initialize the producer module.
 
-    :type client: RMQClient
+    :type producer_instance: rabbitmq_client.RMQProducer
     """
-    Producer.client = client
+    global producer
+    producer = producer_instance
 
 
 def discover_devices(hume_uuid, message_content):
     """
+    :type hume_uuid: str
     :param message_content: discover devices message content
     :type message_content: str
     """
-    Producer.command(
-        hume_uuid,
+    producer.publish(
         json.dumps(
             {
                 "type": DISCOVER_DEVICES,
                 "content": message_content
             }
-        ).encode('utf-8')
+        ).encode('utf-8'),
+        queue_params=QueueParams(hume_uuid, durable=True)
     )

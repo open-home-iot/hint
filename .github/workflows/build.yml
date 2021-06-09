@@ -15,6 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    #
+    # Set up Python and NodeJS
+    #
+
     - name: Set up Python 3.9
       uses: actions/setup-python@v1
       with:
@@ -24,6 +28,10 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
+
+    #
+    # Install Python and Typescript dependencies
+    #
 
     - name: Install Python dependencies
       run: |
@@ -38,10 +46,22 @@ jobs:
       run: |
         cd frontend && npm install
 
+    #
+    # Set up environmental settings
+    #
+
     - name: Set PYTHONPATH
       run: |
         export PYTHONPATH=$PWD
         echo $PYTHONPATH
+
+    - name: Generate local.py
+      run: |
+        echo "from .base import *  # noqa" > backend/settings/local.py
+
+    #
+    # Lint backend and frontend
+    #
 
     - name: Lint Python code with flake8
       run: |
@@ -50,6 +70,22 @@ jobs:
     - name: Lint Typescript code with ESLint
       run: |
         cd frontend && ng lint
+
+    #
+    # Build
+    #
+
+    - name: Check Django project
+      run: |
+        ./manage.py check
+
+    - name: Build Angular project
+      run: |
+        cd frontend && ng build
+
+    #
+    # Run tests
+    #
 
     - name: Run backend Django test cases
       run: |

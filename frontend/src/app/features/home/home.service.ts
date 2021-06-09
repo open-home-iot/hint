@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { EventService } from '../event/event.service';
-
-
 export interface Home {
   id: number;
   name: string;
 }
-
 
 export interface Room {
   id: number;
@@ -16,25 +12,20 @@ export interface Room {
   name: string;
 }
 
-
 const HOMES_URL = window.location.origin + '/api/homes/';
-
 
 @Injectable()
 export class HomeService {
 
-  homes: Home[] = [];
-  homeRoomMap = new Map(); // homeID => Room[]
-  roomMap = new Map();     // roomID => Room
+  private homes: Home[] = [];
+  private homeRoomMap = new Map(); // homeID => Room[]
+  private roomMap = new Map();     // roomID => Room
 
-  constructor(private httpClient: HttpClient,
-              private eventService: EventService) {
+  constructor(private httpClient: HttpClient) {
     this.httpClient.get(HOMES_URL)
       .subscribe(
         (homes: Home[]) => {
-          for (const HOME of homes) {
-            this.addHome(HOME);
-          }
+          this.replaceHomes(homes);
         },
         error => {
           console.error(error);
@@ -42,14 +33,11 @@ export class HomeService {
       );
   }
 
-  addHome(home: Home) {
-    this.homes.push(home);
-
-    // This ensures that we get dynamic updates for the new homeId
-    this.eventService.monitorHome(home.id);
+  getHomes(): Home[] {
+    return this.homes;
   }
 
-  createHome(name: string) {
+  createHome(name: string): void {
     this.httpClient.post(HOMES_URL, {name})
       .subscribe(
         (home: Home) => {
@@ -100,6 +88,17 @@ export class HomeService {
 
   getRoom(roomID: number) {
     return this.roomMap.get(roomID);
+  }
+
+  private addHome(home: Home) {
+    this.homes.push(home);
+  }
+
+  private replaceHomes(homes: Home[]) {
+    this.homes.length = 0;
+    for (const HOME of homes) {
+      this.addHome(HOME);
+    }
   }
 
   private addRoom(homeID: number, room: Room) {

@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
 import { Subscription } from 'rxjs';
 
-import { HttpService } from '../../core/http/http.service';
 import { AuthService } from '../../core/auth/auth.service';
 
 const USER_SELF_URL = window.location.origin + '/api/users/self';
 
-
 export interface User {
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 }
 
 @Injectable({
@@ -18,18 +18,21 @@ export interface User {
 })
 export class UserService {
 
-  user: User;
-
+  private user: User;
   private authSubscription: Subscription;
 
-  constructor(private httpService: HttpService,
+  constructor(private httpClient: HttpClient,
               private authService: AuthService) {
-    console.log('Constructing user service');
-
     this.authSubscription = this.authService.authSubject.subscribe(
       authenticated => {
         if (authenticated) {
-          this.fetchCurrentUser();
+          this.getUser()
+            .then((user: User) => {
+              this.user = user;
+            })
+            .catch(error => {
+              console.error(error);
+            });
         } else {
           this.resetUser();
         }
@@ -37,23 +40,26 @@ export class UserService {
     );
   }
 
-  fetchCurrentUser() {
-    this.httpService.get(USER_SELF_URL)
-      .subscribe(
-        (gottenUser: User) => {
-          console.log('Successfully got user:');
-          console.log(gottenUser);
-          this.user = gottenUser;
-        },
-        error => {
-          console.log('Failed to get user:');
-          console.log(error);
-        }
-      );
+  getUser(): Promise<User> {
+    if (this.user) {
+      return Promise.resolve(this.user);
+    }
+
+    return new Promise<User>((resolve, reject) => {
+      this.httpClient.get(USER_SELF_URL)
+        .subscribe(
+          (user: User) => {
+            this.user = user;
+            resolve(this.user);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
   }
 
-  resetUser() {
-    console.log('Clearing user information');
+  resetUser(): void {
     this.user = undefined;
   }
 }

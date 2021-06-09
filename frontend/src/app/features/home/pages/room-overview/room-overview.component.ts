@@ -30,15 +30,15 @@ export class RoomOverviewComponent implements OnInit {
       .catch(this.onGetRoomsFailed);
   }
 
-  onGetRooms(rooms: Room[]) {
+  onRoomCreated(room: Room) {
+    //this.rooms.push(room);
+  }
+
+  private onGetRooms(rooms: Room[]) {
     this.rooms = rooms;
   }
 
-  onGetRoomsFailed(error) {
+  private onGetRoomsFailed(error) {
     console.error('Get rooms failed: ', error);
-  }
-
-  onRoomCreated(room: Room) {
-    //this.rooms.push(room);
   }
 }

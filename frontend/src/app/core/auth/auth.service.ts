@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { HttpService } from '../http/http.service';
 import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+
+import { BehaviorSubject } from 'rxjs';
 
 const LOGIN_URL = window.location.origin + '/api/users/login';
 const LOGOUT_URL = window.location.origin + '/api/users/logout';
@@ -15,7 +15,7 @@ export class AuthService {
 
   private initiated: boolean; // Indicates if the AuthService has up-to-date information.
 
-  constructor(private httpService: HttpService,
+  constructor(private httpClient: HttpClient,
               private router: Router) {
     this.initiated = false; // Initially, we do not have up-to-date information.
     this.authSubject = new BehaviorSubject<boolean>(false);
@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   sendLoginRequest(username: string, password: string) {
-    return this.httpService.post(LOGIN_URL, { username, password });
+    return this.httpClient.post(LOGIN_URL, { username, password });
 
   }
 
@@ -41,8 +41,7 @@ export class AuthService {
         this.updateAuthService(true);
       },
       (error: HttpErrorResponse) => {
-        console.log('Failed to log in');
-        console.log(error);
+        console.error(error);
         this.updateAuthService(false);
       }
     );
@@ -57,8 +56,7 @@ export class AuthService {
             resolve();
           },
           (error: HttpErrorResponse) => {
-            console.log('Failed to log in');
-            console.log(error);
+            console.error(error);
             this.updateAuthService(false);
             reject(error);
           }
@@ -67,15 +65,14 @@ export class AuthService {
   }
 
   logout() {
-    this.httpService.post(LOGOUT_URL, {})
+    this.httpClient.post(LOGOUT_URL, {})
       .subscribe(
         next => {
-          console.log('Success logging out!');
           this.updateAuthService(false);
           this.router.navigate(['/']);
         },
         error => {
-          console.log('Failed to log out');
+          console.error(error);
           this.updateAuthService(false);
           this.router.navigate(['/']);
         }
