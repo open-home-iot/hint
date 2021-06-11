@@ -30,7 +30,7 @@ pyflakes==2.2.0
 PyHamcrest==2.0.2
 pyOpenSSL==20.0.1
 pytz==2021.1
-rabbitmq-client==2.0.0
+rabbitmq-client==2.0.2
 requests==2.25.1
 service-identity==18.1.0
 six==1.15.0
