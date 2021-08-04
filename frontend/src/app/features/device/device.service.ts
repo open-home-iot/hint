@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { HomeService } from '../home/home.service';
 
 export interface Device {
+  name: string;
+  address: string;
+  uuid: string;
   humeUuid: string; // UUID
   is_attached: boolean;
   room: number;
-  uuid: string;
-  name: string;
   description: string;
   category_name: string;
   type_name: string;

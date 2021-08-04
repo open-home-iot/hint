@@ -8,6 +8,10 @@ import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceDetailComponent } from './device-detail/device-detail.component';
 import { DeviceRoomSelectorComponent } from './device-room-selector/device-room-selector.component';
 
+/* Discovery */
+import { DiscoveredDeviceComponent } from './discovered-device/discovered-device.component';
+import { DiscoveredDevicesComponent } from './discovered-devices/discovered-devices.component';
+
 // PAGES
 
 // SERVICES
@@ -23,7 +27,9 @@ import { DeviceRoutingModule } from './device-routing.module';
     RoomDevicesComponent,
     DeviceListComponent,
     DeviceDetailComponent,
-    DeviceRoomSelectorComponent
+    DeviceRoomSelectorComponent,
+    DiscoveredDeviceComponent,
+    DiscoveredDevicesComponent,
   ],
   imports: [
     DeviceRoutingModule,
@@ -32,7 +38,8 @@ import { DeviceRoutingModule } from './device-routing.module';
   exports: [
     HomeDevicesComponent,
     RoomDevicesComponent,
-    DeviceListComponent
+    DeviceListComponent,
+    DiscoveredDevicesComponent
   ],
   providers: [DeviceService]
 })
