@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Device } from '../device.service';
 
 @Component({
@@ -9,8 +9,14 @@ import { Device } from '../device.service';
 export class DiscoveredDevicesComponent implements OnInit {
 
   @Input() devices: Device[];
+  @Output() attachDevice = new EventEmitter<Device>();
 
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
+
+  attach(device: Device) {
+    this.attachDevice.emit(device);
+  }
 }

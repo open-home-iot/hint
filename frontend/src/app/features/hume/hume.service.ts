@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { EventService } from '../event/event.service';
+import {Device} from '../device/device.service';
 
 const HUME_URL = window.location.origin + '/api/humes/';
 
@@ -23,6 +24,20 @@ export class HumeService {
 
   constructor(private httpClient: HttpClient,
               private eventService: EventService) { }
+
+  attachDeviceUrl(humeUuid: string, device: Device) {
+    return HUME_URL + humeUuid + "/devices/" + device.address + "/attach"
+  }
+
+  attach(humeUuid: string, device: Device) {
+    this.httpClient.post(this.attachDeviceUrl(humeUuid, device), {})
+      .subscribe(
+        ok => {},
+        error => {
+          console.error(error);
+        }
+      );
+  }
 
   getHomeHumes(homeID: number): Promise<Hume[]> {
     if (this.homeHumeMap.has(homeID)) {

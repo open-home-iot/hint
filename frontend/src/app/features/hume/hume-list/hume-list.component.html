@@ -2,4 +2,4 @@
   UUID: {{ hume.uuid }}
   <button (click)="discoverDevices(hume.uuid)">Discover Devices</button>
 </div>
-<app-discovered-devices [devices]="discoveredDevices"></app-discovered-devices>
+<app-discovered-devices [devices]="discoveredDevices" (attachDevice)="attach($event)"></app-discovered-devices>

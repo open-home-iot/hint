@@ -14,6 +14,7 @@ export class HumeListComponent implements OnInit, OnDestroy {
 
   @Input() homeID: number;
   humes: Hume[];
+  discoveryHumeUuid: string;
   discoveredDevices: Device[] = [];
 
   private subscriptionID: string;
@@ -31,7 +32,12 @@ export class HumeListComponent implements OnInit, OnDestroy {
     this.eventService.unsubscribe(this.subscriptionID);
   }
 
+  attach(device: Device) {
+    this.humeService.attach(this.discoveryHumeUuid, device);
+  }
+
   discoverDevices(humeUUID: string) {
+    this.discoveryHumeUuid = humeUUID;
     this.discoveredDevices = [];
 
     if (this.subscriptionID) {

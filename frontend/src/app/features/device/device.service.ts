@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HomeService } from '../home/home.service';
+import { Hume } from '../hume/hume.service';
 
 export interface Device {
   name: string;

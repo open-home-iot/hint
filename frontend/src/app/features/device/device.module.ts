@@ -9,7 +9,6 @@ import { DeviceDetailComponent } from './device-detail/device-detail.component';
 import { DeviceRoomSelectorComponent } from './device-room-selector/device-room-selector.component';
 
 /* Discovery */
-import { DiscoveredDeviceComponent } from './discovered-device/discovered-device.component';
 import { DiscoveredDevicesComponent } from './discovered-devices/discovered-devices.component';
 
 // PAGES
@@ -28,7 +27,6 @@ import { DeviceRoutingModule } from './device-routing.module';
     DeviceListComponent,
     DeviceDetailComponent,
     DeviceRoomSelectorComponent,
-    DiscoveredDeviceComponent,
     DiscoveredDevicesComponent,
   ],
   imports: [

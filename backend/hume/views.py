@@ -162,3 +162,23 @@ class HumeDiscoverDevices(views.APIView):
         producer.discover_devices(hume_uuid, "")
 
         return Response([], status=status.HTTP_200_OK)
+
+
+class HumeAttachDevice(views.APIView):
+    """Attach a discovered device"""
+
+    def post(self, request, hume_uuid, address, format=None):
+        """
+        Attach the device with the input address to the input HUME.
+        """
+        try:
+            Hume.objects.get(
+                uuid=hume_uuid,
+                home__users__id=request.user.id
+            )
+        except Hume.DoesNotExist:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        producer.attach(hume_uuid, address)
+
+        return Response([], status=status.HTTP_200_OK)

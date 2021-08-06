@@ -3,7 +3,7 @@ import json
 from rabbitmq_client import RMQProducer, QueueParams
 
 from backend.broker.defs import (
-    DISCOVER_DEVICES
+    DISCOVER_DEVICES, ATTACH_DEVICE,
 )
 
 
@@ -32,6 +32,22 @@ def discover_devices(hume_uuid, message_content):
             {
                 "type": DISCOVER_DEVICES,
                 "content": message_content
+            }
+        ).encode('utf-8'),
+        queue_params=QueueParams(hume_uuid, durable=True)
+    )
+
+
+def attach(hume_uuid, device_address):
+    """
+    :param hume_uuid: UUID of the HUME that discovered the device
+    :param device_address: address of the device to attach
+    """
+    producer.publish(
+        json.dumps(
+            {
+                "type": ATTACH_DEVICE,
+                "device_address": device_address
             }
         ).encode('utf-8'),
         queue_params=QueueParams(hume_uuid, durable=True)
