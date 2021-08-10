@@ -133,11 +133,13 @@ class Device(models.Model):
         """
 
         THERMOMETER = 0
+        LAMP = 1
         CUSTOM = 666
 
         CHOICES = [
             (THERMOMETER, "Thermometer"),
-            (CUSTOM, "Custom")
+            (LAMP, "Lamp"),
+            (CUSTOM, "Custom"),
         ]
 
     @property

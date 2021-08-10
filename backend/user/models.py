@@ -7,10 +7,14 @@ class CustomUserManager(BaseUserManager):
 
     def create_hume_user(self, hume_uuid, generated_password):
         """Used to create Hume users."""
-        return self.create_user(
+        user = self.create_user(
             email=f"{str(hume_uuid).replace('-', '')}@fake.com",
             password=generated_password
         )
+
+        user.is_hume = True
+        user.save(using=self._db)
+        return user
 
     def create_user(self,
                     email,
@@ -56,6 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_hume = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 

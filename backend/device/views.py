@@ -2,11 +2,28 @@ from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
-from backend.device.models import Device
+from backend.device.models import Device, create_device
 from backend.device.serializers import DeviceSerializer
 from backend.home.models import Room
 
 
+class Devices(views.APIView):
+    """
+    Devices API, used for creating new devices.
+    """
+
+    def post(self, request, format=None):
+        """
+        Create a new device.
+        """
+        print(request.data)
+
+        return Response(status=status.HTTP_201_CREATED)
+
+
+###############################################################################
+# AJAX VIEWS
+###############################################################################
 class RoomDevices(views.APIView):
     """Get devices related to a Room."""
 
@@ -26,7 +43,7 @@ class RoomDevices(views.APIView):
 
 
 class HomeDevices(views.APIView):
-    """Get devices related to a Room."""
+    """Get devices related to a home, unassigned a room."""
 
     def get(self, request, home_id, format=None):
         """
