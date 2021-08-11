@@ -5,6 +5,7 @@ from rest_framework import status
 from backend.device.models import Device, create_device
 from backend.device.serializers import DeviceSerializer
 from backend.home.models import Room
+from backend.hume.models import Hume
 
 
 class Devices(views.APIView):
@@ -12,11 +13,14 @@ class Devices(views.APIView):
     Devices API, used for creating new devices.
     """
 
-    def post(self, request, format=None):
+    def post(self, request, hume_uuid, format=None):
         """
         Create a new device.
         """
+        print(hume_uuid)
         print(request.data)
+
+        create_device(Hume.objects.get(uuid=hume_uuid), request.data)
 
         return Response(status=status.HTTP_201_CREATED)
 
