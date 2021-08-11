@@ -3,6 +3,7 @@ import random
 
 from django.test import TestCase
 from rest_framework.test import APIClient
+from rest_framework import status
 
 from backend.device.models import (
     Device,
@@ -13,11 +14,13 @@ from backend.device.models import (
 from backend.hume.models import Hume
 from backend.home.models import Home, Room
 from backend.user.models import User
-
-HUME_UUID = "9cb37270-69f5-4dc0-9fd5-7183da5ffc19"
-DEVICE_UUID_1 = "e2bf93b6-9b5d-4944-a863-611b6b6600e7"
-DEVICE_UUID_2 = "e2bf93b6-9b5d-4944-a863-611b6b6600e1"
-DEVICE_UUID_3 = "e2bf93b6-9b5d-4944-a863-611b6b6600e2"
+from backend.device.test_defs import (
+    BASIC_LED_CAPS,
+    HUME_UUID,
+    DEVICE_UUID_1,
+    DEVICE_UUID_2,  # noqa
+    DEVICE_UUID_3,  # noqa
+)
 
 
 def create_dummy_device(hume: Hume):
@@ -69,19 +72,7 @@ class ModelTests(TestCase):
 
     def test_create_stateful_device(self):
         """Verify a Basic LED device can be created without problems."""
-        capabilities = {
-            'uuid': DEVICE_UUID_1,
-            'name': 'Basic LED',
-            'category': 1,
-            'type': 1,
-            'states': [
-                {
-                    'id': 0,
-                    'control': [{'on': 1}, {'off': 0}]
-                }
-            ]
-        }
-        create_device(Hume.objects.get(uuid=HUME_UUID), capabilities)
+        create_device(Hume.objects.get(uuid=HUME_UUID), BASIC_LED_CAPS)
         device = Device.objects.get(uuid=DEVICE_UUID_1)
         device_state_group = DeviceStateGroup.objects.get(
             device=device, group_id=0)
@@ -89,26 +80,45 @@ class ModelTests(TestCase):
             device_state_group=device_state_group)
         self.assertEqual(on.state_id, 1)
         self.assertEqual(off.state_id, 0)
-        verify_device_fields(self, device, capabilities)
+        verify_device_fields(self, device, BASIC_LED_CAPS)
 
 
 class DevicesApi(TestCase):
     """Create device instances, in conjunction with an attach sequence."""
 
+    DEVICES_URL = "/api/humes/{}/devices"
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         Hume.objects.create(uuid=HUME_UUID)
+        User.objects.create_hume_user(HUME_UUID, "pw")
+
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.client.login(
+            username=f"{HUME_UUID.replace('-', '')}@fake.com", password="pw"
+        )
 
     def test_create_device_api(self):
         """Verify the create device API works when used correctly"""
-        pass
+        res = self.client.post(DevicesApi.DEVICES_URL.format(HUME_UUID),
+                               BASIC_LED_CAPS)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_create_device_failed_user_not_a_hume(self):
         """
         Verify that users that are not related to HUMEs cannot create devices.
         """
-        pass
+        user = User.objects.create_user(
+            "bad@person.com", "pw", "Hans", "Grüber")
+        client = APIClient()
+        client.login(username=user.email, password="pw")
+        res = client.post(DevicesApi.DEVICES_URL.format(HUME_UUID),
+                          BASIC_LED_CAPS)
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class RoomDeviceGetApi(TestCase):

@@ -17,12 +17,13 @@ class Devices(views.APIView):
         """
         Create a new device.
         """
-        print(hume_uuid)
-        print(request.data)
+        # print(hume_uuid)
+        # print(request.data)
+        if request.user.is_hume:
+            create_device(Hume.objects.get(uuid=hume_uuid), request.data)
+            return Response(status=status.HTTP_201_CREATED)
 
-        create_device(Hume.objects.get(uuid=hume_uuid), request.data)
-
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 ###############################################################################
