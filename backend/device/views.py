@@ -2,10 +2,14 @@ from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 from backend.device.models import Device, create_device
 from backend.device.serializers import DeviceSerializer
 from backend.home.models import Room
 from backend.hume.models import Hume
+from broker.defs import ATTACH_DEVICE
 
 
 class Devices(views.APIView):
@@ -17,10 +21,20 @@ class Devices(views.APIView):
         """
         Create a new device.
         """
-        # print(hume_uuid)
-        # print(request.data)
         if request.user.is_hume:
             create_device(Hume.objects.get(uuid=hume_uuid), request.data)
+
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                hume_uuid,
+                {
+                    "type": "hume.event",
+                    "hume_uuid": hume_uuid,
+                    "event_type": ATTACH_DEVICE,
+                    "content": "",
+                }
+            )
+
             return Response(status=status.HTTP_201_CREATED)
 
         return Response(status=status.HTTP_401_UNAUTHORIZED)
