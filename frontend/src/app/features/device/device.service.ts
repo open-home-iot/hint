@@ -23,7 +23,6 @@ export interface DeviceState {
 }
 
 export interface DeviceStateGroup {
-  device: number;
   group_id: number;
   group_name: string;
 }
@@ -132,6 +131,11 @@ export class DeviceService {
 
   getRoomChangeUrl(device: Device) {
     return DEVICES_URL + device.uuid + '/change-room';
+  }
+
+  changeState(device: Device, newState: DeviceState) {
+    console.log("device changing state: ", device);
+    console.log("new state: ", newState);
   }
 
   changeRoom(device: Device, roomID: number | undefined) {
