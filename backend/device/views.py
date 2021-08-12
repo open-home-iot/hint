@@ -9,7 +9,7 @@ from backend.device.models import Device, create_device
 from backend.device.serializers import DeviceSerializer
 from backend.home.models import Room
 from backend.hume.models import Hume
-from broker.defs import ATTACH_DEVICE
+from backend.broker.defs import ATTACH_DEVICE
 
 
 class Devices(views.APIView):
