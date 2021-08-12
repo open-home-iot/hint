@@ -104,6 +104,9 @@ class HumeConfirmPairing(views.APIView):
         """
         Pairs the HUME with a HOME instance.
         """
+        if request.user.is_hume:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         home_id = request.data["home_id"]
 
         try:
@@ -116,7 +119,7 @@ class HumeConfirmPairing(views.APIView):
             home = Home.objects.get(id=home_id,
                                     users__id=request.user.id)
         except Home.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         hume.home = home
         hume.save()

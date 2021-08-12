@@ -8,8 +8,7 @@ from backend.hume.views import (
     HumeAttachDevice,
     BrokerCredentials
 )
-from backend.device.views import Devices
-
+from backend.device.views import Devices, DeviceAction
 
 urlpatterns = [
     # NOT AJAX
@@ -23,4 +22,6 @@ urlpatterns = [
     path("<str:hume_uuid>/devices/discover", HumeDiscoverDevices.as_view()),
     path("<str:hume_uuid>/devices/<str:address>/attach",
          HumeAttachDevice.as_view()),
+    path("<str:hume_uuid>/devices/<str:device_uuid>/action",
+         DeviceAction.as_view())
 ]

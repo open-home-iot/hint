@@ -10,6 +10,7 @@ from backend.device.serializers import DeviceSerializer
 from backend.home.models import Room
 from backend.hume.models import Hume
 from backend.broker.defs import ATTACH_DEVICE
+from backend.broker import producer
 
 
 class Devices(views.APIView):
@@ -89,15 +90,31 @@ class ChangeDeviceRoom(views.APIView):
         Change which room a device belongs to.
         """
         try:
-            device = Device.objects.get(uuid=device_uuid)
+            device = Device.objects.get(uuid=device_uuid,
+                                        hume__home__users__id=request.user.id)
 
             room = None
             if request.data["new_id"] is not None:
-                room = Room.objects.get(id=request.data["new_id"])
+                room = Room.objects.get(id=request.data["new_id"],
+                                        home__users__id=request.user.id)
 
             device.room = room
             device.save()
-        except Device.DoesNotExist:
+        except (Device.DoesNotExist, Room.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class DeviceAction(views.APIView):
+    """Execute a device action."""
+
+    def post(self, request, hume_uuid, device_uuid, format=None):
+        try:
+            device = Device.objects.get(uuid=device_uuid,
+                                        hume__uuid=hume_uuid,
+                                        hume__home__users__id=request.user.id)
+            producer.send_device_action(hume_uuid, device_uuid, **request.data)
+            return Response(status=status.HTTP_200_OK)
+        except Device.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

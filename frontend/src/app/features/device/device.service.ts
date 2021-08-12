@@ -6,7 +6,7 @@ export interface Device {
   name: string;
   address: string;
   uuid: string;
-  humeUuid: string; // UUID
+  hume: string; // UUID
   is_attached: boolean;
   room: number;
   description: string;
@@ -27,6 +27,7 @@ export interface DeviceStateGroup {
   group_name: string;
 }
 
+const HUMES_URL = window.location.origin + '/api/humes/';
 const HOMES_URL = window.location.origin + '/api/homes/';
 const ROOMS_URL = window.location.origin + '/api/rooms/';
 const DEVICES_URL = window.location.origin + '/api/devices/';
@@ -133,11 +134,6 @@ export class DeviceService {
     return DEVICES_URL + device.uuid + '/change-room';
   }
 
-  changeState(device: Device, newState: DeviceState) {
-    console.log("device changing state: ", device);
-    console.log("new state: ", newState);
-  }
-
   changeRoom(device: Device, roomID: number | undefined) {
     this.httpClient.patch(this.getRoomChangeUrl(device),
                     {old_id: device.room, new_id: roomID})
@@ -163,6 +159,28 @@ export class DeviceService {
           }
           // Set the device room
           device.room = roomID;
+        },
+        error => {
+          console.error(error);
+        }
+      );
+  }
+
+  getDeviceActionUrl(device: Device): string {
+    return HUMES_URL + device.hume + "/devices/" + device.uuid + "/action"
+  }
+
+  changeState(device: Device, newState: DeviceState) {
+    console.log("device changing state: ", device);
+    console.log("new state: ", newState);
+
+    this.httpClient.post(this.getDeviceActionUrl(device), {
+      "device_state_group_id": newState.device_state_group.group_id,
+      "device_state_id": newState.state_id,
+    })
+      .subscribe(
+        success => {
+          console.log(success);
         },
         error => {
           console.error(error);

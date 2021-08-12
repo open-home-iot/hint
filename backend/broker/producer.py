@@ -3,7 +3,7 @@ import json
 from rabbitmq_client import RMQProducer, QueueParams
 
 from backend.broker.defs import (
-    DISCOVER_DEVICES, ATTACH_DEVICE,
+    DISCOVER_DEVICES, ATTACH_DEVICE, DEVICE_ACTION
 )
 
 
@@ -52,3 +52,24 @@ def attach(hume_uuid, device_address):
         ).encode('utf-8'),
         queue_params=QueueParams(hume_uuid, durable=True)
     )
+
+
+def send_device_action(hume_uuid,
+                       device_uuid,
+                       **kwargs):
+    """
+    :param hume_uuid: HUME to receive the action
+    :param device_uuid: device to receive the action
+
+    Possible kwargs:
+
+        device_state_group_id: group ID of a pointed out new device state
+        device_state: new device state
+    """
+    payload = {
+        "type": DEVICE_ACTION,
+        "device_uuid": device_uuid,
+    }
+    payload.update(kwargs)
+    producer.publish(json.dumps(payload).encode('utf-8'),
+                     queue_params=QueueParams(hume_uuid, durable=True))
