@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HomeService } from '../home/home.service';
-import { Hume } from '../hume/hume.service';
 
 export interface Device {
   name: string;
@@ -14,6 +13,19 @@ export interface Device {
   category_name: string;
   type_name: string;
   parent: number;
+  states: DeviceState[];
+}
+
+export interface DeviceState {
+  device_state_group: DeviceStateGroup;
+  state_id: number;
+  state_name: string;
+}
+
+export interface DeviceStateGroup {
+  device: number;
+  group_id: number;
+  group_name: string;
 }
 
 const HOMES_URL = window.location.origin + '/api/homes/';
@@ -63,6 +75,7 @@ export class DeviceService {
       this.httpClient.get(this.getHomeDevicesUrl(homeID))
         .subscribe(
           (devices: Device[]) => {
+            console.log(devices);
             this.replaceHomeDevices(homeID, devices);
             resolve(this.homeDevices.get(homeID));
           },

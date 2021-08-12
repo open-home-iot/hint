@@ -194,6 +194,17 @@ class Device(models.Model):
                                null=True,
                                blank=True)
 
+    @property
+    def states(self):
+        """
+        Fetch any states that are associated with the device.
+
+        :returns: [DeviceState]
+        """
+        return DeviceState.objects.select_related(
+            'device_state_group'
+        ).filter(device_state_group__device__uuid=self.uuid)
+
     def __str__(self):
         """str representation of a Device instance"""
         return f"<{self.__class__.__name__} instance {self.uuid} (" \
