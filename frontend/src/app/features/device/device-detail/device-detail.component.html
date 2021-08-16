@@ -8,6 +8,15 @@
   </app-device-room-selector>
 </div>
 
+<div>
+  <div *ngFor="let state_group of state_groups | keyvalue" class="device_action_set">
+    {{ state_group.key | uppercase }}
+    <div *ngFor="let state of state_group.value">
+      <button (click)="stateChange(state)">{{ state.state_name | titlecase }}</button>
+    </div>
+  </div>
+</div>
+
 <div class="device_footer">
   <hr>
   <span class="device_details">UUID: {{ device.uuid }}</span>

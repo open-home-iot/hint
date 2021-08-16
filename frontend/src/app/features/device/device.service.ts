@@ -3,17 +3,31 @@ import { HttpClient } from '@angular/common/http';
 import { HomeService } from '../home/home.service';
 
 export interface Device {
-  humeUuid: string; // UUID
+  name: string;
+  address: string;
+  uuid: string;
+  hume: string; // UUID
   is_attached: boolean;
   room: number;
-  uuid: string;
-  name: string;
   description: string;
   category_name: string;
   type_name: string;
   parent: number;
+  states: DeviceState[];
 }
 
+export interface DeviceState {
+  device_state_group: DeviceStateGroup;
+  state_id: number;
+  state_name: string;
+}
+
+export interface DeviceStateGroup {
+  group_id: number;
+  group_name: string;
+}
+
+const HUMES_URL = window.location.origin + '/api/humes/';
 const HOMES_URL = window.location.origin + '/api/homes/';
 const ROOMS_URL = window.location.origin + '/api/rooms/';
 const DEVICES_URL = window.location.origin + '/api/devices/';
@@ -148,6 +162,21 @@ export class DeviceService {
         error => {
           console.error(error);
         }
+      );
+  }
+
+  getDeviceActionUrl(device: Device): string {
+    return HUMES_URL + device.hume + '/devices/' + device.uuid + '/action';
+  }
+
+  changeState(device: Device, newState: DeviceState) {
+    this.httpClient.post(this.getDeviceActionUrl(device), {
+      device_state_group_id: newState.device_state_group.group_id,
+      device_state_id: newState.state_id,
+    })
+      .subscribe(
+        _success => null,
+        error => { console.error(error); }
       );
   }
 }

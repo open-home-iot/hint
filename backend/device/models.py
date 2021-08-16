@@ -52,6 +52,19 @@ def create_device(hume, device_spec):
     Creates all objects necessary from the device specification: Device,
     DeviceDataSource (if present).
 
+    EXAMPLE STATEFUL DEVICE SPEC:
+    {
+      'uuid': '0ededfd1-65aa-42ba-866e-fb5c5ad607f2',
+      'category': 1,  # Device.Category.ACTUATOR
+      'type': 1,      # Device.Type.LAMP
+      'states': [
+                  {
+                    'id': 0,
+                    'control': [{'on': 1}, {'off': 0}]
+                  }
+                ]
+    }
+
     :param hume: HUME the device belongs to, this shall always be present when
                  creating a new device, as it will be created as a result of
                  a discovery and attach procedure
@@ -70,15 +83,33 @@ def create_device(hume, device_spec):
     if device_spec.get("description") is not None:
         device_dict["description"] = device_spec["description"]
 
-    device = Device.objects.create(**device_dict)
+    device = Device(**device_dict)
 
-    if device_spec.get("data_sources") is not None:
-        for data_source_spec in device_spec["data_sources"]:
-            DeviceDataSource.objects.create(
+    # States, data sources, etc.
+    other_objects = []
+
+    if device_spec.get("states") is not None:
+        for state_group in device_spec["states"]:
+            device_state_group = DeviceStateGroup(
                 device=device,
-                name=data_source_spec["name"],
-                data_type=data_source_spec["data_type"]
+                group_id=state_group.pop("id"),
             )
+            group_name = list(state_group.keys())[0]  # only group name left
+            device_state_group.group_name = group_name
+            other_objects.append(device_state_group)
+
+            group_states = state_group[group_name]
+            for state in group_states:
+                device_state = DeviceState(
+                    device_state_group=device_state_group,
+                    state_id=list(state.values())[0],
+                    state_name=list(state.keys())[0],
+                )
+                other_objects.append(device_state)
+
+    device.save()
+    for obj in other_objects:
+        obj.save()
 
 
 class Device(models.Model):
@@ -133,11 +164,13 @@ class Device(models.Model):
         """
 
         THERMOMETER = 0
+        LAMP = 1
         CUSTOM = 666
 
         CHOICES = [
             (THERMOMETER, "Thermometer"),
-            (CUSTOM, "Custom")
+            (LAMP, "Lamp"),
+            (CUSTOM, "Custom"),
         ]
 
     @property
@@ -161,6 +194,17 @@ class Device(models.Model):
                                null=True,
                                blank=True)
 
+    @property
+    def states(self):
+        """
+        Fetch any states that are associated with the device.
+
+        :returns: [DeviceState]
+        """
+        return DeviceState.objects.select_related(
+            'device_state_group'
+        ).filter(device_state_group__device__uuid=self.uuid)
+
     def __str__(self):
         """str representation of a Device instance"""
         return f"<{self.__class__.__name__} instance {self.uuid} (" \
@@ -169,6 +213,21 @@ class Device(models.Model):
                f"category: {self.category_name}, " \
                f"type: {self.type_name}, " \
                f"parent: {self.parent})>"  # noqa
+
+
+class DeviceStateGroup(models.Model):
+
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    group_id = models.IntegerField()
+    group_name = models.CharField(max_length=20)
+
+
+class DeviceState(models.Model):
+
+    device_state_group = models.ForeignKey(
+        DeviceStateGroup, on_delete=models.CASCADE)
+    state_id = models.IntegerField()
+    state_name = models.CharField(max_length=50)
 
 
 class DeviceDataSource(models.Model):

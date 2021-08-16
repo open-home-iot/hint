@@ -1,24 +1,28 @@
 import uuid
 import random
 
+from unittest.mock import patch, Mock, ANY
+
 from django.test import TestCase
 from rest_framework.test import APIClient
+from rest_framework import status
 
 from backend.device.models import (
     Device,
-    DeviceDataSource,
-    DataType,
-    create_device
+    DeviceStateGroup,
+    DeviceState,
+    create_device,
 )
 from backend.hume.models import Hume
 from backend.home.models import Home, Room
 from backend.user.models import User
-
-
-HUME_UUID = "9cb37270-69f5-4dc0-9fd5-7183da5ffc19"
-DEVICE_UUID_1 = "e2bf93b6-9b5d-4944-a863-611b6b6600e7"
-DEVICE_UUID_2 = "e2bf93b6-9b5d-4944-a863-611b6b6600e1"
-DEVICE_UUID_3 = "e2bf93b6-9b5d-4944-a863-611b6b6600e2"
+from backend.device.test_defs import (  # noqa
+    BASIC_LED_CAPS,
+    HUME_UUID,
+    DEVICE_UUID_1,
+    DEVICE_UUID_2,
+    DEVICE_UUID_3,
+)
 
 
 def create_dummy_device(hume: Hume):
@@ -38,7 +42,7 @@ def create_dummy_device(hume: Hume):
     return device
 
 
-def verify_device_fields(test_case, device, device_spec):
+def verify_device_fields(test_case: TestCase, device, device_spec):
     """
     Compares the input device instance and device spec and checks that the
     correct objects have been created.
@@ -49,107 +53,80 @@ def verify_device_fields(test_case, device, device_spec):
     """
     test_case.assertEqual(str(device.uuid), device_spec["uuid"])
     test_case.assertEqual(device.name, device_spec["name"])
-    test_case.assertEqual(
-        device.description,
-        device_spec["description"]
-    )
     test_case.assertEqual(device.category, device_spec["category"])
     test_case.assertEqual(device.type, device_spec["type"])
-
-
-def verify_device_data_sources(test_case, data_sources, device_spec):
-    """
-    Compares the input data source instances to the device spec.
-
-    :param test_case: test case instance
-    :type data_sources:
-    :type device_spec:
-    """
-    spec_sources = device_spec["data_sources"]
-    test_case.assertEqual(len(data_sources), len(spec_sources))
-
-    for spec_source in spec_sources:
-        match_found = False
-
-        for source_instance in data_sources:
-            if source_instance.name == spec_source["name"]:
-                test_case.assertTrue(
-                    source_instance.data_type == spec_source["data_type"]
-                )
-                match_found = True
-                break
-
-        if not match_found:
-            test_case.fail(
-                f"No matching data source created for: {spec_source}"
-            )
 
 
 class ModelTests(TestCase):
     """Verifies behavior of Device models and instantiation helpers"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         """
         CALLED PER TEST CASE!
         """
-        self.hume = Hume.objects.create(uuid=HUME_UUID)
+        super().setUpClass()
+        Hume.objects.create(uuid=HUME_UUID)
 
-    def test_create_single_data_source_sensor(self):
-        """
-        Test creating model instances for a single data source sensor device.
-        """
-        device_spec = {
-            "uuid": DEVICE_UUID_1,
-            "name": "Simple sensor",
-            "description": "Some description",
-            "category": Device.Category.SENSOR,
-            "type": Device.Type.THERMOMETER,
-            "data_sources": [
-                {
-                    "name": "Temperature",
-                    "data_type": DataType.INT
-                }
-            ]
-        }
-        create_device(self.hume, device_spec)
-
+    def test_create_stateful_device(self):
+        """Verify a Basic LED device can be created without problems."""
+        create_device(Hume.objects.get(uuid=HUME_UUID), BASIC_LED_CAPS)
         device = Device.objects.get(uuid=DEVICE_UUID_1)
-        self.assertEqual(str(device.hume.uuid), self.hume.uuid)
-        verify_device_fields(self, device, device_spec)
+        device_state_group = DeviceStateGroup.objects.get(
+            device=device, group_id=0)
+        on, off = DeviceState.objects.filter(
+            device_state_group=device_state_group)
+        self.assertEqual(on.state_id, 1)
+        self.assertEqual(off.state_id, 0)
+        verify_device_fields(self, device, BASIC_LED_CAPS)
 
-        data_sources = DeviceDataSource.objects.filter(device=device)
-        verify_device_data_sources(self, data_sources, device_spec)
 
-    def test_create_thermometer(self):
+class DevicesApi(TestCase):
+    """Create device instances, in conjunction with an attach sequence."""
+
+    DEVICES_URL = "/api/humes/{}/devices"
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        Hume.objects.create(uuid=HUME_UUID)
+        User.objects.create_hume_user(HUME_UUID, "pw")
+
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.client.login(
+            username=f"{HUME_UUID.replace('-', '')}@fake.com", password="pw"
+        )
+
+    @patch('backend.device.views.async_to_sync')
+    def test_create_device_api(self, async_to_sync):
+        """Verify the create device API works when used correctly"""
+        sync_version = Mock()
+        async_to_sync.return_value = sync_version
+
+        res = self.client.post(DevicesApi.DEVICES_URL.format(HUME_UUID),
+                               BASIC_LED_CAPS)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        sync_version.assert_called_with(HUME_UUID, ANY)
+
+    @patch('backend.device.views.async_to_sync')
+    def test_create_device_failed_user_not_a_hume(self, async_to_sync):
         """
-        Test creating model instances required for a thermometer device.
+        Verify that users that are not related to HUMEs cannot create devices.
         """
-        # Thermometer with two data sources and corresponding actions to read
-        device_spec = {
-            "uuid": DEVICE_UUID_1,
-            "name": "THERMO X2",
-            "description": "Combined Thermometer and Humidity sensor.",
-            "category": Device.Category.SENSOR,
-            "type": Device.Type.THERMOMETER,
-            "data_sources": [
-                {
-                    "name": "Temperature",
-                    "data_type": DataType.FLOAT
-                },
-                {
-                    "name": "Humidity",
-                    "data_type": DataType.PERC_FLOAT
-                },
-            ]
-        }
-        create_device(self.hume, device_spec)
+        sync_version = Mock()
+        async_to_sync.return_value = sync_version
 
-        device = Device.objects.get(uuid=DEVICE_UUID_1)
-        self.assertEqual(str(device.hume.uuid), self.hume.uuid)
-        verify_device_fields(self, device, device_spec)
+        user = User.objects.create_user(
+            "bad@person.com", "pw", "Hans", "Grüber")
+        client = APIClient()
+        client.login(username=user.email, password="pw")
+        res = client.post(DevicesApi.DEVICES_URL.format(HUME_UUID),
+                          BASIC_LED_CAPS)
 
-        data_sources = DeviceDataSource.objects.filter(device=device)
-        verify_device_data_sources(self, data_sources, device_spec)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        sync_version.assert_not_called()
 
 
 class RoomDeviceGetApi(TestCase):

@@ -104,6 +104,9 @@ class HumeConfirmPairing(views.APIView):
         """
         Pairs the HUME with a HOME instance.
         """
+        if request.user.is_hume:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         home_id = request.data["home_id"]
 
         try:
@@ -116,7 +119,7 @@ class HumeConfirmPairing(views.APIView):
             home = Home.objects.get(id=home_id,
                                     users__id=request.user.id)
         except Home.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         hume.home = home
         hume.save()
@@ -160,5 +163,25 @@ class HumeDiscoverDevices(views.APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         producer.discover_devices(hume_uuid, "")
+
+        return Response([], status=status.HTTP_200_OK)
+
+
+class HumeAttachDevice(views.APIView):
+    """Attach a discovered device"""
+
+    def post(self, request, hume_uuid, address, format=None):
+        """
+        Attach the device with the input address to the input HUME.
+        """
+        try:
+            Hume.objects.get(
+                uuid=hume_uuid,
+                home__users__id=request.user.id
+            )
+        except Hume.DoesNotExist:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        producer.attach(hume_uuid, address)
 
         return Response([], status=status.HTTP_200_OK)
