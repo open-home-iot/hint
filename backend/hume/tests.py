@@ -243,7 +243,7 @@ class HumeConfirmPairingApi(TestCase):
                                "/confirm-pairing",
                                {"home_id": other_home.id})
 
-        self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(ret.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(ret.data, None)
 
     def test_api_confirm_pairing_failed_unauthenticated(self):

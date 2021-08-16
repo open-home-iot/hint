@@ -1,6 +1,8 @@
 import uuid
 import random
 
+from unittest.mock import patch, Mock, ANY
+
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
@@ -51,10 +53,6 @@ def verify_device_fields(test_case: TestCase, device, device_spec):
     """
     test_case.assertEqual(str(device.uuid), device_spec["uuid"])
     test_case.assertEqual(device.name, device_spec["name"])
-    test_case.assertEqual(
-        device.description,
-        device_spec["description"]
-    )
     test_case.assertEqual(device.category, device_spec["category"])
     test_case.assertEqual(device.type, device_spec["type"])
 
@@ -100,17 +98,26 @@ class DevicesApi(TestCase):
             username=f"{HUME_UUID.replace('-', '')}@fake.com", password="pw"
         )
 
-    def test_create_device_api(self):
+    @patch('backend.device.views.async_to_sync')
+    def test_create_device_api(self, async_to_sync):
         """Verify the create device API works when used correctly"""
+        sync_version = Mock()
+        async_to_sync.return_value = sync_version
+
         res = self.client.post(DevicesApi.DEVICES_URL.format(HUME_UUID),
                                BASIC_LED_CAPS)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        sync_version.assert_called_with(HUME_UUID, ANY)
 
-    def test_create_device_failed_user_not_a_hume(self):
+    @patch('backend.device.views.async_to_sync')
+    def test_create_device_failed_user_not_a_hume(self, async_to_sync):
         """
         Verify that users that are not related to HUMEs cannot create devices.
         """
+        sync_version = Mock()
+        async_to_sync.return_value = sync_version
+
         user = User.objects.create_user(
             "bad@person.com", "pw", "Hans", "Grüber")
         client = APIClient()
@@ -119,6 +126,7 @@ class DevicesApi(TestCase):
                           BASIC_LED_CAPS)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        sync_version.assert_not_called()
 
 
 class RoomDeviceGetApi(TestCase):
