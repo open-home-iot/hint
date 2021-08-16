@@ -27,6 +27,7 @@ def discover_devices(hume_uuid, message_content):
     :param message_content: discover devices message content
     :type message_content: str
     """
+    global producer
     producer.publish(
         json.dumps(
             {
@@ -43,6 +44,7 @@ def attach(hume_uuid, device_address):
     :param hume_uuid: UUID of the HUME that discovered the device
     :param device_address: address of the device to attach
     """
+    global producer
     producer.publish(
         json.dumps(
             {
@@ -71,5 +73,6 @@ def send_device_action(hume_uuid,
         "device_uuid": device_uuid,
     }
     payload.update(kwargs)
+    global producer
     producer.publish(json.dumps(payload).encode('utf-8'),
                      queue_params=QueueParams(hume_uuid, durable=True))
