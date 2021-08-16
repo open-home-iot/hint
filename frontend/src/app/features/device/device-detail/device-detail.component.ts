@@ -25,11 +25,11 @@ export class DeviceDetailComponent implements OnInit {
   ngOnInit(): void {
     this.state_groups = new Map<string, DeviceState[]>();
 
-    for (let state of this.device.states) {
-      if (this.state_groups.has(state.device_state_group.group_name)) {
-        this.state_groups.get(state.device_state_group.group_name).push(state);
+    for (const STATE of this.device.states) {
+      if (this.state_groups.has(STATE.device_state_group.group_name)) {
+        this.state_groups.get(STATE.device_state_group.group_name).push(STATE);
       } else {
-        this.state_groups.set(state.device_state_group.group_name, [state]);
+        this.state_groups.set(STATE.device_state_group.group_name, [STATE]);
       }
     }
   }

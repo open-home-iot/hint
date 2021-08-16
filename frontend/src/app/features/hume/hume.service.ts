@@ -26,7 +26,7 @@ export class HumeService {
               private eventService: EventService) { }
 
   attachDeviceUrl(humeUuid: string, device: Device) {
-    return HUME_URL + humeUuid + "/devices/" + device.address + "/attach"
+    return HUME_URL + humeUuid + '/devices/' + device.address + '/attach';
   }
 
   attach(humeUuid: string, device: Device) {

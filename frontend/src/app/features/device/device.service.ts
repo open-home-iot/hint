@@ -75,7 +75,6 @@ export class DeviceService {
       this.httpClient.get(this.getHomeDevicesUrl(homeID))
         .subscribe(
           (devices: Device[]) => {
-            console.log(devices);
             this.replaceHomeDevices(homeID, devices);
             resolve(this.homeDevices.get(homeID));
           },
@@ -167,24 +166,17 @@ export class DeviceService {
   }
 
   getDeviceActionUrl(device: Device): string {
-    return HUMES_URL + device.hume + "/devices/" + device.uuid + "/action"
+    return HUMES_URL + device.hume + '/devices/' + device.uuid + '/action';
   }
 
   changeState(device: Device, newState: DeviceState) {
-    console.log("device changing state: ", device);
-    console.log("new state: ", newState);
-
     this.httpClient.post(this.getDeviceActionUrl(device), {
-      "device_state_group_id": newState.device_state_group.group_id,
-      "device_state_id": newState.state_id,
+      device_state_group_id: newState.device_state_group.group_id,
+      device_state_id: newState.state_id,
     })
       .subscribe(
-        success => {
-          console.log(success);
-        },
-        error => {
-          console.error(error);
-        }
+        _success => null,
+        error => { console.error(error); }
       );
   }
 }
