@@ -14,12 +14,12 @@ from backend.device.models import (
 from backend.hume.models import Hume
 from backend.home.models import Home, Room
 from backend.user.models import User
-from backend.device.test_defs import (
+from backend.device.test_defs import (  # noqa
     BASIC_LED_CAPS,
     HUME_UUID,
     DEVICE_UUID_1,
-    DEVICE_UUID_2,  # noqa
-    DEVICE_UUID_3,  # noqa
+    DEVICE_UUID_2,
+    DEVICE_UUID_3,
 )
 
 

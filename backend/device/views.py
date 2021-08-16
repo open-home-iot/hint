@@ -111,9 +111,9 @@ class DeviceAction(views.APIView):
 
     def post(self, request, hume_uuid, device_uuid, format=None):
         try:
-            device = Device.objects.get(uuid=device_uuid,
-                                        hume__uuid=hume_uuid,
-                                        hume__home__users__id=request.user.id)
+            Device.objects.get(uuid=device_uuid,
+                               hume__uuid=hume_uuid,
+                               hume__home__users__id=request.user.id)
             producer.send_device_action(hume_uuid, device_uuid, **request.data)
             return Response(status=status.HTTP_200_OK)
         except Device.DoesNotExist:
