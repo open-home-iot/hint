@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"/.. || exit
+
+flake8 $(find ./backend ! -path "*migrations*" -name "*.py")
+./manage.py test

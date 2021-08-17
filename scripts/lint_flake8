@@ -1,3 +1,0 @@
-#! /bin/bash
-
-flake8 `find ../backend ! -path "*migrations*" -name "*.py"`
