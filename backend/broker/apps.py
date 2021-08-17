@@ -15,7 +15,7 @@ from rabbitmq_client import (
     QueueParams
 )
 
-from backend.broker.consumer_views import incoming_command
+from backend.broker.consumer_views import incoming_message
 from backend.broker import producer as producer_module
 
 
@@ -71,7 +71,7 @@ class BrokerConfig(AppConfig):
         )
 
         consumer = RMQConsumer(connection_parameters=connection_params)
-        consumer.consume(ConsumeParams(incoming_command),
+        consumer.consume(ConsumeParams(incoming_message),
                          queue_params=hint_master_queue_parameters)
 
         producer = RMQProducer(connection_parameters=connection_params)

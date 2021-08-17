@@ -8,18 +8,18 @@ from asgiref.sync import async_to_sync
 from rabbitmq_client import ConsumeOK
 
 
-def incoming_command(command):
+def incoming_message(message):
     """
     ! NOTE ! Avoid putting expensive operations here or this will become a
     bottleneck and a half. No database lookups allowed!
 
-    :param command: message from the HINT master command queue
-    :type command: bytes
+    :param message: message from the HINT master command queue
+    :type message: bytes
     """
-    if isinstance(command, ConsumeOK):
+    if isinstance(message, ConsumeOK):
         return
 
-    decoded_command = json.loads(command.decode('utf-8'))
+    decoded_command = json.loads(message.decode('utf-8'))
 
     # Extract message fields.
     hume_uuid = decoded_command["uuid"]
