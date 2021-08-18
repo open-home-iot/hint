@@ -12,7 +12,7 @@ from backend.home.models import Home
 from backend.hume.models import Hume, ValidHume
 
 
-HUME_BASE_URL = "/api/humes/"
+HUME_BASE_URL = "/api/humes"
 
 
 class HumePairApi(TestCase):
@@ -118,7 +118,7 @@ class HumeFindApi(TestCase):
         """
         hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
 
-        ret = self.client.get(HUME_BASE_URL + hume.uuid)
+        ret = self.client.get(f"{HUME_BASE_URL}/{hume.uuid}")
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
 
@@ -132,7 +132,7 @@ class HumeFindApi(TestCase):
         hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c",
                                    home=home)
 
-        ret = self.client.get(HUME_BASE_URL + hume.uuid)
+        ret = self.client.get(f"{HUME_BASE_URL}/{hume.uuid}")
 
         self.assertEqual(ret.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -143,7 +143,7 @@ class HumeFindApi(TestCase):
         """
         Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
 
-        ret = self.client.get(HUME_BASE_URL + "not-a-uuid")
+        ret = self.client.get(f"{HUME_BASE_URL}/blablabla")
 
         self.assertEqual(ret.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -155,7 +155,7 @@ class HumeFindApi(TestCase):
         client_wo_auth = APIClient()
         hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
 
-        ret = client_wo_auth.get(HUME_BASE_URL + hume.uuid)
+        ret = client_wo_auth.get(f"{HUME_BASE_URL}/{hume.uuid}")
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -192,9 +192,7 @@ class HumeConfirmPairingApi(TestCase):
         """
         hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
 
-        ret = self.client.post(HUME_BASE_URL +
-                               hume.uuid +
-                               "/confirm-pairing",
+        ret = self.client.post(f"{HUME_BASE_URL}/{hume.uuid}/confirm-pairing",
                                {"home_id": self.home.id})
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
@@ -209,18 +207,14 @@ class HumeConfirmPairingApi(TestCase):
         """
         hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
 
-        ret = self.client.post(HUME_BASE_URL +
-                               hume.uuid +
-                               "/confirm-pairing",
+        ret = self.client.post(f"{HUME_BASE_URL}/{hume.uuid}/confirm-pairing",
                                {"home_id": self.home.id})
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
         hume = Hume.objects.get(uuid=hume.uuid)
         self.assertEqual(hume.home.id, self.home.id)
 
-        ret = self.client.post(HUME_BASE_URL +
-                               str(hume.uuid) +
-                               "/confirm-pairing",
+        ret = self.client.post(f"{HUME_BASE_URL}/{hume.uuid}/confirm-pairing",
                                {"home_id": self.home.id})
 
         self.assertEqual(ret.status_code, status.HTTP_404_NOT_FOUND)
@@ -238,9 +232,7 @@ class HumeConfirmPairingApi(TestCase):
                                                       password="pw"))
         other_home.save()
 
-        ret = self.client.post(HUME_BASE_URL +
-                               str(hume.uuid) +
-                               "/confirm-pairing",
+        ret = self.client.post(f"{HUME_BASE_URL}/{hume.uuid}/confirm-pairing",
                                {"home_id": other_home.id})
 
         self.assertEqual(ret.status_code, status.HTTP_404_NOT_FOUND)
@@ -255,10 +247,10 @@ class HumeConfirmPairingApi(TestCase):
 
         unauthenticated_client = APIClient()
 
-        ret = unauthenticated_client.post(HUME_BASE_URL +
-                                          str(hume.uuid) +
-                                          "/confirm-pairing",
-                                          {"home_id": self.home.id})
+        ret = unauthenticated_client.post(
+            f"{HUME_BASE_URL}/{hume.uuid}/confirm-pairing",
+            {"home_id": self.home.id}
+        )
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -272,9 +264,9 @@ class HumeConfirmPairingApi(TestCase):
         csrf_less_client = APIClient(enforce_csrf_checks=True)
         csrf_less_client.login(email="suite@t.se", password="pw")
 
-        ret = csrf_less_client.post(HUME_BASE_URL +
-                                    str(hume.uuid) +
-                                    "/confirm-pairing")
+        ret = csrf_less_client.post(
+            f"{HUME_BASE_URL}/{hume.uuid}/confirm-pairing"
+        )
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
 
