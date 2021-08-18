@@ -71,11 +71,13 @@ class ModelTests(TestCase):
     def test_create_stateful_device(self):
         """Verify a Basic LED device can be created without problems."""
         create_device(Hume.objects.get(uuid=HUME_UUID), BASIC_LED_CAPS)
+
         device = Device.objects.get(uuid=DEVICE_UUID_1)
         device_state_group = DeviceStateGroup.objects.get(
             device=device, group_id=0)
         on, off = DeviceState.objects.filter(
             device_state_group=device_state_group)
+
         self.assertEqual(on.state_id, 1)
         self.assertEqual(off.state_id, 0)
         verify_device_fields(self, device, BASIC_LED_CAPS)
@@ -175,7 +177,9 @@ class RoomDeviceGetApi(TestCase):
         device.room = self.room
         device.save()
 
-        res = self.client.get(f"/api/rooms/{self.room.id}/devices")
+        res = self.client.get(
+            f"/api/homes/{self.home.id}/rooms/{self.room.id}/devices"
+        )
 
         self.assertEqual(len(res.data), 1)
 
@@ -199,13 +203,17 @@ class RoomDeviceGetApi(TestCase):
         device_3 = create_dummy_device(self.hume)
 
         # Get the device with self.room assigned:
-        res = self.client.get(f"/api/rooms/{self.room.id}/devices")
+        res = self.client.get(
+            f"/api/homes/{self.home.id}/rooms/{self.room.id}/devices"
+        )
         [device] = res.data
 
         self.assertEqual(device["uuid"], device_1.uuid)
 
         # Get the device with room_2 assigned:
-        res = self.client.get(f"/api/rooms/{room_2.id}/devices")
+        res = self.client.get(
+            f"/api/homes/{self.home.id}/rooms/{room_2.id}/devices"
+        )
         [device] = res.data
 
         self.assertEqual(device["uuid"], device_2.uuid)
@@ -236,7 +244,9 @@ class RoomDeviceGetApi(TestCase):
         res = client.get(f"/api/homes/{self.home.id}/devices")
         self.assertEqual(len(res.data), 0)
 
-        res = client.get(f"/api/rooms/{self.room.id}/devices")
+        res = client.get(
+            f"/api/homes/{self.home.id}/rooms/{self.room.id}/devices"
+        )
         self.assertEqual(len(res.data), 0)
 
 
@@ -270,8 +280,10 @@ class DeviceRoomAssignmentAPI(TestCase):
         """Verify device room assignment works."""
         device = create_dummy_device(self.hume)
 
-        self.client.patch(f"/api/devices/{device.uuid}/change-room",
-                          {"new_id": self.room.id, "old_id": None})
+        self.client.patch(
+            f"/api/homes/{self.home.id}/humes/{self.hume.uuid}/devices/"
+            f"{device.uuid}/change-room",
+            {"new_id": self.room.id, "old_id": None})
 
         device = Device.objects.get(uuid=device.uuid)
         self.assertEqual(device.room.id, self.room.id)
@@ -282,8 +294,10 @@ class DeviceRoomAssignmentAPI(TestCase):
         device.room = self.room
         device.save()
 
-        self.client.patch(f"/api/devices/{device.uuid}/change-room",
-                          {"new_id": None, "old_id": self.room.id})
+        self.client.patch(
+            f"/api/homes/{self.home.id}/humes/{self.hume.uuid}/devices/"
+            f"{device.uuid}/change-room",
+            {"new_id": None, "old_id": self.room.id})
 
         device = Device.objects.get(uuid=device.uuid)
 

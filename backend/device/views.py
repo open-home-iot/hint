@@ -92,6 +92,8 @@ class ChangeDeviceRoom(views.APIView):
         """
         try:
             device = Device.objects.get(uuid=device_uuid,
+                                        hume__uuid=hume_uuid,
+                                        hume__home__id=home_id,
                                         hume__home__users__id=request.user.id)
 
             room = None
