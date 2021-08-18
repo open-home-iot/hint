@@ -67,10 +67,12 @@ class BrokerCredentials(views.APIView):
         """
         A HUME requests broker credentials.
         """
-        # TODO: Ensure user is a HUME
-        return Response({"username": settings.HUME_BROKER_USERNAME,
-                         "password": settings.HUME_BROKER_PASSWORD},
-                        status=status.HTTP_200_OK)
+        if request.user.is_hume:
+            return Response({"username": settings.HUME_BROKER_USERNAME,
+                             "password": settings.HUME_BROKER_PASSWORD},
+                            status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 ###############################################################################
@@ -150,7 +152,7 @@ class HomeHumes(views.APIView):
 class HumeDiscoverDevices(views.APIView):
     """Discover devices nearby a Hume."""
 
-    def get(self, request, hume_uuid, format=None):
+    def get(self, request, home_id, hume_uuid, format=None):
         """
         Request that HINT tell HUME to discover devices.
         """

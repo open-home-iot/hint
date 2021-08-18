@@ -1,12 +1,7 @@
 from django.urls import path
 
-from backend.webapp.views import AppView
 from backend.webapp.consumers import HumeConsumer
 
-
-urlpatterns = [
-    path("", AppView.as_view())
-]
 
 websocket_urlpatterns = [
     # as_asgi() is similar to how Django class based views

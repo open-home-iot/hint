@@ -29,8 +29,6 @@ export interface DeviceStateGroup {
 
 const HUMES_URL = window.location.origin + '/api/humes/';
 const HOMES_URL = window.location.origin + '/api/homes/';
-const ROOMS_URL = window.location.origin + '/api/rooms/';
-const DEVICES_URL = window.location.origin + '/api/devices/';
 
 @Injectable()
 export class DeviceService {
@@ -85,8 +83,8 @@ export class DeviceService {
     });
   }
 
-  getRoomDevicesUrl(roomID: number) {
-    return ROOMS_URL + String(roomID) + '/devices';
+  getRoomDevicesUrl(homeID: number, roomID: number) {
+    return HOMES_URL + String(homeID) + '/rooms/' + String(roomID) + '/devices';
   }
 
   addRoomDevice(roomID: number, device: Device) {
@@ -110,13 +108,13 @@ export class DeviceService {
     }
   }
 
-  getRoomDevices(roomID: number) {
+  getRoomDevices(homeID:number, roomID: number) {
     if (this.roomDevices.has(roomID)) {
       return Promise.resolve(this.roomDevices.get(roomID));
     }
 
     return new Promise<Device[]>((resolve, reject) => {
-      this.httpClient.get(this.getRoomDevicesUrl(roomID))
+      this.httpClient.get(this.getRoomDevicesUrl(homeID, roomID))
         .subscribe(
           (devices: Device[]) => {
             this.replaceRoomDevices(roomID, devices);
@@ -129,12 +127,21 @@ export class DeviceService {
     });
   }
 
-  getRoomChangeUrl(device: Device) {
-    return DEVICES_URL + device.uuid + '/change-room';
+  getRoomChangeUrl(homeID: number, device: Device) {
+    return HOMES_URL + String(homeID) + '/humes/' + String(device.hume) +
+      '/devices/' + device.uuid + '/change-room';
   }
 
-  changeRoom(device: Device, roomID: number | undefined) {
-    this.httpClient.patch(this.getRoomChangeUrl(device),
+  changeRoom(device: Device, roomID: number | null) {
+    // TODO: change method of fetching the home ID
+    let homeID
+    if (roomID !== null) {
+      homeID = this.homeService.getRoom(roomID).home;
+    } else {
+      homeID = this.homeService.getRoom(device.room).home
+    }
+
+    this.httpClient.patch(this.getRoomChangeUrl(homeID, device),
                     {old_id: device.room, new_id: roomID})
       .subscribe(
         success => {

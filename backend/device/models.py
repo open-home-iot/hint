@@ -89,16 +89,27 @@ def create_device(hume, device_spec):
     other_objects = []
 
     if device_spec.get("states") is not None:
+
+        # 'states': [
+        #     {
+        #         'id': 0,
+        #         'control': [{'on': 1}, {'off': 0}]
+        #     }
+        # ]
         for state_group in device_spec["states"]:
             device_state_group = DeviceStateGroup(
                 device=device,
-                group_id=state_group.pop("id"),
+                group_id=state_group.pop("id"),  # - the 'id' field
             )
+            # {
+            #     'control': [{'on': 1}, {'off': 0}]
+            # }
             group_name = list(state_group.keys())[0]  # only group name left
             device_state_group.group_name = group_name
             other_objects.append(device_state_group)
 
             group_states = state_group[group_name]
+            # [{'on': 1}, {'off': 0}]
             for state in group_states:
                 device_state = DeviceState(
                     device_state_group=device_state_group,

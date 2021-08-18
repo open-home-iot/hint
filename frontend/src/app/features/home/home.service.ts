@@ -12,7 +12,7 @@ export interface Room {
   name: string;
 }
 
-const HOMES_URL = window.location.origin + '/api/homes/';
+const HOMES_URL = window.location.origin + '/api/homes';
 
 @Injectable()
 export class HomeService {
@@ -119,6 +119,6 @@ export class HomeService {
   }
 
   private getHomeRoomsUrl(homeID: number) {
-    return HOMES_URL + String(homeID) + '/rooms';
+    return HOMES_URL + '/' + String(homeID) + '/rooms';
   }
 }

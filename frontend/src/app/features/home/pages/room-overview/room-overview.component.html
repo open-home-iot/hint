@@ -13,5 +13,6 @@
 <div class="room" *ngFor="let room of rooms">
   <h2>{{ room.name }}</h2>
 
-  <app-room-devices [roomID]="room.id"></app-room-devices>
+  <app-room-devices [homeID]="homeID"
+                    [roomID]="room.id"></app-room-devices>
 </div>

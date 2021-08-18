@@ -50,7 +50,7 @@ export class HumeListComponent implements OnInit, OnDestroy {
       this.onDevicesDiscovered.bind(this)
     );
 
-    this.humeService.discoverDevices(humeUUID).subscribe();
+    this.humeService.discoverDevices(this.homeID, humeUUID).subscribe();
   }
 
   private onGetHumes(humes: Hume[]): void {

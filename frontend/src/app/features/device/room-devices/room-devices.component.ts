@@ -9,12 +9,13 @@ import {Device, DeviceService} from '../device.service';
 export class RoomDevicesComponent implements OnInit {
 
   @Input() roomID: number;
+  @Input() homeID: number;
   devices: Device[];
 
   constructor(private deviceService: DeviceService) { }
 
   ngOnInit(): void {
-    this.deviceService.getRoomDevices(this.roomID)
+    this.deviceService.getRoomDevices(this.homeID, this.roomID)
       .then(this.onGetRoomDevices.bind(this))
       .catch(this.onGetRoomDevicesFailed);
   }

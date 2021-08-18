@@ -47,13 +47,14 @@ class Devices(views.APIView):
 class RoomDevices(views.APIView):
     """Get devices related to a Room."""
 
-    def get(self, request, room_id, format=None):
+    def get(self, request, home_id, room_id, format=None):
         """
         Get all device of a specified room.
         """
         devices = Device.objects.filter(
-            # Requested room ID
+            # Requested home & room ID
             room__id=room_id,
+            hume__home__id=home_id,
             # Does the device exist in a home the user owns?
             hume__home__users__id=request.user.id
         )
@@ -85,7 +86,7 @@ class HomeDevices(views.APIView):
 class ChangeDeviceRoom(views.APIView):
     """Change the room a device belongs to."""
 
-    def patch(self, request, device_uuid, format=None):
+    def patch(self, request, home_id, hume_uuid, device_uuid, format=None):
         """
         Change which room a device belongs to.
         """

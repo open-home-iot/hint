@@ -89,8 +89,8 @@ export class HumeService {
     this.addHomeHume(homeID, hume);
   }
 
-  discoverDevices(humeUUID: string): Observable<any> {
-    return this.httpClient.get(this.discoverDevicesUrl(humeUUID));
+  discoverDevices(homeID: number, humeUUID: string): Observable<any> {
+    return this.httpClient.get(this.discoverDevicesUrl(homeID, humeUUID));
   }
 
   private addHomeHume(homeID: number, hume: Hume) {
@@ -119,7 +119,8 @@ export class HumeService {
     return HUME_URL + humeUuid + '/confirm-pairing';
   }
 
-  private discoverDevicesUrl(humeUUID: string) {
-    return HUME_URL + humeUUID + '/devices/discover';
+  private discoverDevicesUrl(homeID: number, humeUUID: string) {
+    return HOME_URL + String(homeID) +
+      "/humes/" + humeUUID + '/devices/discover';
   }
 }
