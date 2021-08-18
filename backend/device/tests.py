@@ -151,7 +151,6 @@ class RoomDeviceGetApi(TestCase):
 
         self.home = Home.objects.create(name="home")
         self.home.users.add(User.objects.get(email="suite@t.se"))
-        self.home.save()
         self.room = Room.objects.create(name="room", home=self.home)
 
         self.hume = Hume.objects.create(uuid=uuid.uuid4(),
@@ -270,7 +269,6 @@ class DeviceRoomAssignmentAPI(TestCase):
 
         self.home = Home.objects.create(name="home")
         self.home.users.add(User.objects.get(email="suite@t.se"))
-        self.home.save()
         self.room = Room.objects.create(name="room", home=self.home)
 
         self.hume = Hume.objects.create(uuid=uuid.uuid4(),

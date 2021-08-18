@@ -35,7 +35,7 @@ class HomeModel(TestCase):
 class HomeCreateApi(TestCase):
     """Verifies API endpoints related to creating Homes"""
 
-    HOME_CREATE_URL = "/api/homes/"
+    HOME_CREATE_URL = "/api/homes"
 
     @classmethod
     def setUpClass(cls):
@@ -52,16 +52,6 @@ class HomeCreateApi(TestCase):
         Create shared test case data.
         """
         self.client = APIClient()
-        # NOTE! Cannot test with CSRF and authentication at the same time for
-        # some fucking reason. Post on stackoverflow why, it may help someone.
-        # req_client = APIClient()
-        # ret = req_client.get("/")
-        # self.csrf_value = ret.cookies['csrftoken'].value
-        # self.client = APIClient(
-        #    enforce_csrf_checks=True,
-        #    HTTP_X_CSRFTOKEN=self.csrf_value,
-        #    HTTP_COOKIE="csrftoken=" + self.csrf_value
-        # )
         self.client.login(username="suite@t.se", password="pw")
 
     def test_api_create_home(self):
@@ -119,7 +109,7 @@ class HomeCreateApi(TestCase):
 class HomeGetApi(TestCase):
     """Verifies the Home-getting API endpoint"""
 
-    HOME_GET_ALL_URL = "/api/homes/"
+    HOME_GET_ALL_URL = "/api/homes"
 
     @classmethod
     def setUpClass(cls):
