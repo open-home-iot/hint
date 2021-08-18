@@ -108,7 +108,7 @@ export class DeviceService {
     }
   }
 
-  getRoomDevices(homeID:number, roomID: number) {
+  getRoomDevices(homeID: number, roomID: number) {
     if (this.roomDevices.has(roomID)) {
       return Promise.resolve(this.roomDevices.get(roomID));
     }
@@ -134,11 +134,11 @@ export class DeviceService {
 
   changeRoom(device: Device, roomID: number | null) {
     // TODO: change method of fetching the home ID
-    let homeID
+    let homeID;
     if (roomID !== null) {
       homeID = this.homeService.getRoom(roomID).home;
     } else {
-      homeID = this.homeService.getRoom(device.room).home
+      homeID = this.homeService.getRoom(device.room).home;
     }
 
     this.httpClient.patch(this.getRoomChangeUrl(homeID, device),

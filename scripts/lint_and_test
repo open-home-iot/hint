@@ -2,5 +2,7 @@
 
 cd "$(dirname "$0")"/.. || exit
 
+echo "Linting backend..."
 flake8 $(find ./backend ! -path "*migrations*" -name "*.py")
-./manage.py test
+cd frontend && ng lint
+cd .. && ./manage.py test

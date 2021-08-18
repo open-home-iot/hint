@@ -121,6 +121,6 @@ export class HumeService {
 
   private discoverDevicesUrl(homeID: number, humeUUID: string) {
     return HOME_URL + String(homeID) +
-      "/humes/" + humeUUID + '/devices/discover';
+      '/humes/' + humeUUID + '/devices/discover';
   }
 }
