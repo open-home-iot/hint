@@ -12,7 +12,7 @@ HOME network. To manage frontend websocket topic updates,
 consumers.
 
 ## Python
-This project currently uses Python `3.9.2`. Install all dependencies from 
+This project currently uses Python `3.9.6`. Install all dependencies from 
 the project `requirements.txt`.
 
 ### Tips
@@ -22,7 +22,7 @@ Use [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/)
 to manage project Python dependencies.
 
 ## NodeJS
-Currently used NodeJS version is `14.16.1`.
+Currently used NodeJS version is `14.17.5`.
 
 ### Tips
 Use [NVM](https://github.com/nvm-sh/nvm) to manage your NodeJS versions.
