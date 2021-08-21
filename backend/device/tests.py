@@ -201,7 +201,7 @@ class HomeDevicesApi(TestCase):
         client.login(username="t@t.se", password="pw")
 
         res = client.get(HomeDevicesApi.URL.format(self.home.id))
-        
+
         self.assertEqual(len(res.data), 0)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 

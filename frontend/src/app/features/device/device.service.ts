@@ -134,10 +134,9 @@ export class DeviceService {
   }
 
   changeRoom(device: Device, roomID: number | null) {
-    let hume = this.humeService.getHume(device.hume);
-    let homeID = hume.home;
+    const HUME = this.humeService.getHume(device.hume);
 
-    this.httpClient.patch(this.getRoomChangeUrl(homeID, device),
+    this.httpClient.patch(this.getRoomChangeUrl(HUME.home, device),
                     {old_id: device.room, new_id: roomID})
       .subscribe(
         success => {
@@ -174,9 +173,9 @@ export class DeviceService {
   }
 
   changeState(device: Device, newState: DeviceState) {
-    let hume = this.humeService.getHume(device.hume)
+    const HUME = this.humeService.getHume(device.hume);
 
-    this.httpClient.post(this.getDeviceActionUrl(hume, device), {
+    this.httpClient.post(this.getDeviceActionUrl(HUME, device), {
       device_state_group_id: newState.device_state_group.group_id,
       device_state_id: newState.state_id,
     })
