@@ -51,7 +51,7 @@ class HomeRooms(views.APIView):
     @staticmethod
     def post(request, home_id, **kwargs):
         """
-        Create a new room.
+        Create a new room for the parameter home.
         """
         if Home.objects.filter(id=home_id,
                                users__id=request.user.id).exists():
@@ -69,4 +69,4 @@ class HomeRooms(views.APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"error": "That home does not exist."},
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_404_NOT_FOUND)
