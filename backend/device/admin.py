@@ -4,13 +4,25 @@ from django.contrib.admin import ModelAdmin
 from backend.device.models import (
     Device,
     DeviceDataSource,
-    DeviceReading
+    DeviceReading,
+    DeviceStateGroup,
+    DeviceState,
 )
 
 
 class DeviceAdmin(ModelAdmin):
     model = Device
     list_display = ('uuid', )
+
+
+class DeviceStateGroupAdmin(ModelAdmin):
+    model = DeviceStateGroup
+    list_display = ('id', )
+
+
+class DeviceStateAdmin(ModelAdmin):
+    model = DeviceState
+    list_display = ('id', )
 
 
 class DeviceDataSourceAdmin(ModelAdmin):
@@ -24,5 +36,7 @@ class DeviceReadingAdmin(ModelAdmin):
 
 
 admin.site.register(Device, DeviceAdmin)
+admin.site.register(DeviceStateGroup, DeviceStateGroupAdmin)
+admin.site.register(DeviceState, DeviceStateAdmin)
 admin.site.register(DeviceDataSource, DeviceDataSourceAdmin)
 admin.site.register(DeviceReading, DeviceReadingAdmin)
