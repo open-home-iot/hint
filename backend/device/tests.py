@@ -1,5 +1,6 @@
 import uuid
 import random
+import copy
 
 from unittest.mock import patch, Mock, ANY
 
@@ -23,6 +24,7 @@ from backend.device.test_defs import (  # noqa
     DEVICE_UUID_2,
     DEVICE_UUID_3,
 )
+from backend.broker import producer
 
 
 def create_dummy_device(hume: Hume):
@@ -70,7 +72,9 @@ class ModelTests(TestCase):
 
     def test_create_stateful_device(self):
         """Verify a Basic LED device can be created without problems."""
-        create_device(Hume.objects.get(uuid=HUME_UUID), BASIC_LED_CAPS)
+        create_device(
+            Hume.objects.get(uuid=HUME_UUID), copy.deepcopy(BASIC_LED_CAPS)
+        )
 
         device = Device.objects.get(uuid=DEVICE_UUID_1)
         device_state_group = DeviceStateGroup.objects.get(
@@ -84,9 +88,8 @@ class ModelTests(TestCase):
 
 
 class DevicesApi(TestCase):
-    """Create device instances, in conjunction with an attach sequence."""
 
-    DEVICES_URL = "/api/humes/{}/devices"
+    URL = "/api/humes/{}/devices"
 
     @classmethod
     def setUpClass(cls):
@@ -106,7 +109,7 @@ class DevicesApi(TestCase):
         sync_version = Mock()
         async_to_sync.return_value = sync_version
 
-        res = self.client.post(DevicesApi.DEVICES_URL.format(HUME_UUID),
+        res = self.client.post(DevicesApi.URL.format(HUME_UUID),
                                BASIC_LED_CAPS)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -124,15 +127,16 @@ class DevicesApi(TestCase):
             "bad@person.com", "pw", "Hans", "Grüber")
         client = APIClient()
         client.login(username=user.email, password="pw")
-        res = client.post(DevicesApi.DEVICES_URL.format(HUME_UUID),
+        res = client.post(DevicesApi.URL.format(HUME_UUID),
                           BASIC_LED_CAPS)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
         sync_version.assert_not_called()
 
 
-class RoomDeviceGetApi(TestCase):
-    """Get devices based on input Room."""
+class HomeDevicesApi(TestCase):
+
+    URL = "/api/homes/{}/devices"
 
     @classmethod
     def setUpClass(cls):
@@ -156,19 +160,79 @@ class RoomDeviceGetApi(TestCase):
         self.hume = Hume.objects.create(uuid=uuid.uuid4(),
                                         home=self.home)
 
-    def test_get_devices_of_no_room(self):
+    def test_get_home_devices(self):
         """
         Verify devices can be gotten when they do not belong to a specific
         room.
         """
         create_dummy_device(self.hume)
 
-        res = self.client.get(f"/api/homes/{self.home.id}/devices")
+        res = self.client.get(HomeDevicesApi.URL.format(self.home.id))
 
         # 1 result expected
         self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-    def test_get_devices_of_a_room(self):
+    def test_get_home_devices_no_inter_home_leakage(self):
+        """
+        Verify devices do not leak between home instances.
+        """
+        create_dummy_device(self.hume)
+
+        # Create a second hume for a second home
+        hume_2 = Hume.objects.create(uuid=uuid.uuid4(),
+                                     home=Home.objects.create(name="home2"))
+        device_2 = create_dummy_device(hume_2)
+
+        res = self.client.get(HomeDevicesApi.URL.format(self.home.id))
+        [device] = res.data  # expect only 1 result
+
+        # Should not match
+        self.assertNotEqual(device["uuid"], device_2.uuid)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_get_home_devices_no_user_leakage(self):
+        """
+        Verify a user who is not associated with the device's home cannot
+        fetch it throught the home devices API.
+        """
+        User.objects.create_user(email="t@t.se", password="pw")
+        client = APIClient()
+        client.login(username="t@t.se", password="pw")
+
+        res = client.get(HomeDevicesApi.URL.format(self.home.id))
+        
+        self.assertEqual(len(res.data), 0)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+
+class RoomDevicesApi(TestCase):
+
+    URL = "/api/homes/{}/rooms/{}/devices"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        Create shared test case data.
+        """
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.room = Room.objects.create(name="room", home=self.home)
+
+        self.hume = Hume.objects.create(uuid=uuid.uuid4(),
+                                        home=self.home)
+
+    def test_get_room_devices(self):
         """
         Verify devices can be gotten when associated with a room.
         """
@@ -176,13 +240,14 @@ class RoomDeviceGetApi(TestCase):
         device.room = self.room
         device.save()
 
-        res = self.client.get(
-            f"/api/homes/{self.home.id}/rooms/{self.room.id}/devices"
+        res = self.client.get(RoomDevicesApi.URL.format(
+            self.home.id, self.room.id)
         )
 
         self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-    def test_get_devices_do_not_leak_between_rooms_of_a_home(self):
+    def test_get_room_devices_no_inter_room_leakage(self):
         """
         Verify that if there are several devices, each belonging to a
         different, or no, room, a GET directed at a particular room/
@@ -203,7 +268,7 @@ class RoomDeviceGetApi(TestCase):
 
         # Get the device with self.room assigned:
         res = self.client.get(
-            f"/api/homes/{self.home.id}/rooms/{self.room.id}/devices"
+            RoomDevicesApi.URL.format(self.home.id, self.room.id)
         )
         [device] = res.data
 
@@ -211,19 +276,20 @@ class RoomDeviceGetApi(TestCase):
 
         # Get the device with room_2 assigned:
         res = self.client.get(
-            f"/api/homes/{self.home.id}/rooms/{room_2.id}/devices"
+            RoomDevicesApi.URL.format(self.home.id, room_2.id)
         )
         [device] = res.data
 
         self.assertEqual(device["uuid"], device_2.uuid)
 
         # Get the device with no room assigned:
-        res = self.client.get(f"/api/homes/{self.home.id}/devices")
+        res = self.client.get(HomeDevicesApi.URL.format(self.home.id))
         [device] = res.data
 
         self.assertEqual(device["uuid"], device_3.uuid)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-    def test_get_devices_no_user_leakage(self):
+    def test_get_room_devices_no_user_leakage(self):
         """
         Verify that devices that belong to one user cannot be gotten by
         another user who is not part of the device's home user list.
@@ -240,17 +306,16 @@ class RoomDeviceGetApi(TestCase):
         client = APIClient()
         client.login(username="t@t.se", password="password")
 
-        res = client.get(f"/api/homes/{self.home.id}/devices")
-        self.assertEqual(len(res.data), 0)
-
         res = client.get(
-            f"/api/homes/{self.home.id}/rooms/{self.room.id}/devices"
+            RoomDevicesApi.URL.format(self.home.id, self.room.id)
         )
         self.assertEqual(len(res.data), 0)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
 
-class DeviceRoomAssignmentAPI(TestCase):
-    """Test the room assignment endpoint."""
+class ChangeDeviceRoomApi(TestCase):
+
+    URL = "/api/homes/{}/humes/{}/devices/{}/change-room"
 
     @classmethod
     def setUpClass(cls):
@@ -278,13 +343,16 @@ class DeviceRoomAssignmentAPI(TestCase):
         """Verify device room assignment works."""
         device = create_dummy_device(self.hume)
 
-        self.client.patch(
-            f"/api/homes/{self.home.id}/humes/{self.hume.uuid}/devices/"
-            f"{device.uuid}/change-room",
+        res = self.client.patch(
+            ChangeDeviceRoomApi.URL.format(
+                self.home.id, self.hume.uuid, device.uuid
+            ),
             {"new_id": self.room.id, "old_id": None})
 
         device = Device.objects.get(uuid=device.uuid)
         self.assertEqual(device.room.id, self.room.id)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_assign_device_to_a_home(self):
         """Verify assigning a device no room works."""
@@ -292,11 +360,95 @@ class DeviceRoomAssignmentAPI(TestCase):
         device.room = self.room
         device.save()
 
-        self.client.patch(
-            f"/api/homes/{self.home.id}/humes/{self.hume.uuid}/devices/"
-            f"{device.uuid}/change-room",
+        res = self.client.patch(
+            ChangeDeviceRoomApi.URL.format(
+                self.home.id, self.hume.uuid, device.uuid
+            ),
             {"new_id": None, "old_id": self.room.id})
 
         device = Device.objects.get(uuid=device.uuid)
 
         self.assertEqual(device.room, None)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_deny_room_change_wrong_user(self):
+        """
+        Verify a user who does not own the device cannot change its room
+        assignment.
+        """
+        device = create_dummy_device(self.hume)
+
+        User.objects.create_user(email="t@t.se", password="pw")
+        client = APIClient()
+        client.login(username="t@t.se", password="pw")
+
+        res = client.patch(
+            ChangeDeviceRoomApi.URL.format(
+                self.home.id, self.hume.uuid, device.uuid
+            ),
+            {"new_id": self.room.id, "old_id": None}
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class DeviceActionApi(TestCase):
+
+    URL = "/api/homes/{}/humes/{}/devices/{}/action"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        Create shared test case data.
+        """
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.room = Room.objects.create(name="room", home=self.home)
+
+        self.hume = Hume.objects.create(uuid=uuid.uuid4(),
+                                        home=self.home)
+
+    def test_stateful_device_action(self):
+        """
+        Verify the device action API accepts stateful device actions.
+        """
+        producer_mock = Mock()
+        producer.init(producer_mock)
+
+        create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
+        device = Device.objects.get(uuid=DEVICE_UUID_1)
+
+        res = self.client.post(DeviceActionApi.URL.format(
+            self.home.id, self.hume.uuid, device.uuid)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        producer_mock.publish.assert_called()
+
+    def test_device_action_unauthorized_user(self):
+        """
+        Verify a user that does not own a device cannot ask to execute its
+        actions.
+        """
+        device = create_dummy_device(self.hume)
+
+        User.objects.create_user(email="t@t.se", password="pw")
+        client = APIClient()
+        client.login(username="t@t.se", password="pw")
+
+        res = client.post(DeviceActionApi.URL.format(
+            self.home.id, self.hume.uuid, device.uuid)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)

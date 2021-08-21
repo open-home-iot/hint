@@ -12,18 +12,23 @@ const HOME_URL = window.location.origin + '/api/homes/';
 
 export class Hume {
   uuid: string;
-  name: string;
   heartbeat: string;
-  home: string;
+  name: string;
+  home: number;
 }
 
 @Injectable()
 export class HumeService {
 
   private homeHumeMap = new Map<number, Hume[]>();
+  private humeMap = new Map<string, Hume>();
 
   constructor(private httpClient: HttpClient,
               private eventService: EventService) { }
+
+  getHume(humeUUID: string): Hume {
+    return this.humeMap.get(humeUUID);
+  }
 
   attachDeviceUrl(humeUuid: string, device: Device) {
     return HUME_URL + humeUuid + '/devices/' + device.address + '/attach';
@@ -95,6 +100,7 @@ export class HumeService {
 
   private addHomeHume(homeID: number, hume: Hume) {
     this.homeHumeMap.get(homeID).push(hume);
+    this.humeMap.set(hume.uuid, hume);
 
     // Make sure the event service gets updates of all events for the added HUME.
     this.eventService.monitorHume(hume.uuid);

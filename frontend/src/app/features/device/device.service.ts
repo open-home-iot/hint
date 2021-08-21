@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HomeService } from '../home/home.service';
+import {Hume, HumeService} from '../hume/hume.service';
 
 export interface Device {
   name: string;
@@ -27,7 +28,6 @@ export interface DeviceStateGroup {
   group_name: string;
 }
 
-const HUMES_URL = window.location.origin + '/api/humes/';
 const HOMES_URL = window.location.origin + '/api/homes/';
 
 @Injectable()
@@ -37,6 +37,7 @@ export class DeviceService {
   private roomDevices = new Map();
 
   constructor(private homeService: HomeService,
+              private humeService: HumeService,
               private httpClient: HttpClient) { }
 
   getHomeDevicesUrl(homeID: number) {
@@ -133,13 +134,8 @@ export class DeviceService {
   }
 
   changeRoom(device: Device, roomID: number | null) {
-    // TODO: change method of fetching the home ID
-    let homeID;
-    if (roomID !== null) {
-      homeID = this.homeService.getRoom(roomID).home;
-    } else {
-      homeID = this.homeService.getRoom(device.room).home;
-    }
+    let hume = this.humeService.getHume(device.hume);
+    let homeID = hume.home;
 
     this.httpClient.patch(this.getRoomChangeUrl(homeID, device),
                     {old_id: device.room, new_id: roomID})
@@ -172,12 +168,15 @@ export class DeviceService {
       );
   }
 
-  getDeviceActionUrl(device: Device): string {
-    return HUMES_URL + device.hume + '/devices/' + device.uuid + '/action';
+  getDeviceActionUrl(hume: Hume, device: Device): string {
+    return HOMES_URL + hume.home + '/humes/' + hume.uuid + '/devices/' +
+      device.uuid + '/action';
   }
 
   changeState(device: Device, newState: DeviceState) {
-    this.httpClient.post(this.getDeviceActionUrl(device), {
+    let hume = this.humeService.getHume(device.hume)
+
+    this.httpClient.post(this.getDeviceActionUrl(hume, device), {
       device_state_group_id: newState.device_state_group.group_id,
       device_state_id: newState.state_id,
     })

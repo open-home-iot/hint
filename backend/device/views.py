@@ -13,12 +13,14 @@ from backend.broker.defs import MessageType
 from backend.broker import producer
 
 
+###############################################################################
+# HUME VIEWS
+###############################################################################
 class Devices(views.APIView):
-    """
-    Devices API, used for creating new devices.
-    """
+    """Devices API, used for creating new devices."""
 
-    def post(self, request, hume_uuid, format=None):
+    @staticmethod
+    def post(request, hume_uuid, **kwargs):
         """
         Create a new device.
         """
@@ -44,29 +46,11 @@ class Devices(views.APIView):
 ###############################################################################
 # AJAX VIEWS
 ###############################################################################
-class RoomDevices(views.APIView):
-    """Get devices related to a Room."""
-
-    def get(self, request, home_id, room_id, format=None):
-        """
-        Get all device of a specified room.
-        """
-        devices = Device.objects.filter(
-            # Requested home & room ID
-            room__id=room_id,
-            hume__home__id=home_id,
-            # Does the device exist in a home the user owns?
-            hume__home__users__id=request.user.id
-        )
-
-        serializer = DeviceSerializer(devices, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 class HomeDevices(views.APIView):
     """Get devices related to a home, unassigned a room."""
 
-    def get(self, request, home_id, format=None):
+    @staticmethod
+    def get(request, home_id, **kwargs):
         """
         Get all device of a specified room.
         """
@@ -83,10 +67,31 @@ class HomeDevices(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class RoomDevices(views.APIView):
+    """Get devices related to a Room."""
+
+    @staticmethod
+    def get(request, home_id, room_id, **kwargs):
+        """
+        Get all device of a specified room.
+        """
+        devices = Device.objects.filter(
+            # Requested home & room ID
+            room__id=room_id,
+            hume__home__id=home_id,
+            # Does the device exist in a home the user owns?
+            hume__home__users__id=request.user.id
+        )
+
+        serializer = DeviceSerializer(devices, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class ChangeDeviceRoom(views.APIView):
     """Change the room a device belongs to."""
 
-    def patch(self, request, home_id, hume_uuid, device_uuid, format=None):
+    @staticmethod
+    def patch(request, home_id, hume_uuid, device_uuid, **kwargs):
         """
         Change which room a device belongs to.
         """
@@ -112,7 +117,8 @@ class ChangeDeviceRoom(views.APIView):
 class DeviceAction(views.APIView):
     """Execute a device action."""
 
-    def post(self, request, hume_uuid, device_uuid, format=None):
+    @staticmethod
+    def post(request, hume_uuid, device_uuid, **kwargs):
         try:
             Device.objects.get(uuid=device_uuid,
                                hume__uuid=hume_uuid,
