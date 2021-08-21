@@ -9,7 +9,8 @@ from backend.home.models import Room, Home
 class Homes(views.APIView):
     """Exposes Home fetching/creation."""
 
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request, **kwargs):
         """
         Get all HOME instances for the current user.
         """
@@ -18,7 +19,8 @@ class Homes(views.APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, format=None):
+    @staticmethod
+    def post(request, **kwargs):
         """
         Create a new HOME instance.
         """
@@ -34,11 +36,10 @@ class Homes(views.APIView):
 class HomeRooms(views.APIView):
     """Exposes Room fetching/creation"""
 
-    def get(self, request, home_id, format=None):
+    @staticmethod
+    def get(request, home_id, **kwargs):
         """
         Get all rooms related to a home_id.
-
-        :type home_id: integer
         """
         # TODO restrict access to homes that do not belong to the current user
         rooms = Room.objects.filter(home=home_id,
@@ -47,11 +48,10 @@ class HomeRooms(views.APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, home_id, format=None):
+    @staticmethod
+    def post(request, home_id, **kwargs):
         """
         Create a new room.
-
-        :type home_id: integer
         """
         if Home.objects.filter(id=home_id,
                                users__id=request.user.id).exists():
