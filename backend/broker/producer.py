@@ -2,9 +2,7 @@ import json
 
 from rabbitmq_client import RMQProducer, QueueParams
 
-from backend.broker.defs import (
-    DISCOVER_DEVICES, ATTACH_DEVICE, DEVICE_ACTION
-)
+from backend.broker.defs import MessageType
 
 
 # Producer instance with which to publish messages.
@@ -31,7 +29,7 @@ def discover_devices(hume_uuid, message_content):
     producer.publish(
         json.dumps(
             {
-                "type": DISCOVER_DEVICES,
+                "type": MessageType.DISCOVER_DEVICES,
                 "content": message_content
             }
         ).encode('utf-8'),
@@ -48,7 +46,7 @@ def attach(hume_uuid, device_address):
     producer.publish(
         json.dumps(
             {
-                "type": ATTACH_DEVICE,
+                "type": MessageType.ATTACH_DEVICE,
                 "device_address": device_address
             }
         ).encode('utf-8'),
@@ -69,7 +67,7 @@ def send_device_action(hume_uuid,
         device_state: new device state
     """
     payload = {
-        "type": DEVICE_ACTION,
+        "type": MessageType.DEVICE_ACTION,
         "device_uuid": device_uuid,
     }
     payload.update(kwargs)
