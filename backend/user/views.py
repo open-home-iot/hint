@@ -19,7 +19,8 @@ class UserSignup(views.APIView):
     # create an account.
     permission_classes = []
 
-    def post(self, request, format=None):
+    @staticmethod
+    def post(request):
         """
         Create a new user.
         """
@@ -33,7 +34,8 @@ class UserSignup(views.APIView):
 class UserSelf(views.APIView):
     """Get information about the currently authenticated user"""
 
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request):
         """
         Get request user.
         """

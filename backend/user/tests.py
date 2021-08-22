@@ -50,9 +50,8 @@ class UserModel(TestCase):
 
 
 class UserCreateApi(TestCase):
-    """Verifies the User creation API"""
 
-    USER_CREATE_URL = "/api/users/signup"
+    URL = "/api/users/signup"
 
     def setUp(self):
         """
@@ -71,7 +70,7 @@ class UserCreateApi(TestCase):
         Verify a user can be created by supplying only an email address and a
         password.
         """
-        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+        ret = self.client.post(UserCreateApi.URL,
                                {'email': 't@t.se', 'password': 'pw'})
 
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
@@ -84,7 +83,7 @@ class UserCreateApi(TestCase):
         """
         Verify the user API supports setting a first and last name for a user.
         """
-        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+        ret = self.client.post(UserCreateApi.URL,
                                {'email': 't@t.se', 'password': 'pw',
                                 'first_name': 'test1', 'last_name': 'test2'})
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
@@ -99,7 +98,7 @@ class UserCreateApi(TestCase):
         """
         Verify a user cannot be created if first and last name are nulled.
         """
-        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+        ret = self.client.post(UserCreateApi.URL,
                                {'email': 't@t.se', 'password': 'pw',
                                 'first_name': '', 'last_name': ''})
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
@@ -115,7 +114,7 @@ class UserCreateApi(TestCase):
         """
         Verify a user cannot be created if the supplied email is not an email.
         """
-        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+        ret = self.client.post(UserCreateApi.URL,
                                {'email': 't@t.', 'password': 'pw'})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data, {'email': ['Enter a valid email address.']})
@@ -124,7 +123,7 @@ class UserCreateApi(TestCase):
         """
         Verify a user cannot be created if no email is supplied.
         """
-        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+        ret = self.client.post(UserCreateApi.URL,
                                {'password': 'pw'})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data, {'email': ['This field is required.']})
@@ -133,7 +132,7 @@ class UserCreateApi(TestCase):
         """
         Verify a user cannot be created if no password is supplied.
         """
-        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+        ret = self.client.post(UserCreateApi.URL,
                                {'email': 't@t.se'})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data, {'password': ['This field is required.']})
@@ -144,7 +143,7 @@ class UserCreateApi(TestCase):
         """
         User.objects.create(email="t@t.se")
 
-        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+        ret = self.client.post(UserCreateApi.URL,
                                {'email': 't@t.se', 'password': 'pw'})
         self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(ret.data,
@@ -157,7 +156,7 @@ class UserCreateApi(TestCase):
         """
         long_name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
 
-        ret = self.client.post(UserCreateApi.USER_CREATE_URL,
+        ret = self.client.post(UserCreateApi.URL,
                                {'email': 't@t.se', 'password': 'pw',
                                 'first_name': long_name,
                                 'last_name': long_name})
@@ -170,9 +169,8 @@ class UserCreateApi(TestCase):
 
 
 class UserGetApi(TestCase):
-    """Verifies the User fetching API endpoint"""
 
-    USER_GET_SELF_URL = "/api/users/self"
+    URL = "/api/users/self"
 
     @classmethod
     def setUpClass(cls):
@@ -199,7 +197,7 @@ class UserGetApi(TestCase):
         Verify user self endpoint returns information about the request's
         authenticated user.
         """
-        ret = self.client.get(UserGetApi.USER_GET_SELF_URL)
+        ret = self.client.get(UserGetApi.URL)
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
         self.assertEqual(ret.data, {'email': 't@t.se', 'first_name': '',
@@ -211,7 +209,7 @@ class UserGetApi(TestCase):
         """
         client_wo_authentication = APIClient()
 
-        ret = client_wo_authentication.get(UserGetApi.USER_GET_SELF_URL)
+        ret = client_wo_authentication.get(UserGetApi.URL)
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(
             ret.data,
