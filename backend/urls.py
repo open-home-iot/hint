@@ -39,6 +39,12 @@ def api_path_not_found(_request, url=None):
                         status=status.HTTP_404_NOT_FOUND)
 
 
+"""
+All url mappings are specified here to have a one-stop overview of what URLs
+link to what views.
+"""
+
+
 webapp_urls = [
     path("", AppView.as_view())
 ]
