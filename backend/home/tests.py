@@ -32,7 +32,6 @@ class HomeModel(TestCase):
 
 
 class HomesApi(TestCase):
-    """Verifies API endpoints related to creating Homes"""
 
     URL = "/api/homes"
 

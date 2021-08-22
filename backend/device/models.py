@@ -7,6 +7,7 @@ from backend.home.models import Room
 
 
 class _Choices(ABC):
+    """Superclass for classes that need to specify a set of choices."""
 
     # Subclasses shall override
     CHOICES = []
@@ -47,7 +48,7 @@ class DataType(_Choices):
     ]
 
 
-def create_device(hume, device_spec):
+def create_device(hume: Hume, device_spec: dict):
     """
     Creates all objects necessary from the device specification: Device,
     DeviceDataSource (if present).
@@ -68,9 +69,7 @@ def create_device(hume, device_spec):
     :param hume: HUME the device belongs to, this shall always be present when
                  creating a new device, as it will be created as a result of
                  a discovery and attach procedure
-    :type hume: Hume
     :param device_spec: as received from HUME
-    :type device_spec: dict
     """
     device_dict = {
         "hume": hume,
@@ -124,6 +123,9 @@ def create_device(hume, device_spec):
 
 
 class Device(models.Model):
+    """
+    Models a home device connected to a HUME.
+    """
 
     hume = models.ForeignKey(Hume, on_delete=models.CASCADE)
 
@@ -227,6 +229,10 @@ class Device(models.Model):
 
 
 class DeviceStateGroup(models.Model):
+    """
+    Models a device state's group, which groups a STATEFUL device's states
+    together.
+    """
 
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     group_id = models.IntegerField()
@@ -234,6 +240,9 @@ class DeviceStateGroup(models.Model):
 
 
 class DeviceState(models.Model):
+    """
+    Models a device's states, related to a device state group.
+    """
 
     device_state_group = models.ForeignKey(
         DeviceStateGroup, on_delete=models.CASCADE)
@@ -242,6 +251,7 @@ class DeviceState(models.Model):
 
 
 class DeviceDataSource(models.Model):
+    """TODO"""
 
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
@@ -255,6 +265,7 @@ class DeviceDataSource(models.Model):
 
 
 class DeviceReading(models.Model):
+    """TODO"""
 
     data_source = models.ForeignKey(DeviceDataSource, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()

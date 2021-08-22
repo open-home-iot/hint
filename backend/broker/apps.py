@@ -22,13 +22,12 @@ from rabbitmq_client import (
 from backend.broker import producer as producer_module
 
 
-def incoming_message(message):
+def incoming_message(message: bytes):
     """
     ! NOTE ! Avoid putting expensive operations here or this will become a
     bottleneck and a half. No database lookups allowed!
 
-    :param message: message from the HINT master command queue
-    :type message: bytes
+    :param message: message consumed from the HINT master command queue
     """
     if isinstance(message, ConsumeOK):
         return
@@ -78,9 +77,8 @@ class BrokerConfig(AppConfig):
             return
         BrokerConfig.has_started = True
 
+        # Set up and start the RabbitMQ client
         rmq_client_log_level = logging.INFO
-
-        # Set up queue handler for same process log events
         logger = logging.getLogger("rabbitmq_client")
         logger.setLevel(rmq_client_log_level)
 

@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 
 from rest_framework import views
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -14,6 +15,8 @@ from backend.home.models import Home
 from backend.user.models import User
 
 from backend.broker import producer
+
+from backend.user.permissions import IsHume
 
 
 class Humes(views.APIView):
@@ -62,19 +65,18 @@ class Humes(views.APIView):
 
 
 class BrokerCredentials(views.APIView):
-    """Allows Humes to get central broker authentication details"""
+    """Allows Humes to get central broker authentication details."""
+
+    permission_classes = [IsAuthenticated, IsHume]
 
     @staticmethod
     def get(request):
         """
-        A HUME requests broker credentials.
+        Get broker credentials for the requesting HUME.
         """
-        if request.user.is_hume:
-            return Response({"username": settings.HUME_BROKER_USERNAME,
-                             "password": settings.HUME_BROKER_PASSWORD},
-                            status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response({"username": settings.HUME_BROKER_USERNAME,
+                         "password": settings.HUME_BROKER_PASSWORD},
+                        status=status.HTTP_200_OK)
 
 
 ###############################################################################
@@ -174,7 +176,7 @@ class HumeDiscoverDevices(views.APIView):
 
 
 class HumeAttachDevice(views.APIView):
-    """Attach a discovered device"""
+    """Attach a discovered device."""
 
     @staticmethod
     def post(request, home_id, hume_uuid, address):

@@ -15,9 +15,6 @@ class Command(BaseCommand):
     help = 'Generates data for testing'
 
     def handle(self, *args, **options):
-        """
-        Handle the command.
-        """
         # Clear DB before generating test data
         call_command("flush")
 

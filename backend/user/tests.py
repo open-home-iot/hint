@@ -1,4 +1,5 @@
 import unittest
+import uuid
 
 from django.test import TestCase
 from django.db import transaction
@@ -302,3 +303,31 @@ class UserAuthApi(TestCase):
         ret = self.client.get(UserAuthApi.USER_AUTH_LOGOUT_URL)
 
         self.assertEqual(ret.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class IsHumePermission(TestCase):
+    """Tests the IsHume custom permission"""
+
+    def test_permission_check_pass(self):
+        """Verify the IsHume permission check passes correctly."""
+        user = User.objects.create_hume_user(
+            str(uuid.uuid4()), "pw"
+        )
+        client = APIClient()
+        client.login(username=user.email, password="pw")
+
+        res = client.get("/api/humes/broker-credentials")
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_permission_check_fail(self):
+        """Verify the IsHume permission check fails correctly."""
+        user = User.objects.create_user(
+            "t@t.se", password="pw"
+        )
+        client = APIClient()
+        client.login(username=user.email, password="pw")
+
+        res = client.get("/api/humes/broker-credentials")
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)

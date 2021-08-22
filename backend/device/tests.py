@@ -5,6 +5,7 @@ import copy
 from unittest.mock import patch, Mock, ANY
 
 from django.test import TestCase
+
 from rest_framework.test import APIClient
 from rest_framework import status
 
@@ -27,12 +28,10 @@ from backend.device.test_defs import (  # noqa
 from backend.broker import producer
 
 
-def create_dummy_device(hume: Hume):
+def create_dummy_device(hume: Hume) -> Device:
     """
     Instantiates a new dummy device, useful helper for testing access control,
     not so much for DB integrity and modelling accuracy.
-
-    :returns: Device
     """
     device = Device.objects.create(
         hume=hume,
@@ -130,7 +129,7 @@ class DevicesApi(TestCase):
         res = client.post(DevicesApi.URL.format(HUME_UUID),
                           BASIC_LED_CAPS)
 
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         sync_version.assert_not_called()
 
 

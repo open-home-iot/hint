@@ -4,6 +4,10 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, \
 
 
 class CustomUserManager(BaseUserManager):
+    """
+    Co-locates user creation methods since there are several different types
+    of users.
+    """
 
     def create_hume_user(self, hume_uuid, generated_password):
         """Used to create Hume users."""
@@ -21,7 +25,7 @@ class CustomUserManager(BaseUserManager):
                     password='',
                     first_name='',
                     last_name=''):
-        """Used to create normal users."""
+        """Used to create normal, human, users."""
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
@@ -52,6 +56,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """Models a user, which could be either an admin, human, or HUME."""
 
     email = models.EmailField(unique=True)
 

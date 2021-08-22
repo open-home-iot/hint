@@ -1,4 +1,5 @@
 from rest_framework import views
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -11,6 +12,7 @@ from backend.home.models import Room
 from backend.hume.models import Hume
 from backend.broker.defs import MessageType
 from backend.broker import producer
+from backend.user.permissions import IsHume
 
 
 ###############################################################################
@@ -19,28 +21,27 @@ from backend.broker import producer
 class Devices(views.APIView):
     """Devices API, used for creating new devices."""
 
+    permission_classes = [IsAuthenticated, IsHume]
+
     @staticmethod
     def post(request, hume_uuid):
         """
         Create a new device.
         """
-        if request.user.is_hume:
-            create_device(Hume.objects.get(uuid=hume_uuid), request.data)
+        create_device(Hume.objects.get(uuid=hume_uuid), request.data)
 
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                hume_uuid,
-                {
-                    "type": "hume.event",
-                    "hume_uuid": hume_uuid,
-                    "event_type": MessageType.ATTACH_DEVICE,
-                    "content": "",
-                }
-            )
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            hume_uuid,
+            {
+                "type": "hume.event",
+                "hume_uuid": hume_uuid,
+                "event_type": MessageType.ATTACH_DEVICE,
+                "content": "",
+            }
+        )
 
-            return Response(status=status.HTTP_201_CREATED)
-
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(status=status.HTTP_201_CREATED)
 
 
 ###############################################################################
@@ -119,6 +120,9 @@ class DeviceAction(views.APIView):
 
     @staticmethod
     def post(request, home_id, hume_uuid, device_uuid):
+        """
+        Execute a device action, POST since the device's state may change.
+        """
         try:
             Device.objects.get(uuid=device_uuid,
                                hume__uuid=hume_uuid,

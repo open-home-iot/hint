@@ -1,3 +1,9 @@
+"""
+This module contains shortcut functions to issue standardized commands to a
+HUME, such as discover devices, executing device actions, etc.
+"""
+
+
 import json
 
 from rabbitmq_client import RMQProducer, QueueParams
@@ -9,21 +15,24 @@ from backend.broker.defs import MessageType
 producer: RMQProducer
 
 
-def init(producer_instance):
+def init(producer_instance: RMQProducer):
     """
-    Initialize the producer module.
+    Initialize the producer module, sets the module instance to the parameter
+    RMQProducer.
 
-    :type producer_instance: rabbitmq_client.RMQProducer
+    :param producer_instance: RMQProducer instance to set as the global
+        instance.
     """
     global producer
     producer = producer_instance
 
 
-def discover_devices(hume_uuid, message_content):
+def discover_devices(hume_uuid: str, message_content: str):
     """
-    :type hume_uuid: str
-    :param message_content: discover devices message content
-    :type message_content: str
+    Issue a discover devices command to a HUME.
+
+    :param hume_uuid: UUID of the HUME to send the discover devices message to.
+    :param message_content: discover devices message content.
     """
     global producer
     producer.publish(
@@ -37,10 +46,12 @@ def discover_devices(hume_uuid, message_content):
     )
 
 
-def attach(hume_uuid, device_address):
+def attach(hume_uuid: str, device_address: str):
     """
-    :param hume_uuid: UUID of the HUME that discovered the device
-    :param device_address: address of the device to attach
+    Issue an attach command for a device to a HUME.
+
+    :param hume_uuid: UUID of the HUME that discovered the device.
+    :param device_address: address of the device to attach.
     """
     global producer
     producer.publish(
@@ -54,17 +65,21 @@ def attach(hume_uuid, device_address):
     )
 
 
-def send_device_action(hume_uuid,
-                       device_uuid,
+def send_device_action(hume_uuid: str,
+                       device_uuid: str,
                        **kwargs):
     """
-    :param hume_uuid: HUME to receive the action
-    :param device_uuid: device to receive the action
+    Issues a device action command to a HUME for a specific device.
+
+    :param hume_uuid: HUME to receive the action.
+    :param device_uuid: device to receive the action.
 
     Possible kwargs:
 
-        device_state_group_id: group ID of a pointed out new device state
-        device_state: new device state
+        For a STATEFUL action, both of these parameters must be provided:
+
+        device_state_group_id: group ID of a pointed out new device state.
+        device_state: new device state.
     """
     payload = {
         "type": MessageType.DEVICE_ACTION,

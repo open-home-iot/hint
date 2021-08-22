@@ -51,7 +51,7 @@ class HomeRooms(views.APIView):
     @staticmethod
     def post(request, home_id):
         """
-        Create a new room for the parameter home.
+        Create a new room for a home.
         """
         if Home.objects.filter(id=home_id,
                                users__id=request.user.id).exists():

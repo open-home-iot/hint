@@ -5,6 +5,7 @@ from backend.home.models import Home
 
 
 class Hume(models.Model):
+    """Models a HUME which belongs to a home."""
 
     # HUME originated info
     uuid = models.UUIDField(unique=True, primary_key=True)
@@ -24,5 +25,9 @@ class Hume(models.Model):
 
 
 class ValidHume(models.Model):
+    """
+    A ValidHume instance contains a valid HUME UUID, for each HUME there must
+    exist a ValidHume.
+    """
 
     uuid = models.UUIDField(primary_key=True)
