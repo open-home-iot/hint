@@ -20,7 +20,7 @@ class Devices(views.APIView):
     """Devices API, used for creating new devices."""
 
     @staticmethod
-    def post(request, hume_uuid, **kwargs):
+    def post(request, hume_uuid):
         """
         Create a new device.
         """
@@ -50,7 +50,7 @@ class HomeDevices(views.APIView):
     """Get devices related to a home, unassigned a room."""
 
     @staticmethod
-    def get(request, home_id, **kwargs):
+    def get(request, home_id):
         """
         Get all device of a specified room.
         """
@@ -71,7 +71,7 @@ class RoomDevices(views.APIView):
     """Get devices related to a Room."""
 
     @staticmethod
-    def get(request, home_id, room_id, **kwargs):
+    def get(request, home_id, room_id):
         """
         Get all device of a specified room.
         """
@@ -91,7 +91,7 @@ class ChangeDeviceRoom(views.APIView):
     """Change the room a device belongs to."""
 
     @staticmethod
-    def patch(request, home_id, hume_uuid, device_uuid, **kwargs):
+    def patch(request, home_id, hume_uuid, device_uuid):
         """
         Change which room a device belongs to.
         """
@@ -118,10 +118,11 @@ class DeviceAction(views.APIView):
     """Execute a device action."""
 
     @staticmethod
-    def post(request, hume_uuid, device_uuid, **kwargs):
+    def post(request, home_id, hume_uuid, device_uuid):
         try:
             Device.objects.get(uuid=device_uuid,
                                hume__uuid=hume_uuid,
+                               hume__home__id=home_id,
                                hume__home__users__id=request.user.id)
             producer.send_device_action(hume_uuid, device_uuid, **request.data)
             return Response(status=status.HTTP_200_OK)

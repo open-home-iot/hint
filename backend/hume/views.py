@@ -21,9 +21,10 @@ class Humes(views.APIView):
 
     permission_classes = []  # Implies no CSRF check.
 
-    def post(self, request, format=None):
+    @staticmethod
+    def post(request):
         """
-        If the HUME does not exist:
+        If the HUME does not exist, and there is a ValidHume record:
         - Create a new HUME
 
         Else:
@@ -63,7 +64,8 @@ class Humes(views.APIView):
 class BrokerCredentials(views.APIView):
     """Allows Humes to get central broker authentication details"""
 
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request):
         """
         A HUME requests broker credentials.
         """
@@ -81,7 +83,8 @@ class BrokerCredentials(views.APIView):
 class HumeFind(views.APIView):
     """Search endpoint to find an unpaired Hume."""
 
-    def get(self, request, hume_uuid, format=None):
+    @staticmethod
+    def get(request, hume_uuid):
         """
         Get an unpaired HUME, this API is only intended for fetching unpaired
         HUMEs for pairing them with a given HOME instance.
@@ -102,13 +105,11 @@ class HumeFind(views.APIView):
 class HumeConfirmPairing(views.APIView):
     """Confirm an unpaired hume as paired with a home."""
 
-    def post(self, request, hume_uuid, format=None):
+    @staticmethod
+    def post(request, hume_uuid):
         """
         Pairs the HUME with a HOME instance.
         """
-        if request.user.is_hume:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
         home_id = request.data["home_id"]
 
         try:
@@ -132,7 +133,8 @@ class HumeConfirmPairing(views.APIView):
 class HomeHumes(views.APIView):
     """Get all Humes associated with a home"""
 
-    def get(self, request, home_id, format=None):
+    @staticmethod
+    def get(request, home_id):
         """
         Get all HUME instances for a given HOME.
         """
@@ -152,38 +154,42 @@ class HomeHumes(views.APIView):
 class HumeDiscoverDevices(views.APIView):
     """Discover devices nearby a Hume."""
 
-    def get(self, request, home_id, hume_uuid, format=None):
+    @staticmethod
+    def get(request, home_id, hume_uuid):
         """
         Request that HINT tell HUME to discover devices.
         """
         try:
             Hume.objects.get(
                 uuid=hume_uuid,
+                home__id=home_id,
                 home__users__id=request.user.id
             )
         except Hume.DoesNotExist:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         producer.discover_devices(hume_uuid, "")
 
-        return Response([], status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
 
 
 class HumeAttachDevice(views.APIView):
     """Attach a discovered device"""
 
-    def post(self, request, hume_uuid, address, format=None):
+    @staticmethod
+    def post(request, home_id, hume_uuid, address):
         """
         Attach the device with the input address to the input HUME.
         """
         try:
             Hume.objects.get(
                 uuid=hume_uuid,
+                home__id=home_id,
                 home__users__id=request.user.id
             )
         except Hume.DoesNotExist:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         producer.attach(hume_uuid, address)
 
-        return Response([], status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)

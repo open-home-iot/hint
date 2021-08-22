@@ -452,3 +452,40 @@ class DeviceActionApi(TestCase):
         )
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch("backend.device.views.producer")
+    def test_device_action_fails_no_such_device(self, producer_mock):
+        """
+        Verify that all URL pieces matter in pointing out which device should
+        execute and action.
+        """
+        device = create_dummy_device(self.hume)
+
+        # Bogus home ID
+        res = self.client.post(DeviceActionApi.URL.format(
+            1337, self.hume.uuid, device.uuid
+        ))
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Bogus Hume UUID
+        res = self.client.post(DeviceActionApi.URL.format(
+            self.home.id, str(uuid.uuid4()), device.uuid
+        ))
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Bogus device UUID
+        res = self.client.post(DeviceActionApi.URL.format(
+            self.home.id, self.hume.uuid, str(uuid.uuid4())
+        ))
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Bogus user
+        user = User.objects.create_user(email="t@t.se", password="pw")
+        client = APIClient()
+        client.login(username=user.email, password="pw")
+        res = client.post(DeviceActionApi.URL.format(
+            self.home.id, self.hume.uuid, device.uuid
+        ))
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        producer_mock.send_device_action.assert_not_called()

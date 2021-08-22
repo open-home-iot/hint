@@ -30,12 +30,15 @@ export class HumeService {
     return this.humeMap.get(humeUUID);
   }
 
-  attachDeviceUrl(humeUuid: string, device: Device) {
-    return HUME_URL + humeUuid + '/devices/' + device.address + '/attach';
+  attachDeviceUrl(homeID: number, device: Device) {
+    return HOME_URL + String(homeID) + '/humes/' + device.hume + '/devices/' +
+      device.address + '/attach';
   }
 
   attach(humeUuid: string, device: Device) {
-    this.httpClient.post(this.attachDeviceUrl(humeUuid, device), {})
+    const HUME = this.humeMap.get(humeUuid);
+
+    this.httpClient.post(this.attachDeviceUrl(HUME.home, device), {})
       .subscribe(
         ok => {},
         error => {

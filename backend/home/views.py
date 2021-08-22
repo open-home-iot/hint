@@ -10,7 +10,7 @@ class Homes(views.APIView):
     """Exposes Home fetching/creation."""
 
     @staticmethod
-    def get(request, **kwargs):
+    def get(request):
         """
         Get all HOME instances for the current user.
         """
@@ -20,7 +20,7 @@ class Homes(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @staticmethod
-    def post(request, **kwargs):
+    def post(request):
         """
         Create a new HOME instance.
         """
@@ -37,7 +37,7 @@ class HomeRooms(views.APIView):
     """Exposes Room fetching/creation"""
 
     @staticmethod
-    def get(request, home_id, **kwargs):
+    def get(request, home_id):
         """
         Get all rooms related to a home_id.
         """
@@ -49,7 +49,7 @@ class HomeRooms(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @staticmethod
-    def post(request, home_id, **kwargs):
+    def post(request, home_id):
         """
         Create a new room for the parameter home.
         """
