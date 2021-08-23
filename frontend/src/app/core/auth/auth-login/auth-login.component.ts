@@ -4,7 +4,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -24,8 +23,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
   private authSubscription: Subscription;
 
   constructor(private authService: AuthService,
-              private formBuilder: FormBuilder,
-              private modalService: NgbModal) { }
+              private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.authSubscription = this.authService.authSubject.subscribe(
@@ -59,8 +57,4 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
         this.apiLoginErrorMessages = Object.assign([], error.error.auth);
       });
   }
-
-  open(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
-  };
 }

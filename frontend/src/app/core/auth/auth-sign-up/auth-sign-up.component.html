@@ -31,6 +31,8 @@
           id="password"
           name="password"
           type="password"
+          autocomplete="password"
+          placeholder="A strong password"
           formControlName="password">
       </div>
       <div *ngIf="password.touched && password.errors?.required"
@@ -44,6 +46,8 @@
           id="confirm_password"
           name="confirm_password"
           type="password"
+          autocomplete="confirm-password"
+          placeholder="A strong password... again"
           formControlName="confirmPassword">
       </div>
       <div *ngIf="confirmPassword.touched && confirmPassword.errors?.required"
@@ -65,6 +69,7 @@
           id="first_name"
           name="first_name"
           type="text"
+          placeholder="John"
           formControlName="firstName">
       </div>
       <div *ngIf="firstName.touched && firstName.errors?.maxlength"
@@ -78,6 +83,7 @@
           id="last_name"
           name="last_name"
           type="text"
+          placeholder="Doe"
           formControlName="lastName">
       </div>
       <div *ngIf="lastName.touched && lastName.errors?.maxlength"
@@ -86,6 +92,6 @@
       </div>
     </div>
 
-    <button id="sign_up_submit" [disabled]="!signUpForm.valid" type="submit">Register</button>
+    <button class="btn btn-outline-dark" [disabled]="!signUpForm.valid" type="submit">Register</button>
   </div>
 </form>

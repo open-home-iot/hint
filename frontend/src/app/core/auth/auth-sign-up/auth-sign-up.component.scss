@@ -8,7 +8,7 @@
 }
 
 #sign_up_form {
-  width: 25%;
+  width: 50%;
   height: 20%;
 
   .sign_up_form_wrapper {
@@ -21,10 +21,6 @@
     .label_input_pair {
       display: flex;
       justify-content: space-between;
-    }
-
-    #sign_up_submit {
-      width: 100%;
     }
   }
 }

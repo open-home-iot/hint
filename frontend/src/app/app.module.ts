@@ -4,9 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
-// BOOTSTRAP
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-
 // ROUTING
 import { AppRoutingModule } from './app-routing.module';
 
@@ -14,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 // SCRIPT FILES.
 import { AppComponent } from './app.component';
 import { AuthLoginComponent } from './core/auth/auth-login/auth-login.component';
+import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.component';
 import { AuthLogoutComponent } from './core/auth/auth-logout/auth-logout.component';
 import { HeaderComponent } from './core/header/header.component';
 import { FooterComponent } from './core/footer/footer.component';
@@ -29,7 +27,7 @@ import { HumeModule } from './features/hume/hume.module';
 import { DeviceModule } from './features/device/device.module';
 import { UserModule } from './features/user/user.module';
 import { EventModule } from './features/event/event.module';
-import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.component';
+
 
 @NgModule({
   declarations: [
@@ -49,9 +47,6 @@ import { AuthSignUpComponent } from './core/auth/auth-sign-up/auth-sign-up.compo
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-
-    //BOOTSTRAP IMPORT
-    NgbModule,
 
     // FEATURE MODULE IMPORTS
     HomeModule,

@@ -1,32 +1,24 @@
-<button (click)="open(content)" class="btn btn-outline-primary">Login</button>
-
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Login</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+<form (ngSubmit)="login()" *ngIf="!authenticated" [formGroup]="loginForm">
+  <div class="label_input_pair">
+    <label for="email">Email</label>
+    <input id="email"
+           name="email"
+           type="email"
+           formControlName="email"
+           placeholder="john@doe.com">
   </div>
-  <div class="modal-body">
-    <form (ngSubmit)="login()" *ngIf="!authenticated" [formGroup]="loginForm">
-
-      <div class="label_input_pair">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" formControlName="email" placeholder="john@doe.com">
-      </div>
-
-      <div class="label_input_pair">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" formControlName="password"
-          placeholder="PrettyGoodPassword123">
-      </div>
-      <button type="submit" class="btn btn-outline-dark">Log in</button>
-      <div *ngIf="apiLoginError">
-        <div *ngFor="let error of apiLoginErrorMessages" class="form_error">
-          {{ error }}
-        </div>
-      </div>
-    </form>
-    <div *ngIf="apiLoginSuccess"><p>Successful login!</p></div>
+  <div class="label_input_pair">
+    <label for="password">Password</label>
+    <input id="password"
+           name="password"
+           type="password"
+           formControlName="password"
+           placeholder="abc123">
   </div>
-</ng-template>
+  <button type="submit" class="btn btn-outline-dark">Log in</button>
+  <div *ngIf="apiLoginError">
+    <div *ngFor="let error of apiLoginErrorMessages" class="form_error">
+      {{ error }}
+    </div>
+  </div>
+</form>
