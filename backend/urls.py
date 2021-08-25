@@ -23,7 +23,7 @@ from backend.hume.views import (
 )
 from backend.user.views import UserSignup, login_user, logout_user, UserSelf
 
-from backend.webapp.views import AppView
+from backend.webapp.views import AppView, revision
 
 
 def api_path_not_found(_request, url=None):
@@ -111,6 +111,7 @@ urlpatterns = [
 
     # Empty path will forward to front end Angular application.
     path("", include(webapp_urls)),
+    path("revision", revision),
     # Catch all is forwarded to the Angular front end application, event 404's
     # are handled by the Angular application.
     path("<path:url>", include(webapp_urls)),

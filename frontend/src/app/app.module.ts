@@ -39,7 +39,7 @@ import { EventModule } from './features/event/event.module';
     FooterComponent,
     AuthLoginComponent,
     AuthLogoutComponent,
-    AuthSignUpComponent
+    AuthSignUpComponent,
   ],
   imports: [
     // ANGULAR IMPORTS
