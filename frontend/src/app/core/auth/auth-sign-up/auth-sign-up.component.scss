@@ -5,6 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 #sign_up_form {
@@ -20,7 +21,13 @@
 
     .label_input_pair {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
+      label {
+        margin-right: 1em;
+      }
+      input {
+        width: 50%;
+      }
     }
   }
 }
