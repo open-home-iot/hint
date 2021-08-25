@@ -24,7 +24,6 @@ export class AppInfoService {
     this.httpClient.get(REVISION_URL)
       .subscribe(
         (appInfo: AppInfoInt) => {
-          console.log(appInfo);
           this.appInfo.tag = appInfo.tag;
           this.appInfo.commit_id = appInfo.commit_id;
         },

@@ -11,15 +11,15 @@ const LOGOUT_URL = window.location.origin + '/api/users/logout';
   providedIn: 'root'
 })
 export class AuthService {
-  authSubject: BehaviorSubject<boolean>;
+  authSubject = new BehaviorSubject<boolean>(false);
 
-  private initiated: boolean; // Indicates if the AuthService has up-to-date information.
+  // Has it been confirmed that the authSubject is aligned with the backend
+  // authentication status?
+  private initiated = false;
 
   constructor(private httpClient: HttpClient,
               private router: Router) {
-    this.initiated = false; // Initially, we do not have up-to-date information.
-    this.authSubject = new BehaviorSubject<boolean>(false);
-
+    console.log("Constructing AuthService");
     // Initial login attempt to check if the user is authenticated. This works
     // without username/password since the CSRF token cookie works as an
     // identifier for the session that the user was given upon his/her last
@@ -28,28 +28,22 @@ export class AuthService {
     this.login('', '');
   }
 
-  sendLoginRequest(username: string, password: string) {
-    return this.httpClient.post(LOGIN_URL, { username, password });
-
-  }
-
   login(username: string, password: string) {
-    const OBS = this.sendLoginRequest(username, password);
-
-    OBS.subscribe(
-      next => {
-        this.updateAuthService(true);
-      },
-      (error: HttpErrorResponse) => {
-        console.error(error);
-        this.updateAuthService(false);
-      }
+    this.httpClient.post(LOGIN_URL, { username, password })
+      .subscribe(
+        _ => {
+          this.updateAuthService(true);
+        },
+        (error: HttpErrorResponse) => {
+          console.error(error);
+          this.updateAuthService(false);
+        }
     );
   }
 
   loginWithPromise(username: string, password: string) {
     return new Promise<void>((resolve, reject) => {
-      this.sendLoginRequest(username, password)
+      this.httpClient.post(LOGIN_URL, { username, password })
         .subscribe(
           next => {
             this.updateAuthService(true);
@@ -73,8 +67,6 @@ export class AuthService {
         },
         error => {
           console.error(error);
-          this.updateAuthService(false);
-          this.router.navigate(['/']);
         }
       );
   }
