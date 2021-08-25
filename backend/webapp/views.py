@@ -5,17 +5,19 @@ from django.http import JsonResponse
 
 from rest_framework import status
 
+import settings
+
 
 class AppView(TemplateView):
     template_name = "index.html"
 
 
-REVISION = subprocess.check_output(
+COMMIT_ID = subprocess.check_output(
     ["git", "rev-parse", "--short", "HEAD"]
-).decode()
+).decode() if not settings.BUILD else "cid"
 TAG = subprocess.check_output(
     ["git", "describe", "--tags"]
-).decode()
+).decode() if not settings.BUILD else "tag"
 
 
 def revision(request):
@@ -23,5 +25,5 @@ def revision(request):
     Return the revision of HINT currently in use.
     TODO: add git tag once in use
     """
-    return JsonResponse({"commit_id": REVISION, "tag": TAG},
+    return JsonResponse({"commit_id": COMMIT_ID, "tag": TAG},
                         status=status.HTTP_200_OK)

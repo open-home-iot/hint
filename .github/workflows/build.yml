@@ -60,6 +60,7 @@ jobs:
     - name: Generate local.py
       run: |
         echo "from .base import *  # noqa" > backend/settings/local.py
+        echo "BUILD = True" >> backend/settings/local.py
 
     #
     # Lint backend and frontend
