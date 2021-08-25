@@ -37,7 +37,16 @@ html, body {
   display: none !important;
 }
 
-// Global bootstrap
-.col-md-12 {
-  padding: 0;
+.label_input_pair {
+  display: flex;
+  margin: 0.5em 1em 0 1em;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  label {
+    margin-right: 1em;
+  }
+  input {
+    width: 100%;
+  }
 }

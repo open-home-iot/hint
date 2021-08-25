@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -12,23 +13,23 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./auth-login.component.scss']
 })
 export class AuthLoginComponent implements OnInit, OnDestroy {
-  authenticated: boolean;
-
   apiLoginError = false;
   apiLoginErrorMessages: [] = [];
-  apiLoginSuccess = false;
 
   loginForm: FormGroup;
 
   private authSubscription: Subscription;
 
   constructor(private authService: AuthService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private router: Router) { }
 
   ngOnInit() {
     this.authSubscription = this.authService.authSubject.subscribe(
-      next => {
-        this.authenticated = next;
+      authenticated => {
+        if (authenticated) {
+          this.router.navigate(['/']);
+        }
       }
     );
 
@@ -48,8 +49,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
   login() {
     this.authService.loginWithPromise(this.email.value, this.password.value)
       .then(() => {
-        this.apiLoginError = false;
-        this.apiLoginSuccess = true;
+        this.router.navigate(['/']);
       },
       (error: HttpErrorResponse) => {
         console.error('Manual login failed!');

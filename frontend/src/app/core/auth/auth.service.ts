@@ -19,7 +19,6 @@ export class AuthService {
 
   constructor(private httpClient: HttpClient,
               private router: Router) {
-    console.log("Constructing AuthService");
     // Initial login attempt to check if the user is authenticated. This works
     // without username/password since the CSRF token cookie works as an
     // identifier for the session that the user was given upon his/her last

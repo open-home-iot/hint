@@ -7,8 +7,9 @@
   align-items: center;
 }
 
+
 #login_form {
-  width: 50%;
+  width: 25em;
 
   .form_wrapper {
     width: 100%;
@@ -17,15 +18,8 @@
     flex-direction: column;
     justify-content: space-between;
 
-    .label_input_pair {
-      display: flex;
-      justify-content: flex-end;
-      label {
-        margin-right: 1em;
-      }
-      input {
-        width: 50%;
-      }
+    button {
+      margin: 1em 1em 0 1em;
     }
   }
 }
