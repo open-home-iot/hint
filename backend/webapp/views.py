@@ -2,10 +2,9 @@ import subprocess
 
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse
+from django.conf import settings
 
 from rest_framework import status
-
-import settings
 
 
 class AppView(TemplateView):
