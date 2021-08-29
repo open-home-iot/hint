@@ -1,2 +1,38 @@
-<h1>Start page</h1>
-<p>stuff</p>
+<h2>How Open Home came about</h2>
+<p>
+  <span>Open Home</span> started as a small home security prototype aimed at making a camera photograph a door upon
+  the door opening. That prototype never made it further than <q>yay, when I move this empty toilet roll riiiight in
+  the face of this ultrasonic sensor, the Raspberry Pi snaps a picture and I can refresh my browser to see it!</q>.
+  Shortly thereafter, plans were started to add different kinds of devices to the security system, like
+  magnetic sensors for windows, movement sensors, and security cameras. However, due to every aspect of the first
+  system being hard coded into oblivion, <code>rm -rf</code> was issued and the project was no more.
+</p>
+<p>
+  Some time passed, not much was happening in terms of code, but lots was happening in terms of planning. Aspects of
+  the system such as the network topology was created, defining the 3-layer approach for a device, hub, and cloud
+  level. Things were already looking neater than smashing together parts of the device, something resembling <q>hub</q>
+  code, and a web server on one Raspberry Pi. Bad, BAD programmer!
+</p>
+<p>
+  As the plan was maturing some exploratory work was started for generic functions such as storage and communication,
+  but without a clear goal in mind no concrete business logic was produced. Then, one night, some (more than one) beer
+  was had, and from that hazy night came an idea: <q>let's build a hydroponic garden!</q>. A joint love for fresh herbs
+  when cooking obliterated any care once had for personal security, and so a new goal was set.
+</p>
+<p>
+  With a concrete goal in mind, business logic could start being developed easily. The scope was set to creating a
+  system to control a hydroponic garden to produce herbs (or whatever else could grow by hydroponics) in an as
+  automated way possible. The garden itself would consist of a few sensors and actuators:
+</p>
+<ul>
+  <li>A water level sensor to avoid overflow and to sense when a refill is required</li>
+  <li>A water pump, to refill the tank when necessary</li>
+  <li>A lamp to help the plants grow (we lived in Sweden aka. where the sun don't shine)</li>
+  <li>A temperature sensor, to keep track of the plant's environment over time.</li>
+</ul>
+<p>
+  It was determined that, if the system could be used to control a hydroponic garden consisting of a variety of
+  devices, then surely it would work as a generic home automation system. As long as the system was developed with this
+  generic goal in mind.
+</p>
+<p></p>

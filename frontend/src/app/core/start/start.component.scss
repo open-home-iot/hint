@@ -1,5 +1,20 @@
 :host {
-  width: 50em;
-  min-height: 30em;
+  display: flex;
+  flex-direction: column;
   background-color: white;
+  margin: 1em;
+  border-radius: 1em;
+}
+
+h2 {
+  margin: 1em;
+}
+
+p {
+  margin: 1em;
+}
+
+ul {
+  margin: 0 0 0 2em;
+  list-style: circle;
 }
