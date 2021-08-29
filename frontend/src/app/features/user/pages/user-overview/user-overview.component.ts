@@ -22,6 +22,7 @@ export class UserOverviewComponent implements OnInit {
 
   private onGetUser(user: User): void {
     this.user = user;
+    console.log(this.user);
   }
 
   private onGetUserFailed(error) {

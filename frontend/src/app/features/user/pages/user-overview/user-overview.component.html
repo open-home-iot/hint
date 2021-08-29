@@ -1,4 +1,15 @@
-<div *ngIf="user" id="user_information">
-  <p>{{ user.email }}</p>
-  <p>{{ user.first_name }} {{ user.last_name }}</p>
+<div *ngIf="user !== undefined">
+  <p>Hello
+    <span *ngIf="user.first_name; else fnElse">
+      {{ user.first_name }}
+    </span>
+    <ng-template #fnElse>Mr. </ng-template>
+    <span *ngIf="user.last_name; else lnElse">
+      {{ user.last_name }}
+    </span>
+    <ng-template #lnElse>Andersson</ng-template>
+  </p>
+  <p>
+    {{ user.email }}
+  </p>
 </div>

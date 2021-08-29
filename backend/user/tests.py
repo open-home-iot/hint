@@ -217,6 +217,50 @@ class UserGetApi(TestCase):
             {'detail': 'Authentication credentials were not provided.'}
         )
 
+    def test_api_update_user(self):
+        """Verify the PUT method can be used to update a user."""
+        res = self.client.put(UserGetApi.URL, data={
+            "email": "new_t@t.se", "password": "pw2", "first_name": "Jane",
+            "last_name": "Dee",
+        })
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+
+        user = User.objects.get(email="new_t@t.se")
+        self.assertEqual(user.first_name, "Jane")
+        self.assertEqual(user.last_name, "Dee")
+
+        self.assertFalse(self.client.login(username="t@t.se", password="pw"))
+        self.assertTrue(
+            self.client.login(username="new_t@t.se", password="pw2")
+        )
+        self.assertEqual(len(User.objects.all()), 1)
+
+    def test_api_update_user_failed(self):
+        """
+        Verify the PUT method applies the same validation logic as the POST.
+        """
+        res = self.client.put(UserGetApi.URL, data={
+            "email": "not_an_email.se", "password": "pw2", "first_name": "Jane",
+            "last_name": "Dee",
+        })
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        res = self.client.put(UserGetApi.URL, data={
+            "email": "t@t.se", "password": "pw2", "first_name": "Jane",
+            "last_name": "usernametousernametousernametousernametousernametol",
+        })
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(User.objects.all()), 1)
+
+    def test_api_update_user_failed_user_not_logged_in(self):
+        """
+        Verify an unauthenticated user cannot access the update endpoint.
+        """
+        client = APIClient()
+        res = client.put(UserGetApi.URL, data={
+            "email": "new_email@t.se",
+        })
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class UserAuthApi(TestCase):
     """Verifies User authentication endpoints"""

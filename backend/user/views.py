@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -13,7 +14,7 @@ from backend.user.models import User
 
 
 class UserSignup(views.APIView):
-    """Allows (human) users to create new accounts"""
+    """Allows (human) users to create new user accounts."""
 
     # Default is IsAuthenticated, but we don't need to be authenticated to
     # create an account.
@@ -32,7 +33,7 @@ class UserSignup(views.APIView):
 
 
 class UserSelf(views.APIView):
-    """Get information about the currently authenticated user"""
+    """Get or update information about the currently authenticated user."""
 
     @staticmethod
     def get(request):
@@ -42,6 +43,29 @@ class UserSelf(views.APIView):
         user = User.objects.get(pk=request.user.id)
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def put(request):
+        """
+        Update a user's information.
+        """
+        serializer = UserSerializer(request.user, data=request.data)
+
+        if serializer.is_valid():
+            # Don't call save on the serializer! This is just to verify the
+            # input data is valid.
+
+            # Now, get the current user instance and update it!
+            user = User.objects.get(email=request.user.email)
+            user.email = serializer.validated_data.pop("email")
+            user.set_password(serializer.validated_data.pop("password"))
+            user.first_name = serializer.validated_data.pop("first_name")
+            user.last_name = serializer.validated_data.pop("last_name")
+            user.save()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
