@@ -1,7 +1,6 @@
 import json
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -49,7 +48,9 @@ class UserSelf(views.APIView):
         """
         Update a user's information.
         """
-        serializer = UserSerializer(request.user, data=request.data)
+        serializer = UserSerializer(request.user,
+                                    data=request.data,
+                                    partial=True)
 
         if serializer.is_valid():
             # Don't call save on the serializer! This is just to verify the
@@ -57,10 +58,19 @@ class UserSelf(views.APIView):
 
             # Now, get the current user instance and update it!
             user = User.objects.get(email=request.user.email)
-            user.email = serializer.validated_data.pop("email")
-            user.set_password(serializer.validated_data.pop("password"))
-            user.first_name = serializer.validated_data.pop("first_name")
-            user.last_name = serializer.validated_data.pop("last_name")
+
+            if serializer.validated_data.get("email") is not None:
+                user.email = serializer.validated_data.pop("email")
+
+            if serializer.validated_data.get("password") is not None:
+                user.set_password(serializer.validated_data.pop("password"))
+
+            if serializer.validated_data.get("first_name") is not None:
+                user.first_name = serializer.validated_data.pop("first_name")
+
+            if serializer.validated_data.get("last_name") is not None:
+                user.last_name = serializer.validated_data.pop("last_name")
+
             user.save()
 
             return Response(status=status.HTTP_204_NO_CONTENT)

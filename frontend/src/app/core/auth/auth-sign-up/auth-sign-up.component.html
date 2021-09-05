@@ -20,11 +20,9 @@
            class="form_error">
         You need to provide an email address.
       </div>
-      <div *ngIf="apiEmailError">
-        <div *ngFor="let errorMsg of apiEmailErrorMessages"
-             class="form_error">
-          {{ errorMsg }}
-        </div>
+      <div *ngFor="let errorMsg of apiEmailErrorMessages"
+           class="form_error">
+        {{ errorMsg }}
       </div>
 
       <div class="label_input_pair">

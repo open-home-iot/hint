@@ -7,4 +7,5 @@
 #main {
   width: 100%;
   min-height: 70vh;
+  overflow: auto;  // To prevent margin collapse
 }

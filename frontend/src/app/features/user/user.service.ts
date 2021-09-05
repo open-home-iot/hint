@@ -9,6 +9,7 @@ const USER_SELF_URL = window.location.origin + '/api/users/self';
 
 export interface User {
   email: string;
+  password: string;
   first_name: string;
   last_name: string;
 }
@@ -61,5 +62,9 @@ export class UserService {
 
   resetUser(): void {
     this.user = undefined;
+  }
+
+  updateUser(user: User) {
+    return this.httpClient.put(USER_SELF_URL, user);
   }
 }
