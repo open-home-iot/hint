@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 // ROUTING
 import { AppRoutingModule } from './app-routing.module';
@@ -27,6 +28,7 @@ import { HumeModule } from './features/hume/hume.module';
 import { DeviceModule } from './features/device/device.module';
 import { UserModule } from './features/user/user.module';
 import { EventModule } from './features/event/event.module';
+import { IconComponent } from './core/icon/icon.component';
 
 
 @NgModule({
@@ -40,10 +42,12 @@ import { EventModule } from './features/event/event.module';
     AuthLoginComponent,
     AuthLogoutComponent,
     AuthSignUpComponent,
+    IconComponent,
   ],
   imports: [
     // ANGULAR IMPORTS
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

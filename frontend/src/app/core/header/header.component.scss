@@ -8,6 +8,11 @@
   align-items: center;
   background-color: white;
   border-bottom: 1px gray solid;
+
+  div.title_box {
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 a {

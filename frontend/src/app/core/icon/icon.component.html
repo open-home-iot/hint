@@ -1,0 +1,35 @@
+<svg [@wifiPulse]="wifiPulse ? 'active' : 'inactive'"
+     viewBox="0 0 1000 1000">
+  <!--House bottom and walls-->
+  <polyline points="250, 500 250, 850 750, 850 750, 600"
+            stroke="black"
+            fill="transparent"
+            stroke-width="50"/>
+  <!--House roof-->
+  <polyline points="160, 660 500, 410 840, 660"
+            stroke="black"
+            fill="transparent"
+            stroke-width="50"/>
+  <!--House door-->
+  <rect x="485" y="720"
+        fill="black"
+        height="120" width="50"/>
+
+  <!--Wi-Fi symbol-->
+  <circle class="wifi"
+          cx="250" cy="460"
+          r="20"
+          stroke-width="0"/>
+  <path class="wifi"
+        d="M 220 435 A 240 1900 0 0 1 280 435"
+        stroke-width="20"
+        fill="transparent"/>
+  <path class="wifi"
+        d="M 200 415 A 240 1050 0 0 1 300 415"
+        stroke-width="20"
+        fill="transparent"/>
+  <path class="wifi"
+        d="M 180 395 A 240 750 0 0 1 320 395"
+        stroke-width="20"
+        fill="transparent"/>
+</svg>

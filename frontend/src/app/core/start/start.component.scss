@@ -1,8 +1,9 @@
 :host {
   display: flex;
+  width: 50%;
   flex-direction: column;
   background-color: white;
-  margin: 1em;
+  margin: 1em auto auto;
   border-radius: 1em;
 }
 
