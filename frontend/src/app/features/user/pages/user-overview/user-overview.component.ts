@@ -5,7 +5,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { PASSWORD_VALIDATOR } from '../../../../core/directives/validators/confirm-password.directive';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {AuthService} from '../../../../core/auth/auth.service';
-import {ValueConverter} from '@angular/compiler/src/render3/view/template';
 
 const DEFAULT_FIRST_NAME = 'Mr.';
 const DEFAULT_LAST_NAME = 'Andersson';
@@ -19,15 +18,16 @@ export class UserOverviewComponent implements OnInit {
 
   user: User;
 
-  changeName: boolean = false;
+  changeName = false;
   firstNameLength = 1;
   lastNameLength = 1;
 
-  nameForm: FormGroup
+  nameForm: FormGroup;
   emailForm: FormGroup;
   authForm: FormGroup;
 
   apiEmailErrorMessages: string[] = [];
+  apiNameErrorMessages: string[] = [];
 
   constructor(private userService: UserService,
               private authService: AuthService,
@@ -60,8 +60,8 @@ export class UserOverviewComponent implements OnInit {
   get email() { return this.emailForm.get('email'); }
   get password() { return this.authForm.get('auth.password'); }
   get confirmPassword() { return this.authForm.get('auth.confirmPassword'); }
-  get firstName() { return this.nameForm.get('firstName') }
-  get lastName() { return this.nameForm.get('lastName') }
+  get firstName() { return this.nameForm.get('firstName'); }
+  get lastName() { return this.nameForm.get('lastName'); }
 
   firstNameChange() {
     if (this.firstName.value.length !== 0 ) {
@@ -81,14 +81,16 @@ export class UserOverviewComponent implements OnInit {
 
   nameSubmit() {
     this.userService.updateUser(
-      <User>{first_name: this.firstName.value, last_name: this.lastName.value}
+      {first_name: this.firstName.value, last_name: this.lastName.value} as User
     ).subscribe(
       _ => {
+        this.apiNameErrorMessages.length = 0;
         this.changeName = false;
         this.user.first_name = this.firstName.value;
         this.user.last_name = this.lastName.value;
       },
       error => {
+        this.apiNameErrorMessages.push('Failed to update name.');
         console.error(error);
       },
     );
@@ -96,7 +98,7 @@ export class UserOverviewComponent implements OnInit {
 
   emailSubmit() {
     this.userService.updateUser(
-      <User>{email: this.email.value}
+      {email: this.email.value} as User
     ).subscribe(
       _ => {
         this.apiEmailErrorMessages.length = 0;
@@ -115,15 +117,15 @@ export class UserOverviewComponent implements OnInit {
 
   authSubmit() {
     this.userService.updateUser(
-      <User>{password: this.password.value}
+      {password: this.password.value} as User
     ).subscribe(
-      _ => {
+      _success => {
         this.authService.loginWithPromise(this.user.email, this.password.value)
-          .then(_ => {
+          .then(_loggedIn => {
             this.authForm.reset();
           })
-          .catch(error => {
-            console.log(error);
+          .catch(errorLoggingIn => {
+            console.error(errorLoggingIn);
           });
       },
       error => { console.error(error); }

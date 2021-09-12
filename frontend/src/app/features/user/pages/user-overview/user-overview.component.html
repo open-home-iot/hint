@@ -39,6 +39,10 @@
          class="form_error">
         Names must keep within 50 characters.
     </div>
+    <div *ngFor="let errorMsg of apiNameErrorMessages"
+         class="form_error">
+      {{ errorMsg }}
+    </div>
     <div>
       <button [hidden]="!changeName"
               [disabled]="!nameForm.valid"

@@ -240,7 +240,9 @@ class UserGetApi(TestCase):
         Verify the PUT method applies the same validation logic as the POST.
         """
         res = self.client.put(UserGetApi.URL, data={
-            "email": "not_an_email.se", "password": "pw2", "first_name": "Jane",
+            "email": "not_an_email.se",
+            "password": "pw2",
+            "first_name": "Jane",
             "last_name": "Dee",
         })
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
