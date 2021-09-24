@@ -17,6 +17,8 @@ const HOMES_URL = window.location.origin + '/api/homes';
 @Injectable()
 export class HomeService {
 
+  private homes: Map<number, Home>;
+
   constructor(private httpClient: HttpClient) { }
 
   createHome(name: string): Promise<Home> {
@@ -24,7 +26,27 @@ export class HomeService {
       this.httpClient.post(HOMES_URL, {name})
         .subscribe(
           (home: Home) => {
+            this.homes.set(home.id, home);
             resolve(home);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  getHomes(): Promise<Map<number, Home>> {
+    if (this.homes !== undefined) {
+      return Promise.resolve(this.homes);
+    }
+
+    return new Promise<Map<number, Home>>((resolve, reject) => {
+      this.httpClient.get(HOMES_URL)
+        .subscribe(
+          (homes: Home[]) => {
+            this.addHomes(homes);
+            resolve(this.homes);
           },
           error => {
             reject(error);
@@ -35,7 +57,13 @@ export class HomeService {
 
   getHomeRooms(bla): any {}
 
-  getHomes(): any {}
-
   getRoom(bla): any {}
+
+  private addHomes(homes: Home[]) {
+    this.homes = new Map<number, Home>();
+
+    for (const HOME of homes) {
+      this.homes.set(HOME.id, HOME)
+    }
+  }
 }
