@@ -49,7 +49,6 @@ export class HomeService {
       );
   }
 
-
   getHomeRooms(homeID: number): Promise<Room[]> {
     if (this.homeRoomMap.has(homeID)) {
       return Promise.resolve(this.homeRoomMap.get(homeID));

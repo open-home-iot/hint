@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: calc(100% - 2em);
+  margin: 1em 1em;
+  padding: 1em;
+  background-color: white;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+}
+
+.add_home_large {
+  height: 20em;
+  width: 20em;
+}
+
+.add_home_small {
+  height: 10em;
+  width: 10em;
+}

@@ -1,4 +1,13 @@
-<form id="add_home_form"
+<button [hidden]="displayAddHomeForm"
+        class="add_home btn btn-outline-dark"
+        (click)="toggleAddHomeForm()">
+  <span class="plus">+</span>
+  <br>
+  <span>Add new home</span>
+</button>
+
+<form [hidden]="!displayAddHomeForm"
+      id="add_home_form"
       (ngSubmit)="createHome()"
       [formGroup]="addHomeForm">
   <div class="label_input_pair">
@@ -12,5 +21,8 @@
        class="form_error">
     You must provide a name for the HOME.
   </div>
-  <button type="submit" [disabled]="!addHomeForm.valid" name="button">Create</button>
+  <div>
+    <button class="btn btn-outline-dark" type="submit" [disabled]="!addHomeForm.valid" name="button">Create</button>
+    <button class="btn btn-outline-dark" type="button" (click)="toggleAddHomeForm()">Cancel</button>
+  </div>
 </form>

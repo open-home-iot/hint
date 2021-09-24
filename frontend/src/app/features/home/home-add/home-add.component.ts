@@ -10,6 +10,7 @@ import { HomeService } from '../home.service';
 })
 export class HomeAddComponent implements OnInit {
 
+  displayAddHomeForm = false;
   addHomeForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
@@ -25,6 +26,8 @@ export class HomeAddComponent implements OnInit {
 
   createHome() {
     this.homeService.createHome(this.name.value);
+    this.toggleAddHomeForm();
   }
 
+  toggleAddHomeForm() {this.displayAddHomeForm = !this.displayAddHomeForm;}
 }

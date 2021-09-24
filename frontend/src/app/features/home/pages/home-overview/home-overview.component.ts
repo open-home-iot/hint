@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Home} from '../../home.service';
 
 
 @Component({
@@ -8,14 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeOverviewComponent implements OnInit {
 
-  showAddHomeForm = false;
-  showFindHumeForm = false;
+  selectedHome: Home;
 
   constructor() { }
 
-  ngOnInit() {}
-
-  displayAddHomeForm() { this.showAddHomeForm = !this.showAddHomeForm; }
-  displayFindHumeForm() { this.showFindHumeForm = !this.showFindHumeForm; }
-
+  ngOnInit() { }
 }
