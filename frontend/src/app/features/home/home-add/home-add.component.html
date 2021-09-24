@@ -21,6 +21,10 @@
        class="form_error">
     You must provide a name for the HOME.
   </div>
+  <div *ngIf="name.touched && name.errors?.maxlength"
+       class="form_error">
+    The home name cannot exceed 50 characters.
+  </div>
   <div>
     <button class="btn btn-outline-dark" type="submit" [disabled]="!addHomeForm.valid" name="button">Create</button>
     <button class="btn btn-outline-dark" type="button" (click)="toggleAddHomeForm()">Cancel</button>

@@ -14,4 +14,8 @@ export class HomeOverviewComponent implements OnInit {
   constructor() { }
 
   ngOnInit() { }
+
+  onAddHome(home: Home) {
+    console.log("home overview got add home event", home);
+  }
 }

@@ -13,5 +13,5 @@
 -->
 <app-home-detail *ngIf="selectedHome; else elseBlock" [home]="selectedHome"></app-home-detail>
 <ng-template #elseBlock>
-  <app-home-add class="add_home_large"></app-home-add>
+  <app-home-add (onAddHome)="onAddHome($event)" class="add_home_large"></app-home-add>
 </ng-template>

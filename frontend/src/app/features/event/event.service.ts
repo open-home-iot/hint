@@ -46,6 +46,7 @@ export class EventService {
   subscribe(humeUUID: string,
             eventType: number,
             callback: (event) => void): string {
+    // TODO: oh my god replace this crap with an auto-incrementing number...
     const SUBSCRIPTION_ID = Utility.generateRandomID();
 
     if (this.subscriptionMap.has(SUBSCRIPTION_ID)) {

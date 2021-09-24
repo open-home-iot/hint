@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 // PAGES
 import { HomeOverviewComponent } from './pages/home-overview/home-overview.component';
-import { RoomOverviewComponent } from './pages/room-overview/room-overview.component';
 
 // SERVICES
 import { HomeService } from './home.service';
@@ -27,7 +26,6 @@ import { HomeDetailComponent } from './home-detail/home-detail.component';
     HomeAddComponent,
     HomeListComponent,
     RoomAddComponent,
-    RoomOverviewComponent,
     HomeDetailComponent
   ],
   imports: [

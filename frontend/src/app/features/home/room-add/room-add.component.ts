@@ -29,9 +29,9 @@ export class RoomAddComponent implements OnInit {
 
   createRoom() {
     this.apiError = '';
-    this.homeService.createRoom(this.homeID, this.name.value)
-      .then(this.onRoomCreated.bind(this))
-      .catch(this.onRoomCreateFail.bind(this));
+    // this.homeService.createRoom(this.homeID, this.name.value)
+    //   .then(this.onRoomCreated.bind(this))
+    //   .catch(this.onRoomCreateFail.bind(this));
   }
 
   onRoomCreated(room: Room) {
