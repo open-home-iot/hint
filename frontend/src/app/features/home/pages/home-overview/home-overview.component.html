@@ -11,7 +11,13 @@
 8. Show devices under their respective rooms
 9. Show state information for stateful devices
 -->
-<app-home-detail *ngIf="selectedHome; else elseBlock" [home]="selectedHome"></app-home-detail>
+<div class="home_overview_container" *ngIf="selectedHome; else elseBlock" >
+  <app-home-detail [home]="selectedHome"></app-home-detail>
+</div>
 <ng-template #elseBlock>
-  <app-home-add (homeAdded)="homeAdded($event)" class="add_home_large"></app-home-add>
+  <div class="home_overview_container">
+    <h2>Name your home</h2>
+    <hr>
+    <app-home-add (homeAdded)="homeAdded($event)" class="add_home_large"></app-home-add>
+  </div>
 </ng-template>

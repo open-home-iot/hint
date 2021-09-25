@@ -12,6 +12,5 @@ export class HomeDetailComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 }
