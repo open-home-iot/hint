@@ -45,7 +45,7 @@ export class HomeService {
       this.httpClient.get(HOMES_URL)
         .subscribe(
           (homes: Home[]) => {
-            this.addHomes(homes);
+            this.refreshHomes(homes);
             resolve(this.homes);
           },
           error => {
@@ -59,11 +59,14 @@ export class HomeService {
 
   getRoom(bla): any {}
 
-  private addHomes(homes: Home[]) {
-    this.homes = new Map<number, Home>();
+  private refreshHomes(homes: Home[]) {
+    if (this.homes === undefined) {
+      this.homes = new Map<number, Home>();
+    }
 
+    this.homes.clear();
     for (const HOME of homes) {
-      this.homes.set(HOME.id, HOME)
+      this.homes.set(HOME.id, HOME);
     }
   }
 }

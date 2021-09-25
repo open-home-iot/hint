@@ -10,10 +10,10 @@ import { HomeService, Home } from '../home.service';
 })
 export class HomeAddComponent implements OnInit {
 
+  @Output() homeAdded = new EventEmitter<Home>();
+
   displayAddHomeForm = false;
   addHomeForm: FormGroup;
-
-  @Output() onAddHome = new EventEmitter<Home>();
 
   constructor(private formBuilder: FormBuilder,
               private homeService: HomeService) { }
@@ -35,7 +35,7 @@ export class HomeAddComponent implements OnInit {
   toggleAddHomeForm() {this.displayAddHomeForm = !this.displayAddHomeForm;}
 
   private onCreateHomeSuccess(home: Home) {
-    this.onAddHome.emit(home);
+    this.homeAdded.emit(home);
     this.toggleAddHomeForm();
   }
 

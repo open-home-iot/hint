@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Home, HomeService} from '../../home.service';
 
-const LS_KEY_SELECTED_HOME_ID = "selectedHomeID";
+const LS_KEY_SELECTED_HOME_ID = 'selectedHomeID';
 
 @Component({
   selector: 'app-home-overview',
@@ -18,10 +18,10 @@ export class HomeOverviewComponent implements OnInit {
   ngOnInit() {
     this.homeService.getHomes()
       .then(this.onGetHomes.bind(this))
-      .catch(this.onGetHomesFailed)
+      .catch(this.onGetHomesFailed);
   }
 
-  onAddHome(home: Home) {
+  homeAdded(home: Home) {
     if (this.selectedHome === undefined) {
       this.selectedHome = home;
       localStorage.setItem(LS_KEY_SELECTED_HOME_ID, String(home.id));
@@ -31,12 +31,12 @@ export class HomeOverviewComponent implements OnInit {
   private onGetHomes(homes: Map<number, Home>) {
     this.homes = homes;
 
-    const SELECTED_HOME_ID = localStorage.getItem(LS_KEY_SELECTED_HOME_ID)
+    const SELECTED_HOME_ID = localStorage.getItem(LS_KEY_SELECTED_HOME_ID);
     if (SELECTED_HOME_ID !== null) {
-      this.selectedHome = this.homes.get(Number(SELECTED_HOME_ID))
+      this.selectedHome = this.homes.get(Number(SELECTED_HOME_ID));
     } else {
-      let iterator = this.homes.keys();
-      const KEY = iterator.next();
+      const ITERATOR = this.homes.keys();
+      const KEY = ITERATOR.next();
       if (KEY.value !== undefined) {
         this.selectedHome = this.homes.get(KEY.value);
       }
