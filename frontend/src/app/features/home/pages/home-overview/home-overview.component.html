@@ -12,6 +12,13 @@
 9. Show state information for stateful devices
 -->
 <div class="home_overview_container" *ngIf="selectedHome; else elseBlock" >
+  <div class="home_header">
+    <app-home-select (homeSelected)="homeSelected($event)"
+                     [selectedHome]="selectedHome"
+                     [homes]="homes">
+    </app-home-select>
+  </div>
+  <hr>
   <app-home-detail [home]="selectedHome"></app-home-detail>
 </div>
 <ng-template #elseBlock>

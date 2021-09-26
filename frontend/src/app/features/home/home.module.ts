@@ -18,6 +18,7 @@ import { HomeAddComponent } from './home-add/home-add.component';
 import { HomeListComponent } from './home-list/home-list.component';
 import { RoomAddComponent } from './room-add/room-add.component';
 import { HomeDetailComponent } from './home-detail/home-detail.component';
+import { HomeSelectComponent } from './home-select/home-select.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { HomeDetailComponent } from './home-detail/home-detail.component';
     HomeAddComponent,
     HomeListComponent,
     RoomAddComponent,
-    HomeDetailComponent
+    HomeDetailComponent,
+    HomeSelectComponent
   ],
   imports: [
     HomeRoutingModule,

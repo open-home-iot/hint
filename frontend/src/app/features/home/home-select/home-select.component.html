@@ -1,0 +1,8 @@
+<div class="select_container">
+  <h2>{{ selectedHome.name }}</h2>
+  <div class="home_list_dropdown">
+    <a class="btn" *ngFor="let item of homes | keyvalue" (click)="selectHome(item.value)">
+      {{ item.value.name }}
+    </a>
+  </div>
+</div>

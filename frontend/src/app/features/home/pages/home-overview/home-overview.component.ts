@@ -28,6 +28,10 @@ export class HomeOverviewComponent implements OnInit {
     }
   }
 
+  homeSelected(home: Home) {
+    this.selectedHome = home;
+  }
+
   private onGetHomes(homes: Map<number, Home>) {
     this.homes = homes;
 

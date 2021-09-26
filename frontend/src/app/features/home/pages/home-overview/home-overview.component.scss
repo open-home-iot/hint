@@ -23,6 +23,13 @@ div.home_overview_container {
     color: black;
     width: 100%;
   }
+
+  div.home_header {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
 }
 
 .add_home_large {

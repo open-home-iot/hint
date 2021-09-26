@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+h2:hover {
+  text-decoration: underline;
+}
+
+div.select_container {
+  position: relative;
+}
+
+div.home_list_dropdown {
+  position: absolute;
+  display: none;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 0.3em;
+  z-index: 1;
+  min-width: 100%;
+
+  a {
+    width: 100%;
+  }
+
+  a:hover {
+    background-color: lightgray;
+  }
+}
+
+div.select_container:hover div.home_list_dropdown {
+  display: block;
+}
