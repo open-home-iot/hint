@@ -35,6 +35,7 @@ export class HomeAddComponent implements OnInit {
   toggleAddHomeForm() {this.displayAddHomeForm = !this.displayAddHomeForm;}
 
   private onCreateHomeSuccess(home: Home) {
+    this.addHomeForm.reset();
     this.homeAdded.emit(home);
     this.toggleAddHomeForm();
   }
