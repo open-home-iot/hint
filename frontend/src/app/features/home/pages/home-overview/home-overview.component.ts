@@ -30,6 +30,7 @@ export class HomeOverviewComponent implements OnInit {
 
   homeSelected(home: Home) {
     this.selectedHome = home;
+    localStorage.setItem(LS_KEY_SELECTED_HOME_ID, String(home.id));
   }
 
   private onGetHomes(homes: Map<number, Home>) {
