@@ -16,13 +16,13 @@ button.add_home {
 }
 
 #add_home_form {
-  width: 100%;
-  height: 100%;
-  border: 2px dashed black;
-  border-radius: 0.5em;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+  padding: 0.5em;
+  background-color: white;
 
   button {
     margin-top: .5em;
