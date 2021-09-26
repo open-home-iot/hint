@@ -17,9 +17,11 @@
                      [selectedHome]="selectedHome"
                      [homes]="homes">
     </app-home-select>
+    <app-home-add class="add_home_small"></app-home-add>
   </div>
   <hr>
   <app-home-detail [home]="selectedHome"></app-home-detail>
+  <app-home-add (homeAdded)="homeAdded($event)" class="add_home_large"></app-home-add>
 </div>
 <ng-template #elseBlock>
   <div class="home_overview_container">

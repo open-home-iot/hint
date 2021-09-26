@@ -6,11 +6,13 @@ button.add_home {
   height: 100%;
   width: 100%;
   border: 2px dashed black;
-  border-radius: 0.5em;
+  border-radius: 0.5rem;
+  line-height: 0;
+  padding: 0;
+}
 
-  span.plus {
-    font-size: 6em;
-  }
+:host-context(.add_home_large) button.add_home {
+  font-size: 6em;
 }
 
 #add_home_form {
