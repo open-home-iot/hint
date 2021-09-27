@@ -13,15 +13,19 @@
 -->
 <div class="home_overview_container" *ngIf="selectedHome; else elseBlock" >
   <div class="home_header">
-    <app-home-add class="add_home_small"></app-home-add>
-    <app-home-select (homeSelected)="homeSelected($event)"
-                     [selectedHome]="selectedHome"
-                     [homes]="homes">
-    </app-home-select>
+    <div class="home_name_container">
+      <app-home-add class="add_home_small"></app-home-add>
+      <app-home-select (homeSelected)="homeSelected($event)"
+                       [selectedHome]="selectedHome"
+                       [homes]="homes">
+      </app-home-select>
+    </div>
+    <app-hume-status [home]="selectedHome"></app-hume-status>
   </div>
-  <app-hume-status [home]="selectedHome"></app-hume-status>
   <hr>
-  <app-home-detail [home]="selectedHome"></app-home-detail>
+  <div class="home_body">
+    <app-home-detail [home]="selectedHome"></app-home-detail>
+  </div>
 </div>
 <ng-template #elseBlock>
   <div class="home_overview_container">

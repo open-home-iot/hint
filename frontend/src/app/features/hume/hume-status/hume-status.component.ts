@@ -26,7 +26,6 @@ export class HumeStatusComponent implements OnChanges {
     this.humeService.getHomeHumes(this.home.id)
       .then(this.onGetHomeHumes.bind(this))
       .catch(this.onGetHomeHumesFailed);
-
   }
 
   private onGetHomeHumes(humes: Hume[]) {

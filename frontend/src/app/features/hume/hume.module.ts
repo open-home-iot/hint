@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
 // COMPONENTS
-import { HumeFindComponent } from './hume-find/hume-find.component';
+import { HumeFindComponent } from './hume-status/hume-find/hume-find.component';
 import { HumeListComponent } from './hume-list/hume-list.component';
 import { HumeStatusComponent } from './hume-status/hume-status.component';
 

@@ -1,0 +1,55 @@
+div.find_hume_large_prompt {
+  display: flex;
+  flex-direction: row;
+
+  div.button_size_large {
+    height: 10em;
+    width: 10em;
+  }
+
+  p {
+    width: 11em;
+    font-family: monospace;
+  }
+}
+
+div.find_hume_large_prompt > * + * {
+  margin-left: 1em;
+}
+
+div.small_find_hume {
+  height: 2em;
+  width: 2em;
+}
+
+button.find_hume {
+  height: 100%;
+  width: 100%;
+  border: 2px dashed black;
+  border-radius: 0.5rem;
+  line-height: 0;
+  padding: 0;
+}
+
+div.hume_find_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+  padding: 0.5em;
+  background-color: white;
+}
+
+#find_hume_form {
+  div.label_input_pair input {
+    width: 23em;
+    margin-top: 0.1em;
+  }
+
+  button {
+    margin-top: .5em;
+    margin-bottom: 1em;
+    margin-left: 1em;
+  }
+}

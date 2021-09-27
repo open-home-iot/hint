@@ -80,25 +80,27 @@ export class HumeService {
     });
   }
 
-  pairHume(homeId: number, hume: Hume) {
-    this.httpClient.post(this.humePairUrl(hume.uuid),
-                   {home_id: homeId})
-      .subscribe(
-        () => {
-          this.humePaired(homeId, hume);
-        },
-        error => {
-          console.error(error);
-        }
-      );
-  }
-
-  humePaired(homeID: number, hume: Hume): void {
-    this.addHomeHume(homeID, hume);
+  pairHume(homeId: number, hume: Hume): Promise<Hume> {
+    return new Promise<Hume>((resolve, reject) => {
+      this.httpClient.post(this.humePairUrl(hume.uuid),{home_id: homeId})
+        .subscribe(
+          () => {
+            resolve(hume);
+            this.humePaired(homeId, hume);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
   }
 
   discoverDevices(homeID: number, humeUUID: string): Observable<any> {
     return this.httpClient.get(this.discoverDevicesUrl(homeID, humeUUID));
+  }
+
+  private humePaired(homeID: number, hume: Hume): void {
+    this.addHomeHume(homeID, hume);
   }
 
   private replaceHomeHumes(homeID: number, humes: Hume[]): void {

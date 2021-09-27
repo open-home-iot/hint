@@ -1,0 +1,53 @@
+<div *ngIf="humes !== undefined">
+  <div *ngIf="humes.length === 0; else elseBlock" class="find_hume_large_prompt">
+    <div class="button_size_large">
+      <button class="find_hume btn btn-outline-dark"
+              (click)="openFindHumePrompt()">
+        Find a hub
+      </button>
+    </div>
+    <p>
+      Before connecting devices you must connect an Open Home hub.
+    </p>
+  </div>
+  <ng-template #elseBlock>
+    <div class="small_find_hume">
+      <button class="find_hume btn btn-outline-dark"
+              (click)="openFindHumePrompt()">
+        +
+      </button>
+    </div>
+  </ng-template>
+</div>
+
+<div class="hume_find_container absolute_center" [hidden]="!showAddHumePrompt">
+  <h2>Find a hub</h2>
+  <hr>
+  <form id="find_hume_form"
+        (ngSubmit)="findHume()"
+        [formGroup]="findHumeForm">
+    <div class="label_input_pair">
+      <label for="uuid">Enter the hub's ID:</label>
+      <input id="uuid"
+             name="uuid"
+             type="text"
+             formControlName="uuid">
+    </div>
+    <div *ngIf="uuid.touched && uuid.errors?.required"
+         class="form_error">
+      Invalid UUID.
+    </div>
+    <div *ngIf="uuid.touched && findHumeForm.errors?.apifind"
+         class="form_error">
+      No hub with that ID exists...
+    </div>
+    <div *ngIf="uuid.touched && findHumeForm.errors?.apipair"
+         class="form_error">
+      Failed to pair the hub
+    </div>
+    <div>
+      <button class="btn btn-outline-dark" type="submit" [disabled]="!findHumeForm.valid" name="button">Find</button>
+      <button class="btn btn-outline-dark" type="button" (click)="hideFindHumePrompt()">Cancel</button>
+    </div>
+  </form>
+</div>
