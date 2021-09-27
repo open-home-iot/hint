@@ -20,12 +20,22 @@ div.home_list_dropdown {
   min-width: 100%;
 
   a {
-    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    span.icon {
+      color: #0f5132;
+    }
   }
 
   a:hover {
     background-color: lightgray;
   }
+}
+
+span.icon_placeholder {
+  width: 24px;
 }
 
 div.select_container:hover div.home_list_dropdown {

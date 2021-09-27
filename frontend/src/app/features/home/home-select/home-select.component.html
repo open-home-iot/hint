@@ -2,7 +2,11 @@
   <h2>{{ selectedHome.name }}</h2>
   <div class="home_list_dropdown">
     <a class="btn" *ngFor="let item of homes | keyvalue" (click)="selectHome(item.value)">
-      {{ item.value.name }}
+      <span *ngIf="item.key === selectedHome.id; else elseBlock" class="icon material-icons">done</span>
+      <ng-template #elseBlock>
+        <span class="icon_placeholder"></span>
+      </ng-template>
+      <span class="text-nowrap">{{ item.value.name }}</span>
     </a>
   </div>
 </div>

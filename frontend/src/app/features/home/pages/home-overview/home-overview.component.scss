@@ -27,7 +27,7 @@ div.home_overview_container {
   div.home_header {
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
   }
 }
@@ -40,4 +40,5 @@ div.home_overview_container {
 .add_home_small {
   height: 2em;
   width: 2em;
+  margin-right: 1em;
 }
