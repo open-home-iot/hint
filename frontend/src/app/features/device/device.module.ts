@@ -7,9 +7,7 @@ import { RoomDevicesComponent } from './room-devices/room-devices.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceDetailComponent } from './device-detail/device-detail.component';
 import { DeviceRoomSelectorComponent } from './device-room-selector/device-room-selector.component';
-
-/* Discovery */
-import { DiscoveredDevicesComponent } from './discovered-devices/discovered-devices.component';
+import { DeviceDiscoverComponent } from './device-discover/device-discover.component';
 
 // PAGES
 
@@ -27,7 +25,7 @@ import { DeviceRoutingModule } from './device-routing.module';
     DeviceListComponent,
     DeviceDetailComponent,
     DeviceRoomSelectorComponent,
-    DiscoveredDevicesComponent,
+    DeviceDiscoverComponent,
   ],
   imports: [
     DeviceRoutingModule,
@@ -37,7 +35,7 @@ import { DeviceRoutingModule } from './device-routing.module';
     HomeDevicesComponent,
     RoomDevicesComponent,
     DeviceListComponent,
-    DiscoveredDevicesComponent
+    DeviceDiscoverComponent
   ],
   providers: [DeviceService]
 })

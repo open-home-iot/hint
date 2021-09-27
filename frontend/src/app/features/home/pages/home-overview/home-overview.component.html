@@ -5,6 +5,7 @@
 2c. Allow to favorite a HOME
 3. If there is a home, allow to add a HUME even if one exists
 4. Show if a HUME is already connected
+
 5. If a HUME is connected, allow searching for devices even if a device is already present
 6. Allow sectioning a HOME into rooms
 7. Allow assigning a device to a room
@@ -20,10 +21,12 @@
                        [homes]="homes">
       </app-home-select>
     </div>
-    <app-hume-status [home]="selectedHome"></app-hume-status>
+    <app-hume-status (homeHumes)="homeHumes($event)"
+                     [home]="selectedHome"></app-hume-status>
   </div>
   <hr>
   <div class="home_body">
+    <app-device-discover *ngIf="humes && humes.length > 0"></app-device-discover>
     <app-home-detail [home]="selectedHome"></app-home-detail>
   </div>
 </div>

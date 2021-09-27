@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Home, HomeService} from '../../home.service';
+import {Hume} from '../../../hume/hume.service';
 
 const LS_KEY_SELECTED_HOME_ID = 'selectedHomeID';
 
@@ -11,6 +12,7 @@ const LS_KEY_SELECTED_HOME_ID = 'selectedHomeID';
 export class HomeOverviewComponent implements OnInit {
 
   homes: Map<number, Home>;
+  humes: Hume[];
   selectedHome: Home;
 
   constructor(private homeService: HomeService) { }
@@ -31,6 +33,10 @@ export class HomeOverviewComponent implements OnInit {
   homeSelected(home: Home) {
     this.selectedHome = home;
     localStorage.setItem(LS_KEY_SELECTED_HOME_ID, String(home.id));
+  }
+
+  homeHumes(humes: Hume[]) {
+    this.humes = humes;
   }
 
   private onGetHomes(homes: Map<number, Home>) {

@@ -1,5 +1,0 @@
-<div class="hume_instance" *ngFor="let hume of humes">
-  UUID: {{ hume.uuid }}
-  <button (click)="discoverDevices(hume.uuid)">Discover Devices</button>
-</div>
-<app-discovered-devices [devices]="discoveredDevices" (attachDevice)="attach($event)"></app-discovered-devices>

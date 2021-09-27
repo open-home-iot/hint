@@ -1,7 +1,0 @@
-<div class="home_item" *ngFor="let home of homes">
-  Name: {{ home.name }}
-  ID: {{ home.id }}
-
-  <a routerLink="/home/{{ home.id }}">Rooms</a>
-  <app-hume-list [homeID]="home.id"></app-hume-list>
-</div>

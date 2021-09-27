@@ -1,8 +1,8 @@
 import {
-  Component,
+  Component, EventEmitter,
   Input,
   OnChanges,
-  OnInit,
+  OnInit, Output,
   SimpleChanges
 } from '@angular/core';
 import {Home} from '../../home/home.service';
@@ -16,6 +16,7 @@ import {Hume, HumeService} from '../hume.service';
 export class HumeStatusComponent implements OnChanges {
 
   @Input() home: Home;
+  @Output() homeHumes = new EventEmitter<Hume[]>();
 
   humes: Hume[];
 
@@ -30,6 +31,7 @@ export class HumeStatusComponent implements OnChanges {
 
   private onGetHomeHumes(humes: Hume[]) {
     this.humes = humes;
+    this.homeHumes.emit(humes);
   }
 
   private onGetHomeHumesFailed(error) {

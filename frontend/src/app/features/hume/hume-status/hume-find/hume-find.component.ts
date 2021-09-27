@@ -56,7 +56,7 @@ export class HumeFindComponent implements OnInit {
 
   private onFailedToFindHume(error) {
     this.findHumeForm.setErrors(
-      {"apifind": "No hub with that ID exists..."}
+      {apifind: 'No hub with that ID exists...'}
     );
     console.error(error);
   }
@@ -67,8 +67,8 @@ export class HumeFindComponent implements OnInit {
 
   private onFailedToPairHume(error) {
     this.findHumeForm.setErrors(
-      {"apipair": "Failed to pair hub"}
+      {apipair: 'Failed to pair hub'}
     );
-    console.log(error);
+    console.error(error);
   }
 }
