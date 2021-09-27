@@ -26,6 +26,25 @@ export class HumeService {
   constructor(private httpClient: HttpClient,
               private eventService: EventService) { }
 
+  getHomeHumes(homeID: number): Promise<Hume[]> {
+    if (this.homeHumeMap.has(homeID)) {
+      return Promise.resolve(this.homeHumeMap.get(homeID));
+    }
+
+    return new Promise<Hume[]>((resolve, reject) => {
+      this.httpClient.get(this.homeHumesUrl(homeID))
+        .subscribe(
+          (humes: Hume[]) => {
+            this.replaceHomeHumes(homeID, humes);
+            resolve(this.homeHumeMap.get(homeID));
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
   getHume(humeUUID: string): Hume {
     return this.humeMap.get(humeUUID);
   }
@@ -45,25 +64,6 @@ export class HumeService {
           console.error(error);
         }
       );
-  }
-
-  getHomeHumes(homeID: number): Promise<Hume[]> {
-    if (this.homeHumeMap.has(homeID)) {
-      return Promise.resolve(this.homeHumeMap.get(homeID));
-    }
-
-    return new Promise<Hume[]>((resolve, reject) => {
-      this.httpClient.get(this.homeHumesUrl(homeID))
-        .subscribe(
-          (humes: Hume[]) => {
-            this.replaceHomeHumes(homeID, humes);
-            resolve(this.homeHumeMap.get(homeID));
-          },
-          error => {
-            reject(error);
-          }
-        );
-    });
   }
 
   findHume(uuid: string): Promise<Hume> {
@@ -101,14 +101,6 @@ export class HumeService {
     return this.httpClient.get(this.discoverDevicesUrl(homeID, humeUUID));
   }
 
-  private addHomeHume(homeID: number, hume: Hume) {
-    this.homeHumeMap.get(homeID).push(hume);
-    this.humeMap.set(hume.uuid, hume);
-
-    // Make sure the event service gets updates of all events for the added HUME.
-    this.eventService.monitorHume(hume.uuid);
-  }
-
   private replaceHomeHumes(homeID: number, humes: Hume[]): void {
     if (!this.homeHumeMap.has(homeID)) {
       this.homeHumeMap.set(homeID, []);
@@ -118,6 +110,14 @@ export class HumeService {
     for (const HUME of humes) {
       this.addHomeHume(homeID, HUME);
     }
+  }
+
+  private addHomeHume(homeID: number, hume: Hume) {
+    this.homeHumeMap.get(homeID).push(hume);
+    this.humeMap.set(hume.uuid, hume);
+
+    // Make sure the event service gets updates of all events for the added HUME.
+    this.eventService.monitorHume(hume.uuid);
   }
 
   private homeHumesUrl(homeId: number): string {
