@@ -12,7 +12,7 @@
 8. Show devices under their respective rooms
 9. Show state information for stateful devices
 -->
-<div class="home_overview_container" *ngIf="selectedHome; else elseBlock" >
+<div class="home_overview_container" *ngIf="selectedHome; else elseBlock">
   <div class="home_header">
     <div class="home_name_container">
       <app-home-add class="add_home_small"></app-home-add>
@@ -26,7 +26,7 @@
   </div>
   <hr>
   <div class="home_body">
-    <app-device-discover *ngIf="humes && humes.length > 0"></app-device-discover>
+    <app-device-discover *ngIf="humes && humes.length > 0" [home]="selectedHome"></app-device-discover>
     <app-home-detail [home]="selectedHome"></app-home-detail>
   </div>
 </div>
