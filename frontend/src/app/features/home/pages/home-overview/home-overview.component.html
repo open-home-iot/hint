@@ -26,7 +26,9 @@
   </div>
   <hr>
   <div class="home_body">
-    <app-device-discover *ngIf="humes && humes.length > 0" [home]="selectedHome"></app-device-discover>
+    <app-device-discover *ngIf="humes && humes.length > 0"
+                         [home]="selectedHome"
+                         [humes]="humes"></app-device-discover>
     <app-home-detail [home]="selectedHome"></app-home-detail>
   </div>
 </div>

@@ -1,3 +1,6 @@
+import uuid
+from unittest.mock import patch, ANY
+
 from django.test import TestCase
 
 from rest_framework.test import APIClient
@@ -7,6 +10,7 @@ from rest_framework import status
 # tests are from ../backend.
 from backend.user.models import User
 from backend.home.models import Home, Room
+from backend.hume.models import Hume
 
 
 class HomeModel(TestCase):
@@ -243,3 +247,98 @@ class HomeRoomsApi(TestCase):
         res = client.get(HomeRoomsApi.URL.format(self.home.id))
 
         self.assertEqual(len(res.data), 0)
+
+
+class HumeDiscoverDevicesApi(TestCase):
+
+    URL = "/api/homes/{}/devices/discover"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        CALLED PER TEST CASE!
+
+        Create shared test case data, what's created here needs to be torn
+        down in tearDown().
+        """
+        self.client = APIClient()
+        self.client.login(email="suite@t.se", password="pw")
+
+        self.hume = Hume.objects.create(
+            uuid="c4a19f7e-0fd9-11eb-97a0-60f81dbb505c"
+        )
+
+        self.home = Home.objects.create(name="Home1")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
+
+        self.hume.home = self.home
+        self.hume.save()
+
+    @patch("backend.home.views.producer")
+    def test_discover_devices(self, producer):
+        """Verify the discover devices action."""
+        res = self.client.get(
+            HumeDiscoverDevicesApi.URL.format(self.home.id)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        producer.discover_devices.assert_called_with(self.hume.uuid, ANY)
+
+    @patch("backend.home.views.producer")
+    def test_discover_devices_fail_no_such_hume(self, producer):
+        """
+        Verify that URL pieces must point to a hume the user owns.
+        """
+        # Home ID is wrong
+        res = self.client.get(
+            HumeDiscoverDevicesApi.URL.format(1337)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Wrong user, access denied
+        user = User.objects.create_user(email="t@t.se", password="pw")
+        client = APIClient()
+        client.login(username=user.email, password="pw")
+
+        # Hume does not belong to the current user
+        res = client.get(
+            HumeDiscoverDevicesApi.URL.format(self.home.id, self.hume.uuid)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Home has no humes
+        self.hume.delete()
+
+        res = self.client.get(
+            HumeDiscoverDevicesApi.URL.format(self.home.id)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Generally...
+        producer.discover_devices.assert_not_called()
+
+    @patch("backend.home.views.producer")
+    def test_discover_devices_for_home_with_more_than_one_hume(self, producer):
+        """Verify the discover devices action."""
+        new_hume = Hume.objects.create(
+            uuid="ef59d369-40dd-4af9-853e-63707e72c61e",
+            home=self.home
+        )
+
+        res = self.client.get(
+            HumeDiscoverDevicesApi.URL.format(self.home.id)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(producer.discover_devices.call_count, 2)

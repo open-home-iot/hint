@@ -16,6 +16,7 @@ import { DeviceService } from './device.service';
 
 // MODULES
 import { DeviceRoutingModule } from './device-routing.module';
+import { DeviceDiscoveredComponent } from './device-discovered/device-discovered.component';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { DeviceRoutingModule } from './device-routing.module';
     DeviceDetailComponent,
     DeviceRoomSelectorComponent,
     DeviceDiscoverComponent,
+    DeviceDiscoveredComponent,
   ],
   imports: [
     DeviceRoutingModule,

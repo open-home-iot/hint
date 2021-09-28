@@ -55,6 +55,21 @@ export class HomeService {
     });
   }
 
+  discoverDevices(homeID: number): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.httpClient.get(this.discoverDevicesUrl(homeID))
+        .subscribe(
+          _ok => {
+            resolve();
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+
+  }
+
   getHomeRooms(bla): any {}
 
   getRoom(bla): any {}
@@ -68,5 +83,9 @@ export class HomeService {
     for (const HOME of homes) {
       this.homes.set(HOME.id, HOME);
     }
+  }
+
+  private discoverDevicesUrl(homeID: number) {
+    return HOMES_URL + "/" + String(homeID) + "/devices/discover";
   }
 }

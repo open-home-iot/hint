@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.http import JsonResponse
 from rest_framework import status
 
-from backend.home.views import Homes, HomeRooms
+from backend.home.views import Homes, HomeRooms, HomeDiscoverDevices
 from backend.device.views import (
     Devices,
     HomeDevices,
@@ -15,7 +15,6 @@ from backend.device.views import (
 from backend.hume.views import (
     HomeHumes,
     HumeAttachDevice,
-    HumeDiscoverDevices,
     Humes,
     BrokerCredentials,
     HumeFind,
@@ -50,7 +49,6 @@ webapp_urls = [
 ]
 
 device_urls = [
-    path("discover", HumeDiscoverDevices.as_view()),
     path("<str:address>/attach", HumeAttachDevice.as_view()),
     path("<str:device_uuid>/action", DeviceAction.as_view()),
     path("<str:device_uuid>/change-room", ChangeDeviceRoom.as_view()),
@@ -65,6 +63,8 @@ room_urls = [
 ]
 
 home_urls = [
+    path("<int:home_id>/devices/discover", HomeDiscoverDevices.as_view()),
+
     path("<int:home_id>/humes", HomeHumes.as_view()),
     path("<int:home_id>/humes/", include(hume_urls)),
 

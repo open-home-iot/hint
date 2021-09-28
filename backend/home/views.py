@@ -4,6 +4,8 @@ from rest_framework import status
 
 from backend.home.serializers import HomeSerializer, RoomSerializer
 from backend.home.models import Room, Home
+from backend.hume.models import Hume
+from backend.broker import producer
 
 
 class Homes(views.APIView):
@@ -70,3 +72,24 @@ class HomeRooms(views.APIView):
         else:
             return Response({"error": "That home does not exist."},
                             status=status.HTTP_404_NOT_FOUND)
+
+
+class HomeDiscoverDevices(views.APIView):
+    """Discover devices nearby a Hume."""
+
+    @staticmethod
+    def get(request, home_id):
+        """
+        Request that HINT tell HUME to discover devices.
+        """
+        humes = Hume.objects.filter(
+            home__id=home_id,
+            home__users__id=request.user.id
+        )
+        if not humes.exists():
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        for hume in humes:
+            producer.discover_devices(str(hume.uuid), "")
+
+        return Response(status=status.HTTP_200_OK)

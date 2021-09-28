@@ -153,28 +153,6 @@ class HomeHumes(views.APIView):
         return Response([], status=status.HTTP_200_OK)
 
 
-class HumeDiscoverDevices(views.APIView):
-    """Discover devices nearby a Hume."""
-
-    @staticmethod
-    def get(request, home_id, hume_uuid):
-        """
-        Request that HINT tell HUME to discover devices.
-        """
-        try:
-            Hume.objects.get(
-                uuid=hume_uuid,
-                home__id=home_id,
-                home__users__id=request.user.id
-            )
-        except Hume.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        producer.discover_devices(hume_uuid, "")
-
-        return Response(status=status.HTTP_200_OK)
-
-
 class HumeAttachDevice(views.APIView):
     """Attach a discovered device."""
 

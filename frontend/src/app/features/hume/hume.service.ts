@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
-
 import { EventService } from '../event/event.service';
 import {Device} from '../device/device.service';
 
@@ -95,10 +93,6 @@ export class HumeService {
     });
   }
 
-  discoverDevices(homeID: number, humeUUID: string): Observable<any> {
-    return this.httpClient.get(this.discoverDevicesUrl(homeID, humeUUID));
-  }
-
   private humePaired(homeID: number, hume: Hume): void {
     this.addHomeHume(homeID, hume);
   }
@@ -128,10 +122,5 @@ export class HumeService {
 
   private humePairUrl(humeUuid: string): string {
     return HUME_URL + humeUuid + '/confirm-pairing';
-  }
-
-  private discoverDevicesUrl(homeID: number, humeUUID: string) {
-    return HOME_URL + String(homeID) +
-      '/humes/' + humeUUID + '/devices/discover';
   }
 }
