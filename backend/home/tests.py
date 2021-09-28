@@ -1,4 +1,3 @@
-import uuid
 from unittest.mock import patch, ANY
 
 from django.test import TestCase
@@ -331,7 +330,7 @@ class HumeDiscoverDevicesApi(TestCase):
     @patch("backend.home.views.producer")
     def test_discover_devices_for_home_with_more_than_one_hume(self, producer):
         """Verify the discover devices action."""
-        new_hume = Hume.objects.create(
+        Hume.objects.create(
             uuid="ef59d369-40dd-4af9-853e-63707e72c61e",
             home=self.home
         )

@@ -23,9 +23,9 @@ export class DeviceDiscoverComponent implements OnDestroy {
   showDiscoveryBox = false;
 
   showDiscoveryFailure = false;
-  discoveryErrorMessage = "";
+  discoveryErrorMessage = '';
 
-  discoveredDevices: HumeEvent[] = []
+  discoveredDevices: HumeEvent[] = [];
 
   private timeout;
   private subscriptions: number[] = [];
@@ -71,21 +71,20 @@ export class DeviceDiscoverComponent implements OnDestroy {
   }
 
   private deviceDiscovered(event: HumeEvent) {
-    console.log("discovered device:", event);
     this.discoveredDevices.push(event);
   }
 
   private discoveryStarted() {}
   private discoveryStartFailed(error) {
     this.showDiscoveryFailure = true;
-    this.discoveryErrorMessage = "Failed to scan the home, please try again";
-    console.log(error);
+    this.discoveryErrorMessage = 'Failed to scan the home, please try again';
+    console.error(error);
   }
 
   private checkDiscoveryTimeout() {
     if (this.discoveredDevices.length === 0) {
       this.showDiscoveryFailure = true;
-      this.discoveryErrorMessage = "No devices found"
+      this.discoveryErrorMessage = 'No devices found';
     }
   }
 }

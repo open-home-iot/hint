@@ -37,6 +37,9 @@ div.discovery_container {
   }
 
   div.discovery_failure {
+    display: flex;
+    justify-content: center;
+
     p {
       display: flex;
       flex-direction: row;

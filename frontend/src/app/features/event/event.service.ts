@@ -5,7 +5,6 @@ import {idGenerator} from '../../core/utility';
 
 export interface HumeEvent {
   hume_uuid: string;
-  device_uuid: string;
   event_type: number;
   content: any;
 }
@@ -34,7 +33,6 @@ export class EventService {
     this.subscriptionMap.forEach(
       (subscription: Subscription, _) => {
         if (subscription.hume_uuid === event.hume_uuid) {
-
           if (subscription.event_type === event.event_type) {
             subscription.callback(event);
           }

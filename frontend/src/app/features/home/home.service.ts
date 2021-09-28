@@ -86,6 +86,6 @@ export class HomeService {
   }
 
   private discoverDevicesUrl(homeID: number) {
-    return HOMES_URL + "/" + String(homeID) + "/devices/discover";
+    return HOMES_URL + '/' + String(homeID) + '/devices/discover';
   }
 }
