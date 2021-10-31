@@ -3,7 +3,6 @@ import {
   Device,
   DeviceService,
   DeviceState,
-  DeviceStateGroup
 } from '../device.service';
 import {HomeService} from '../../home/home.service';
 

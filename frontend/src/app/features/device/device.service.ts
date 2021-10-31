@@ -65,7 +65,7 @@ export class DeviceService {
     }
   }
 
-  getHomeDevices(homeID: number) {
+  getHomeDevices(homeID: number): Promise<Device[]> {
     if (this.homeDevices.has(homeID)) {
       return Promise.resolve(this.homeDevices.get(homeID));
     }

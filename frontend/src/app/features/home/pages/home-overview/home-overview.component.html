@@ -23,10 +23,12 @@
   </div>
   <hr>
   <div class="home_body">
-    <app-device-discover *ngIf="humes && humes.length > 0"
-                         [home]="selectedHome"
-                         [humes]="humes"></app-device-discover>
-    <app-home-detail [home]="selectedHome"></app-home-detail>
+    <app-device-list [home]="selectedHome"></app-device-list>
+    <div class="discover_container">
+      <app-device-discover *ngIf="humes && humes.length > 0"
+                           [home]="selectedHome"
+                           [humes]="humes"></app-device-discover>
+    </div>
   </div>
 </div>
 <ng-template #elseBlock>

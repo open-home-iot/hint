@@ -3,22 +3,18 @@
     <h4>{{ device.name }}</h4>
     <h5>{{ device.type_name }}</h5>
   </div>
-  <app-device-room-selector [roomID]="device.room"
-                            (roomSelectedEvent)="onRoomSelected($event)">
-  </app-device-room-selector>
 </div>
 
-<div>
-  <div *ngFor="let state_group of state_groups | keyvalue" class="device_action_set">
-    {{ state_group.key | uppercase }}
-    <div *ngFor="let state of state_group.value">
-      <button (click)="stateChange(state)">{{ state.state_name | titlecase }}</button>
-    </div>
+<div *ngFor="let state_group of state_groups | keyvalue" class="device_action_set">
+  {{ state_group.key | titlecase }}
+  <div class="state_group_actions">
+    <button *ngFor="let state of state_group.value"
+            (click)="stateChange(state)"
+            class="btn btn-outline-dark">{{ state.state_name }}</button>
   </div>
 </div>
 
 <div class="device_footer">
   <hr>
-  <span class="device_details">UUID: {{ device.uuid }}</span>
-  <span class="device_details">Category: {{ device.category_name }}</span>
+  <span class="device_details">{{ device.uuid }}</span>
 </div>
