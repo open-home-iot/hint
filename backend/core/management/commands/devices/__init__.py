@@ -1,6 +1,3 @@
-from backend.device.models import Device, DataType
-
-
 device_specs = [
     {
         "uuid": "0ededfd1-65aa-42ba-866e-fb5c5ad607f2",
@@ -38,7 +35,7 @@ device_specs = [
             }
         ]
     },
-{
+    {
         "uuid": "0ededfd4-65aa-42ba-866e-fb5c5ad607f2",
         "name": "Lamp 4",
         "category": 1,  # Device.Category.ACTUATOR
@@ -50,7 +47,7 @@ device_specs = [
             }
         ]
     },
-{
+    {
         "uuid": "0ededfd5-65aa-42ba-866e-fb5c5ad607f2",
         "name": "Lamp 5",
         "category": 1,  # Device.Category.ACTUATOR
@@ -62,7 +59,7 @@ device_specs = [
             }
         ]
     },
-{
+    {
         "uuid": "0ededfd6-65aa-42ba-866e-fb5c5ad607f2",
         "name": "Lamp 6",
         "category": 1,  # Device.Category.ACTUATOR

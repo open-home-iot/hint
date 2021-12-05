@@ -19,6 +19,13 @@
     div.state_group_actions {
       display: flex;
       flex-direction: row;
+
+      button {
+        background-color: white;
+      }
+      button:hover {
+        background-color: black;
+      }
     }
     div.state_group_actions button:not(:last-child) {
       margin-right: 0.2em;
