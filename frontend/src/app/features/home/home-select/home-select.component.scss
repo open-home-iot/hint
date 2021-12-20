@@ -8,6 +8,27 @@ h2:hover {
 
 div.select_container {
   position: relative;
+
+  div.select_header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    div.edit_container {
+      width: 1.5em;
+      margin-left: 0.3em;
+
+      span {
+        display: none;
+        font-size: 100%;
+      }
+
+      span:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 div.home_list_dropdown {
@@ -40,4 +61,8 @@ span.icon_placeholder {
 
 div.select_container:hover div.home_list_dropdown {
   display: block;
+}
+
+div.select_container:hover div.select_header div.edit_container span {
+  display: inline;
 }

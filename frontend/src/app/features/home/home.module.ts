@@ -16,13 +16,15 @@ import { DeviceModule } from '../device/device.module';
 // COMPONENTS
 import { HomeAddComponent } from './home-add/home-add.component';
 import { HomeSelectComponent } from './home-select/home-select.component';
+import { HomeEditComponent } from './home-select/home-edit/home-edit.component';
 
 
 @NgModule({
   declarations: [
     HomeOverviewComponent,
     HomeAddComponent,
-    HomeSelectComponent
+    HomeSelectComponent,
+    HomeEditComponent
   ],
   imports: [
     HomeRoutingModule,

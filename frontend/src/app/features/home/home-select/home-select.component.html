@@ -1,5 +1,10 @@
 <div class="select_container">
-  <h2>{{ selectedHome.name }}</h2>
+  <div class="select_header">
+    <h2>{{ selectedHome.name }}</h2>
+    <div class="edit_container">
+      <span [routerLink]="['/home', selectedHome.id]" class="icon material-icons">edit</span>
+    </div>
+  </div>
   <div class="home_list_dropdown">
     <a class="btn" *ngFor="let item of homes | keyvalue" (click)="selectHome(item.value)">
       <span *ngIf="item.key === selectedHome.id; else elseBlock" class="icon material-icons">done</span>
