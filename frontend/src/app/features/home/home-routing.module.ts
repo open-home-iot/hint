@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeOverviewComponent } from './pages/home-overview/home-overview.component';
+import {HomeEditComponent} from './pages/home-edit/home-edit.component';
 
 import { AuthGuard } from '../../core/auth/auth.guard';
 
@@ -23,6 +24,11 @@ const ROUTES: Routes = [
     component: HomeOverviewComponent,
     canActivate: [AuthGuard]
   },
+  {
+    path: 'home/:id',
+    component: HomeEditComponent,
+    canActivate: [AuthGuard]
+  }
 ];
 
 @NgModule({

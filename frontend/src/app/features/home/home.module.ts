@@ -16,7 +16,7 @@ import { DeviceModule } from '../device/device.module';
 // COMPONENTS
 import { HomeAddComponent } from './home-add/home-add.component';
 import { HomeSelectComponent } from './home-select/home-select.component';
-import { HomeEditComponent } from './home-select/home-edit/home-edit.component';
+import { HomeEditComponent } from './pages/home-edit/home-edit.component';
 
 
 @NgModule({
