@@ -2,10 +2,40 @@
   <button routerLink="/home" class="btn btn-outline-dark">Back</button>
   <div class="home-name">
     <h2>{{ homeName }}</h2>
-    <button class="btn btn-outline-dark">Change name</button>
-    <button class="btn btn-danger">Delete</button>
+    <button class="btn btn-outline-dark" (click)="toggleChangeHomeNameForm()">Change name</button>
+    <button class="btn btn-danger" (click)="deleteHome()">Delete</button>
   </div>
-  <div></div>
+
+  <div>
+    <!--placeholder to centralize previous div in flexbox-->
+  </div>
 </div>
 <hr>
 <div class="hume" *ngFor="let hume of this.humes">Hume UUID: {{ hume.uuid }}</div>
+
+<form [hidden]="!displayChangeHomeNameForm"
+      id="change_home_name_form"
+      class="absolute_center"
+      (ngSubmit)="changeHomeName()"
+      [formGroup]="changeHomeNameForm">
+  <div class="label_input_pair">
+    <label for="name">Name</label>
+    <input id="name"
+           name="name"
+           type="text"
+           formControlName="name">
+  </div>
+  <div *ngIf="name.touched && name.errors?.required"
+       class="form_error">
+    You must provide a name for the HOME.
+  </div>
+  <div *ngIf="name.touched && name.errors?.maxlength"
+       class="form_error">
+    The home name cannot exceed 50 characters.
+  </div>
+  <div>
+    <button class="btn btn-outline-dark" type="submit" [disabled]="!changeHomeNameForm.valid" name="button">Change</button>
+    <button class="btn btn-outline-dark" type="button" (click)="toggleChangeHomeNameForm()">Cancel</button>
+  </div>
+</form>
+

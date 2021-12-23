@@ -74,6 +74,24 @@ export class HomeService {
     });
   }
 
+  changeHome(home: Home, newName: string): Promise<Home> {
+    return new Promise<Home>((resolve, reject) => {
+      this.httpClient.patch(HomeService.homeUrl(home.id),
+        {
+          name: newName,
+        })
+        .subscribe(
+          (home: Home) => {
+            this.updateHome(home);
+            resolve(home);
+          },
+          error => {
+            reject(error);
+          }
+        )
+    });
+  }
+
   discoverDevices(homeID: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.httpClient.get(HomeService.discoverDevicesUrl(homeID))
@@ -101,6 +119,10 @@ export class HomeService {
     for (const HOME of homes) {
       this.homes.set(HOME.id, HOME);
     }
+  }
+
+  private updateHome(newHome: Home) {
+    this.homes.set(newHome.id, newHome);
   }
 
   private static discoverDevicesUrl(homeID: number) {

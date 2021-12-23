@@ -32,3 +32,17 @@ hr {
     width: 100%;
 }
 
+#change_home_name_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+  padding: 0.5em;
+  background-color: white;
+
+  button {
+    margin-top: .5em;
+    margin-left: 1em;
+  }
+}

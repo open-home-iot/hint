@@ -52,6 +52,23 @@ class HomeSingle(views.APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @staticmethod
+    def patch(request, home_id):
+        """
+        Change a home.
+        """
+        try:
+            home = request.user.home_set.get(id=home_id)
+        except Home.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = HomeSerializer(home, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class HomeRooms(views.APIView):
     """Exposes Room fetching/creation"""
