@@ -35,6 +35,24 @@ class Homes(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class HomeSingle(views.APIView):
+    """Exposes singular Home fetching/deletion."""
+
+    @staticmethod
+    def get(request, home_id):
+        """
+        Get the Home with the input ID.
+        """
+        try:
+            home = request.user.home_set.get(id=home_id)
+        except Home.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = HomeSerializer(home)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class HomeRooms(views.APIView):
     """Exposes Room fetching/creation"""
 

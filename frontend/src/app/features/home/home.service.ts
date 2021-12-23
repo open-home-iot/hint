@@ -45,8 +45,27 @@ export class HomeService {
       this.httpClient.get(HOMES_URL)
         .subscribe(
           (homes: Home[]) => {
-            this.refreshHomes(homes);
+            this.setHomes(homes);
             resolve(this.homes);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  getHome(homeID: number): Promise<Home> {
+    if (this.homes !== undefined) {
+      return Promise.resolve(this.homes.get(homeID));
+    }
+
+    return new Promise<Home>((resolve, reject) => {
+      this.httpClient.get(HOMES_URL)
+        .subscribe(
+          (homes: Home[]) => {
+            this.setHomes(homes);
+            resolve(this.homes.get(homeID));
           },
           error => {
             reject(error);
@@ -57,7 +76,7 @@ export class HomeService {
 
   discoverDevices(homeID: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.httpClient.get(this.discoverDevicesUrl(homeID))
+      this.httpClient.get(HomeService.discoverDevicesUrl(homeID))
         .subscribe(
           _ok => {
             resolve();
@@ -74,18 +93,21 @@ export class HomeService {
 
   getRoom(bla): any {}
 
-  private refreshHomes(homes: Home[]) {
+  private setHomes(homes: Home[]) {
     if (this.homes === undefined) {
       this.homes = new Map<number, Home>();
     }
 
-    this.homes.clear();
     for (const HOME of homes) {
       this.homes.set(HOME.id, HOME);
     }
   }
 
-  private discoverDevicesUrl(homeID: number) {
+  private static discoverDevicesUrl(homeID: number) {
     return HOMES_URL + '/' + String(homeID) + '/devices/discover';
+  }
+
+  private static homeUrl(homeID: number) {
+    return HOMES_URL + '/' + String(homeID);
   }
 }

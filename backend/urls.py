@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.http import JsonResponse
 from rest_framework import status
 
-from backend.home.views import Homes, HomeRooms, HomeDiscoverDevices
+from backend.home.views import Homes, HomeRooms, HomeDiscoverDevices, HomeSingle
 from backend.device.views import (
     Devices,
     HomeDevices,
@@ -63,6 +63,7 @@ room_urls = [
 ]
 
 home_urls = [
+    path("<int:home_id>", HomeSingle.as_view()),
     path("<int:home_id>/devices/discover", HomeDiscoverDevices.as_view()),
 
     path("<int:home_id>/humes", HomeHumes.as_view()),
