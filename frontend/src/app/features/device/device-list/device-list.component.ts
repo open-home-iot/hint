@@ -11,14 +11,14 @@ import { Home } from '../../home/home.service';
 export class DeviceListComponent implements OnChanges {
 
   @Input() home: Home;
-  devices: Device[]
+  devices: Device[];
 
   constructor(private deviceService: DeviceService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.deviceService.getHomeDevices(this.home.id)
       .then(this.onHomeDevicesGotten.bind(this))
-      .catch(this.onHomeDevicesGetFailed)
+      .catch(this.onHomeDevicesGetFailed);
   }
 
   private onHomeDevicesGotten(devices: Device[]) {
