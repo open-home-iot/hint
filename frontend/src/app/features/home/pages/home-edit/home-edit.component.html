@@ -1,6 +1,11 @@
 <div class="header">
   <button routerLink="/home" class="btn btn-outline-dark">Back</button>
-  <h2>{{ homeName }}</h2>
+  <div class="home-name">
+    <h2>{{ homeName }}</h2>
+    <button class="btn btn-outline-dark">Change name</button>
+    <button class="btn btn-danger">Delete</button>
+  </div>
   <div></div>
 </div>
 <hr>
+<div class="hume" *ngFor="let hume of this.humes">Hume UUID: {{ hume.uuid }}</div>

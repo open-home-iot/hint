@@ -1,6 +1,6 @@
 :host {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
   width: calc(100% - 2em);
@@ -16,9 +16,19 @@ div.header {
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
+
+  div.home-name {
+    display: flex;
+    flex-direction: row;
+
+    button {
+      margin-left: .5em;
+    }
+  }
 }
 
 hr {
     color: black;
     width: 100%;
-  }
+}
+
