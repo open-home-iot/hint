@@ -25,7 +25,6 @@ from backend.device.test_defs import (  # noqa
     DEVICE_UUID_2,
     DEVICE_UUID_3,
 )
-from backend.broker import producer
 
 
 def create_dummy_device(hume: Hume) -> Device:

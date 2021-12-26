@@ -29,7 +29,6 @@ class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
         fields = ('hume',
-                  'room',
                   'uuid',
                   'name',
                   'description',
