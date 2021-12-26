@@ -37,11 +37,14 @@ class HumeModel(TestCase):
         self.hume.save()
 
         self.hume.delete()
-        # User relation is not on the user model, object should still be there.
-        self.assertEqual(len(User.objects.all()), 1)
+        # Hume registers a post delete signal that should delete the hume
+        # user. Have a look in backend.hume.handlers
+        self.assertEqual(len(User.objects.all()), 0)
 
         # Test 2: check interaction with Home
         self.hume = Hume.objects.create(uuid=HUME_UUID)
+        user = User.objects.create_user(email="t@t.se", password="pw")
+        self.hume.hume_user = user
         home = Home.objects.create()
         self.hume.home = home
         self.hume.save()

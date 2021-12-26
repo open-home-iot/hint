@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Home, HomeService} from '../../home.service';
 import {Hume, HumeService} from '../../../hume/hume.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {handleError} from '../../../../core/utility';
+import {HANDLE_ERROR} from '../../../../core/utility';
 
 @Component({
   selector: 'app-home-edit',
@@ -33,11 +33,11 @@ export class HomeEditComponent implements OnInit {
 
     this.homeService.getHome(Number(this.route.snapshot.params.id))
       .then(this.onGetHome.bind(this))
-      .catch(handleError);
+      .catch(HANDLE_ERROR);
 
     this.humeService.getHomeHumes(Number(this.route.snapshot.params.id))
       .then(this.onGetHomeHumes.bind(this))
-      .catch(handleError);
+      .catch(HANDLE_ERROR);
   }
 
   toggleChangeHomeNameForm() {
@@ -50,7 +50,7 @@ export class HomeEditComponent implements OnInit {
     if (this.home !== undefined) {
       this.homeService.changeHome(this.home, this.name.value)
         .then(this.onChangeHomeName.bind(this))
-        .catch(handleError);
+        .catch(HANDLE_ERROR);
     }
     this.toggleChangeHomeNameForm();
   }
@@ -59,7 +59,7 @@ export class HomeEditComponent implements OnInit {
     if (this.home !== undefined) {
       this.homeService.deleteHome(this.home)
         .then(this.onDeleteHome.bind(this))
-        .catch(handleError)
+        .catch(HANDLE_ERROR);
     }
   }
 

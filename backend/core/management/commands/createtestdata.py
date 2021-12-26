@@ -44,8 +44,12 @@ class Command(BaseCommand):
         for _ in range(2):
             hume_uuid = uuid.uuid4()
             ValidHume.objects.create(uuid=hume_uuid)
-            User.objects.create_hume_user(hume_uuid, str(uuid.uuid4()))
-            Hume.objects.create(uuid=hume_uuid, home=home1)
+            hume_user = User.objects.create_hume_user(
+                hume_uuid, str(uuid.uuid4())
+            )
+            Hume.objects.create(
+                uuid=hume_uuid, home=home1, hume_user=hume_user
+            )
             self.stdout.write(f"Created hume '{hume_uuid}' "
                               f"for home '{home1.name}'")
 
@@ -56,8 +60,8 @@ class Command(BaseCommand):
         # Hume for home2
         hume_uuid = uuid.uuid4()
         ValidHume.objects.create(uuid=hume_uuid)
-        User.objects.create_hume_user(hume_uuid, str(uuid.uuid4()))
-        Hume.objects.create(uuid=hume_uuid, home=home2)
+        hume_user = User.objects.create_hume_user(hume_uuid, str(uuid.uuid4()))
+        Hume.objects.create(uuid=hume_uuid, home=home2, hume_user=hume_user)
         self.stdout.write(f"Created hume '{hume_uuid}' "
                           f"for home '{home2.name}'")
 

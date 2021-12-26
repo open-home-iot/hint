@@ -29,6 +29,6 @@ export function* idGenerator() {
  *
  * @param error
  */
-export function handleError(error) {
+export const HANDLE_ERROR = (error) => {
   console.error(error);
-}
+};

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {error} from 'protractor';
+import {HANDLE_ERROR} from '../../core/utility';
 
 export interface Home {
   id: number;
@@ -106,6 +106,7 @@ export class HomeService {
       this.httpClient.delete(HomeService.homeUrl(home.id))
         .subscribe(
           _success => {
+            this.homes.delete(home.id);
             resolve();
           },
           error => {
@@ -139,6 +140,7 @@ export class HomeService {
       this.homes = new Map<number, Home>();
     }
 
+    this.homes.clear()
     for (const HOME of homes) {
       this.homes.set(HOME.id, HOME);
     }
