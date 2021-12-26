@@ -109,3 +109,16 @@ def unpair(hume_uuid):
     global _producer
     _producer.publish(json.dumps(payload).encode('utf-8'),
                       queue_params=QueueParams(hume_uuid, durable=True))
+
+
+def detach(hume_uuid, device_uuid):
+    """
+    Issues a detach command to the a hume for a device.
+    """
+    payload = {
+        "type": MessageType.DETACH,
+        "device_uuid": device_uuid
+    }
+    global _producer
+    _producer.publish(json.dumps(payload).encode('utf-8'),
+                      queue_params=QueueParams(hume_uuid, durable=True))

@@ -5,7 +5,20 @@
 
   div.device_header {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+
+    div.device_title_box {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      span.delete_icon:hover {
+        cursor: pointer;
+        color: #dc3545;
+        text-decoration: underline;
+      }
+    }
   }
 
   div.device_action_set {

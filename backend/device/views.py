@@ -88,6 +88,24 @@ class RoomDevices(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class DeviceSingle(views.APIView):
+    """Operations on single device instances."""
+
+    @staticmethod
+    def delete(request, home_id, hume_uuid, device_uuid):
+        """Delete a device."""
+        try:
+            device = Device.objects.get(uuid=device_uuid,
+                                        hume__uuid=hume_uuid,
+                                        hume__home__id=home_id,
+                                        hume__home__users__id=request.user.id)
+            device.delete()
+        except Device.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        return Response(status=status.HTTP_200_OK)
+
+
 class ChangeDeviceRoom(views.APIView):
     """Change the room a device belongs to."""
 

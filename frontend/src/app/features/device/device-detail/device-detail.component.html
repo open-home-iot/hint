@@ -1,8 +1,9 @@
 <div class="device_header">
-  <div class="device_heading">
+  <div class="device_title_box">
     <h4>{{ device.name }}</h4>
-    <h5>{{ device.type_name }}</h5>
+    <span class="delete_icon icon material-icons" (click)="deleteDevice()">delete</span>
   </div>
+  <h5>{{ device.type_name }}</h5>
 </div>
 
 <div *ngFor="let state_group of state_groups | keyvalue" class="device_action_set">

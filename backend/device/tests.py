@@ -99,6 +99,20 @@ class DeviceModel(TestCase):
         with self.assertRaises(Device.DoesNotExist):
             Device.objects.get(uuid=DEVICE_UUID_1)
 
+    @patch('backend.device.signal_handlers.producer')
+    def test_signal(self, producer_mock):
+        """
+        Ensure a deleted device results in a message sent to the device's
+        hume.
+        """
+        create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
+
+        device = Device.objects.get(uuid=DEVICE_UUID_1)
+        verify_device_fields(self, device, BASIC_LED_CAPS)
+
+        device.delete()
+        producer_mock.detach.assert_called_with(self.hume.uuid, DEVICE_UUID_1)
+
 
 class DevicesApi(TestCase):
 
@@ -432,22 +446,25 @@ class DeviceActionApi(TestCase):
         self.hume = Hume.objects.create(uuid=uuid.uuid4(),
                                         home=self.home)
 
-    def test_stateful_device_action(self):
+    @patch('backend.device.views.producer')
+    def test_stateful_device_action(self, producer_mock):
         """
         Verify the device action API accepts stateful device actions.
         """
-        producer_mock = Mock()
-        producer.init(producer_mock)
-
         create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
         device = Device.objects.get(uuid=DEVICE_UUID_1)
+        device_state_kwargs = {"device_state_group_id": 0, "device_state": 0}
 
-        res = self.client.post(DeviceActionApi.URL.format(
-            self.home.id, self.hume.uuid, device.uuid)
+        res = self.client.post(
+            DeviceActionApi.URL.format(
+                self.home.id, self.hume.uuid, device.uuid
+            ), device_state_kwargs
         )
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        producer_mock.publish.assert_called()
+        producer_mock.send_device_action.assert_called_with(
+            str(self.hume.uuid), str(device.uuid), **device_state_kwargs
+        )
 
     def test_device_action_unauthorized_user(self):
         """

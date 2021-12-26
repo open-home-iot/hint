@@ -40,29 +40,26 @@ export class DeviceService {
               private humeService: HumeService,
               private httpClient: HttpClient) { }
 
-  getHomeDevicesUrl(homeID: number) {
+  private static getHomeDevicesUrl(homeID: number) {
     return HOMES_URL + String(homeID) + '/devices';
   }
 
-  addHomeDevice(homeID: number, device: Device) {
-    this.homeDevices.get(homeID).push(device);
+  private static getRoomDevicesUrl(homeID: number, roomID: number) {
+    return HOMES_URL + String(homeID) + '/rooms/' + String(roomID) + '/devices';
   }
 
-  removeHomeDevice(homeID: number, device: Device) {
-    const HOME_DEVICES = this.homeDevices.get(homeID);
-    HOME_DEVICES.splice(HOME_DEVICES.indexOf(device), 1);
+  private static getRoomChangeUrl(homeID: number, device: Device) {
+    return HOMES_URL + String(homeID) + '/humes/' + String(device.hume) +
+      '/devices/' + device.uuid + '/change-room';
   }
 
-  replaceHomeDevices(homeID: number, devices: Device[]) {
-    if (!this.homeDevices.has(homeID)) {
-      this.homeDevices.set(homeID, []);
-    }
+  private static getDeviceActionUrl(hume: Hume, device: Device): string {
+    return HOMES_URL + hume.home + '/humes/' + hume.uuid + '/devices/' +
+      device.uuid + '/action';
+  }
 
-    // Maintain array reference
-    this.homeDevices.get(homeID).length = 0;
-    for (const DEVICE of devices) {
-      this.addHomeDevice(homeID, DEVICE);
-    }
+  private static deviceUrl(hume: Hume, device: Device): string {
+    return HOMES_URL + String(hume.home) + '/humes/' + hume.uuid + '/devices/' + device.uuid;
   }
 
   getHomeDevices(homeID: number): Promise<Device[]> {
@@ -70,15 +67,27 @@ export class DeviceService {
       return Promise.resolve(this.homeDevices.get(homeID));
     }
 
-    return this.sendHomeDevicesRequest(homeID);
+    return this.requestHomeDevices(homeID);
   }
 
   refreshHomeDevices(homeID: number): Promise<Device[]> {
-    return this.sendHomeDevicesRequest(homeID);
+    return this.requestHomeDevices(homeID);
   }
 
-  getRoomDevicesUrl(homeID: number, roomID: number) {
-    return HOMES_URL + String(homeID) + '/rooms/' + String(roomID) + '/devices';
+  delete(device: Device): Promise<Device> {
+    return new Promise<Device>((resolve, reject) => {
+      const HUME = this.humeService.getHume(device.hume);
+      this.httpClient.delete(DeviceService.deviceUrl(HUME, device))
+        .subscribe(
+          _success => {
+            this.removeHomeDevice(HUME.home, device);
+            resolve(device);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
   }
 
   addRoomDevice(roomID: number, device: Device) {
@@ -90,25 +99,13 @@ export class DeviceService {
     ROOM_DEVICES.splice(ROOM_DEVICES.indexOf(device), 1);
   }
 
-  replaceRoomDevices(roomID: number, devices: Device[]) {
-    if (!this.roomDevices.has(roomID)) {
-      this.roomDevices.set(roomID, []);
-    }
-
-    // Maintain array reference
-    this.roomDevices.get(roomID).length = 0;
-    for (const DEVICE of devices) {
-      this.addRoomDevice(roomID, DEVICE);
-    }
-  }
-
   getRoomDevices(homeID: number, roomID: number) {
     if (this.roomDevices.has(roomID)) {
       return Promise.resolve(this.roomDevices.get(roomID));
     }
 
     return new Promise<Device[]>((resolve, reject) => {
-      this.httpClient.get(this.getRoomDevicesUrl(homeID, roomID))
+      this.httpClient.get(DeviceService.getRoomDevicesUrl(homeID, roomID))
         .subscribe(
           (devices: Device[]) => {
             this.replaceRoomDevices(roomID, devices);
@@ -121,15 +118,10 @@ export class DeviceService {
     });
   }
 
-  getRoomChangeUrl(homeID: number, device: Device) {
-    return HOMES_URL + String(homeID) + '/humes/' + String(device.hume) +
-      '/devices/' + device.uuid + '/change-room';
-  }
-
   changeRoom(device: Device, roomID: number | null) {
     const HUME = this.humeService.getHume(device.hume);
 
-    this.httpClient.patch(this.getRoomChangeUrl(HUME.home, device),
+    this.httpClient.patch(DeviceService.getRoomChangeUrl(HUME.home, device),
                     {old_id: device.room, new_id: roomID})
       .subscribe(
         success => {
@@ -160,15 +152,10 @@ export class DeviceService {
       );
   }
 
-  getDeviceActionUrl(hume: Hume, device: Device): string {
-    return HOMES_URL + hume.home + '/humes/' + hume.uuid + '/devices/' +
-      device.uuid + '/action';
-  }
-
   changeState(device: Device, newState: DeviceState) {
     const HUME = this.humeService.getHume(device.hume);
 
-    this.httpClient.post(this.getDeviceActionUrl(HUME, device), {
+    this.httpClient.post(DeviceService.getDeviceActionUrl(HUME, device), {
       device_state_group_id: newState.device_state_group.group_id,
       device_state_id: newState.state_id,
     })
@@ -178,9 +165,9 @@ export class DeviceService {
       );
   }
 
-  private sendHomeDevicesRequest(homeID: number): Promise<Device[]> {
+  private requestHomeDevices(homeID: number): Promise<Device[]> {
     return new Promise<Device[]>((resolve, reject) => {
-      this.httpClient.get(this.getHomeDevicesUrl(homeID))
+      this.httpClient.get(DeviceService.getHomeDevicesUrl(homeID))
         .subscribe(
           (devices: Device[]) => {
             this.replaceHomeDevices(homeID, devices);
@@ -191,5 +178,38 @@ export class DeviceService {
           }
         );
     });
+  }
+
+  private addHomeDevice(homeID: number, device: Device) {
+    this.homeDevices.get(homeID).push(device);
+  }
+
+  private removeHomeDevice(homeID: number, device: Device) {
+    const HOME_DEVICES = this.homeDevices.get(homeID);
+    HOME_DEVICES.splice(HOME_DEVICES.indexOf(device), 1);
+  }
+
+  private replaceHomeDevices(homeID: number, devices: Device[]) {
+    if (!this.homeDevices.has(homeID)) {
+      this.homeDevices.set(homeID, []);
+    }
+
+    // Maintain array reference
+    this.homeDevices.get(homeID).length = 0;
+    for (const DEVICE of devices) {
+      this.addHomeDevice(homeID, DEVICE);
+    }
+  }
+
+  private replaceRoomDevices(roomID: number, devices: Device[]) {
+    if (!this.roomDevices.has(roomID)) {
+      this.roomDevices.set(roomID, []);
+    }
+
+    // Maintain array reference
+    this.roomDevices.get(roomID).length = 0;
+    for (const DEVICE of devices) {
+      this.addRoomDevice(roomID, DEVICE);
+    }
   }
 }

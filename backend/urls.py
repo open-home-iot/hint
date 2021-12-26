@@ -15,7 +15,8 @@ from backend.device.views import (
     HomeDevices,
     DeviceAction,
     RoomDevices,
-    ChangeDeviceRoom
+    ChangeDeviceRoom,
+    DeviceSingle
 )
 from backend.hume.views import (
     HomeHumes,
@@ -57,6 +58,7 @@ device_urls = [
     path("<str:address>/attach", HumeAttachDevice.as_view()),
     path("<str:device_uuid>/action", DeviceAction.as_view()),
     path("<str:device_uuid>/change-room", ChangeDeviceRoom.as_view()),
+    path("<str:device_uuid>", DeviceSingle.as_view()),
 ]
 
 hume_urls = [
