@@ -152,6 +152,83 @@ class HomesApi(TestCase):
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
 
 
+class HomeSingleApi(TestCase):
+
+    URL = "/api/homes/{}"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+
+    def test_get_home(self):
+        """
+        Get a single home.
+        """
+        res = self.client.get(HomeSingleApi.URL.format(self.home.id))
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data["id"], 1)
+
+    def test_get_home_authauthorized(self):
+        """
+        Tests the endpoint authentication, same for all methods so no need to
+        re-test for others.
+        """
+        User.objects.create_user(email="t@t.se", password="pw")
+        api_client = APIClient()
+        api_client.login(username="t@t.se", password="pw")
+
+        res = api_client.get(HomeSingleApi.URL.format(self.home.id))
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(res.data, None)
+
+    def test_change_home_name(self):
+        """
+        Change a home's name.
+        """
+        new_name = "new_name"
+        res = self.client.patch(HomeSingleApi.URL.format(self.home.id),
+                                {"name": new_name})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data["name"], new_name)
+        # Confirm change in DB as well
+        self.assertEqual(Home.objects.get(id=self.home.id).name, new_name)
+
+    def test_change_home_name_failed_too_long(self):
+        """
+        Verify changing a home name fails if the name exceeds the column size.
+        """
+        too_long_name = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
+        res = self.client.patch(HomeSingleApi.URL.format(self.home.id),
+                                {"name": too_long_name})
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_home(self):
+        """
+        Delete a home.
+        """
+        res = self.client.delete(HomeSingleApi.URL.format(self.home.id))
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, None)
+        with self.assertRaises(Home.DoesNotExist):
+            Home.objects.get(id=self.home.id)
+
+
 class HomeRoomsApi(TestCase):
 
     URL = "/api/homes/{}/rooms"
@@ -248,7 +325,7 @@ class HomeRoomsApi(TestCase):
         self.assertEqual(len(res.data), 0)
 
 
-class HumeDiscoverDevicesApi(TestCase):
+class HomeDiscoverDevicesApi(TestCase):
 
     URL = "/api/homes/{}/devices/discover"
 
@@ -285,7 +362,7 @@ class HumeDiscoverDevicesApi(TestCase):
     def test_discover_devices(self, producer):
         """Verify the discover devices action."""
         res = self.client.get(
-            HumeDiscoverDevicesApi.URL.format(self.home.id)
+            HomeDiscoverDevicesApi.URL.format(self.home.id)
         )
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -298,7 +375,7 @@ class HumeDiscoverDevicesApi(TestCase):
         """
         # Home ID is wrong
         res = self.client.get(
-            HumeDiscoverDevicesApi.URL.format(1337)
+            HomeDiscoverDevicesApi.URL.format(1337)
         )
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
@@ -310,7 +387,7 @@ class HumeDiscoverDevicesApi(TestCase):
 
         # Hume does not belong to the current user
         res = client.get(
-            HumeDiscoverDevicesApi.URL.format(self.home.id, self.hume.uuid)
+            HomeDiscoverDevicesApi.URL.format(self.home.id, self.hume.uuid)
         )
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
@@ -319,7 +396,7 @@ class HumeDiscoverDevicesApi(TestCase):
         self.hume.delete()
 
         res = self.client.get(
-            HumeDiscoverDevicesApi.URL.format(self.home.id)
+            HomeDiscoverDevicesApi.URL.format(self.home.id)
         )
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
@@ -336,7 +413,7 @@ class HumeDiscoverDevicesApi(TestCase):
         )
 
         res = self.client.get(
-            HumeDiscoverDevicesApi.URL.format(self.home.id)
+            HomeDiscoverDevicesApi.URL.format(self.home.id)
         )
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)

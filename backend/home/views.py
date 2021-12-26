@@ -69,6 +69,19 @@ class HomeSingle(views.APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @staticmethod
+    def delete(request, home_id):
+        """
+        Delete a home.
+        """
+        try:
+            home_to_be_deleted = request.user.home_set.get(id=home_id)
+            home_to_be_deleted.delete()
+        except Home.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        return Response(status=status.HTTP_200_OK)
+
 
 class HomeRooms(views.APIView):
     """Exposes Room fetching/creation"""
