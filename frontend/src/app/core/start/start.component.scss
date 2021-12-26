@@ -1,10 +1,13 @@
 :host {
   display: flex;
-  width: 50%;
   flex-direction: column;
+  justify-content: center;
+  width: calc(100% - 2em);
+  margin: 1em 1em;
+  padding: 1em;
   background-color: white;
-  margin: 1em auto auto;
-  border-radius: 1em;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
 }
 
 h2 {
