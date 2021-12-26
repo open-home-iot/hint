@@ -23,6 +23,34 @@ def hume_username(hume_uuid):
     return f"{hume_uuid.replace('-', '')}@fake.com"
 
 
+class HumeModel(TestCase):
+
+    def setUp(self):
+        self.hume = Hume.objects.create(uuid=HUME_UUID)
+
+    def test_delete_hume_verify_cascade(self):
+        """
+        Verify cascade on hume delete works as intended.
+        """
+        user = User.objects.create_user(email="t@t.se", password="pw")
+        self.hume.hume_user = user
+        self.hume.save()
+
+        self.hume.delete()
+        # User relation is not on the user model, object should still be there.
+        self.assertEqual(len(User.objects.all()), 1)
+
+        # Test 2: check interaction with Home
+        self.hume = Hume.objects.create(uuid=HUME_UUID)
+        home = Home.objects.create()
+        self.hume.home = home
+        self.hume.save()
+
+        self.hume.delete()
+
+        self.assertEqual(len(Home.objects.all()), 1)
+
+
 class HumesApi(TestCase):
 
     URL = "/api/humes"

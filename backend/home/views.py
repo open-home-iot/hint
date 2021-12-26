@@ -8,6 +8,9 @@ from backend.hume.models import Hume
 from backend.broker import producer
 
 
+###############################################################################
+# AJAX VIEWS
+###############################################################################
 class Homes(views.APIView):
     """Exposes Home fetching/creation."""
 

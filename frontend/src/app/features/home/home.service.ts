@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {error} from 'protractor';
 
 export interface Home {
   id: number;
@@ -92,6 +93,20 @@ export class HomeService {
           (patchedHome: Home) => {
             this.updateHome(patchedHome);
             resolve(patchedHome);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  deleteHome(home: Home): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.httpClient.delete(HomeService.homeUrl(home.id))
+        .subscribe(
+          _success => {
+            resolve();
           },
           error => {
             reject(error);

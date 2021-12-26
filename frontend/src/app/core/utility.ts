@@ -23,3 +23,12 @@ export function* idGenerator() {
     yield i++;
   }
 }
+
+/**
+ * Generic error handling function.
+ *
+ * @param error
+ */
+export function handleError(error) {
+  console.error(error);
+}

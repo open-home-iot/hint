@@ -1,3 +1,5 @@
+import uuid
+
 from unittest.mock import patch, ANY
 
 from django.test import TestCase
@@ -22,16 +24,24 @@ class HomeModel(TestCase):
         when each test case ends and do not need to be removed.
         """
         self.user = User.objects.create_user("t@t.se", password="pw")
+        self.home = Home.objects.create(name="home1")
+        self.home.users.add(self.user)
+        self.home.save()
 
-    def test_create_home(self):
+    def test_delete_home_cascade_works(self):
         """
-        Verify a HOME model instance can be created.
+        Verify deleting a home also deletes all its humes.
         """
-        home = Home.objects.create(name="home1")
-        home.users.add(self.user)
-        home.save()
+        hume_1 = Hume.objects.create(uuid=str(uuid.uuid4()))
+        hume_1.home = self.home
+        hume_1.save()
+        hume_2 = Hume.objects.create(uuid=str(uuid.uuid4()))
+        hume_2.home = self.home
+        hume_2.save()
 
-        [_user] = home.users.all()
+        self.assertEqual(len(Hume.objects.all()), 2)
+        self.home.delete()
+        self.assertEqual(len(Hume.objects.all()), 0)
 
 
 class HomesApi(TestCase):
