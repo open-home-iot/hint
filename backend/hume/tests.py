@@ -28,7 +28,8 @@ class HumeModel(TestCase):
     def setUp(self):
         self.hume = Hume.objects.create(uuid=HUME_UUID)
 
-    def test_delete_hume_verify_cascade_and_messaging(self):
+    @patch("backend.hume.signal_handlers.producer")
+    def test_delete_hume_verify_cascade_and_messaging(self, producer):
         """
         Verify cascade on hume delete works as intended, also verify that
         the deleted HUME is notified with an unpairing request.
@@ -41,6 +42,7 @@ class HumeModel(TestCase):
         # Hume registers a post delete signal that should delete the hume
         # user. Have a look in backend.hume.handlers
         self.assertEqual(len(User.objects.all()), 0)
+        producer.unpair.assert_called_with(HUME_UUID)
 
         # Test 2: check interaction with Home
         self.hume = Hume.objects.create(uuid=HUME_UUID)
