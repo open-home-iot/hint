@@ -15,4 +15,4 @@ def on_delete(instance: Hume, **kwargs):
     hume_user = User.objects.get(id=instance.hume_user.id)
     hume_user.delete()
 
-    producer.unpair(instance.uuid)
+    producer.unpair(str(instance.uuid))

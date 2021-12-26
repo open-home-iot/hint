@@ -46,3 +46,16 @@ hr {
     margin-left: 1em;
   }
 }
+
+div.hume_container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  app-hume-detail:not(:last-child) {
+    margin-right: 0.5em;
+  }
+  app-hume-detail {
+    margin-bottom: 0.5em;
+  }
+}

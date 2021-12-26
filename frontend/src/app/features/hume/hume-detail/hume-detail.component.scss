@@ -1,0 +1,24 @@
+:host {
+  padding: 0.5em;
+  background-color: white;
+  border: 1px solid gray;
+
+  div.hume_header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  div.hume_footer {
+    hr {
+      margin: .2em 0 0 0;
+      padding: 0;
+    }
+    span.hume_details {
+      display: block;
+      margin: 0;
+      padding: 0;
+      font-size: 0.5em;
+      color: lightgray;
+    }
+  }
+}

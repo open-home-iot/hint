@@ -12,7 +12,9 @@
   </div>
 </div>
 <hr>
-<app-hume-detail *ngFor="let hume of this.humes"></app-hume-detail>
+<div class="hume_container">
+  <app-hume-detail [hume]="hume" *ngFor="let hume of this.humes"></app-hume-detail>
+</div>
 
 <form [hidden]="!displayChangeHomeNameForm"
       id="change_home_name_form"

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Hume} from '../hume.service';
 
 @Component({
   selector: 'app-hume-detail',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./hume-detail.component.scss']
 })
 export class HumeDetailComponent implements OnInit {
+
+  @Input() hume: Hume;
 
   constructor() { }
 
