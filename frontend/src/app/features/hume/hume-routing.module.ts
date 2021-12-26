@@ -16,8 +16,7 @@ Or for all children:
 NOTE! canDeactivate can be used to prevent navigation before saving changes.
  */
 
-const ROUTES: Routes = [
-];
+const ROUTES: Routes = [];
 
 @NgModule({
   imports: [RouterModule.forChild(ROUTES)],

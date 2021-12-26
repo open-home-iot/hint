@@ -48,6 +48,7 @@ export class DeviceDiscoverComponent implements OnDestroy {
     for (const SUBSCRIPTION of this.subscriptions) {
       this.eventService.unsubscribe(SUBSCRIPTION);
     }
+    this.subscriptions.length = 0;
 
     for (const HUME of this.humes) {
       this.subscriptions.push(

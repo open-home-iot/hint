@@ -57,7 +57,7 @@ export class HumeService {
 
     this.httpClient.post(this.attachDeviceUrl(HUME.home, device), {})
       .subscribe(
-        ok => {},
+        _ok => {},
         error => {
           console.error(error);
         }

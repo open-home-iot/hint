@@ -1,5 +1,6 @@
 <div class="header">
   <button routerLink="/home" class="btn btn-outline-dark">Back</button>
+
   <div class="home-name">
     <h2>{{ homeName }}</h2>
     <button class="btn btn-outline-dark" (click)="toggleChangeHomeNameForm()">Change name</button>
@@ -11,7 +12,7 @@
   </div>
 </div>
 <hr>
-<div class="hume" *ngFor="let hume of this.humes">Hume UUID: {{ hume.uuid }}</div>
+<app-hume-detail *ngFor="let hume of this.humes"></app-hume-detail>
 
 <form [hidden]="!displayChangeHomeNameForm"
       id="change_home_name_form"

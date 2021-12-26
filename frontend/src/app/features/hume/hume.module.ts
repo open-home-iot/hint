@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 // COMPONENTS
 import { HumeFindComponent } from './hume-status/hume-find/hume-find.component';
 import { HumeStatusComponent } from './hume-status/hume-status.component';
+import { HumeDetailComponent } from './hume-detail/hume-detail.component';
 
 // PAGES
 
@@ -18,7 +19,8 @@ import { DeviceModule } from '../device/device.module';
 @NgModule({
   declarations: [
     HumeFindComponent,
-    HumeStatusComponent
+    HumeStatusComponent,
+    HumeDetailComponent
   ],
   imports: [
     HumeRoutingModule,
@@ -28,7 +30,8 @@ import { DeviceModule } from '../device/device.module';
   ],
   exports: [
     HumeFindComponent,
-    HumeStatusComponent
+    HumeStatusComponent,
+    HumeDetailComponent
   ],
   providers: [HumeService]
 })
