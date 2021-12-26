@@ -28,9 +28,10 @@ class HumeModel(TestCase):
     def setUp(self):
         self.hume = Hume.objects.create(uuid=HUME_UUID)
 
-    def test_delete_hume_verify_cascade(self):
+    def test_delete_hume_verify_cascade_and_messaging(self):
         """
-        Verify cascade on hume delete works as intended.
+        Verify cascade on hume delete works as intended, also verify that
+        the deleted HUME is notified with an unpairing request.
         """
         user = User.objects.create_user(email="t@t.se", password="pw")
         self.hume.hume_user = user

@@ -29,9 +29,9 @@ def init(producer_instance: RMQProducer):
 
 def discover_devices(hume_uuid: str, message_content: str):
     """
-    Issue a discover devices command to a HUME.
+    Issue a Discover devices command to a HUME.
 
-    :param hume_uuid: UUID of the HUME to send the discover devices message to.
+    :param hume_uuid: UUID of the HUME to send the Discover devices message to.
     :param message_content: discover devices message content.
     """
     global producer
@@ -89,3 +89,17 @@ def send_device_action(hume_uuid: str,
     global producer
     producer.publish(json.dumps(payload).encode('utf-8'),
                      queue_params=QueueParams(hume_uuid, durable=True))
+
+
+def unpair(hume_uuid):
+    """
+    Issues an unpairing command to the target HUME. This will lead to the HUME
+    being factory reset, and any device information is lost on the HUME end.
+    """
+    payload = {
+        "type": MessageType.UNPAIR
+    }
+    global producer
+    producer.publish(json.dumps(payload).encode('utf-8'),
+                     queue_params=QueueParams(hume_uuid, durable=True))
+

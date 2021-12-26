@@ -32,10 +32,16 @@ class HomeModel(TestCase):
         """
         Verify deleting a home also deletes all its humes.
         """
-        hume_1 = Hume.objects.create(uuid=str(uuid.uuid4()))
+        hume_user_1 = User.objects.create_hume_user(str(uuid.uuid4()), "pw")
+        hume_1 = Hume.objects.create(
+            uuid=str(uuid.uuid4()), hume_user=hume_user_1
+        )
         hume_1.home = self.home
         hume_1.save()
-        hume_2 = Hume.objects.create(uuid=str(uuid.uuid4()))
+        hume_user_2 = User.objects.create_hume_user(str(uuid.uuid4()), "pw")
+        hume_2 = Hume.objects.create(
+            uuid=str(uuid.uuid4()), hume_user=hume_user_2
+        )
         hume_2.home = self.home
         hume_2.save()
 
@@ -357,8 +363,11 @@ class HomeDiscoverDevicesApi(TestCase):
         self.client = APIClient()
         self.client.login(email="suite@t.se", password="pw")
 
+        hume_user = User.objects.create_hume_user(str(uuid.uuid4()), "pw")
+
         self.hume = Hume.objects.create(
-            uuid="c4a19f7e-0fd9-11eb-97a0-60f81dbb505c"
+            uuid="c4a19f7e-0fd9-11eb-97a0-60f81dbb505c",
+            hume_user=hume_user
         )
 
         self.home = Home.objects.create(name="Home1")
