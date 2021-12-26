@@ -140,7 +140,7 @@ export class HomeService {
       this.homes = new Map<number, Home>();
     }
 
-    this.homes.clear()
+    this.homes.clear();
     for (const HOME of homes) {
       this.homes.set(HOME.id, HOME);
     }
