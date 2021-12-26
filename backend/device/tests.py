@@ -58,22 +58,22 @@ def verify_device_fields(test_case: TestCase, device, device_spec):
     test_case.assertEqual(device.type, device_spec["type"])
 
 
-class ModelTests(TestCase):
+class DeviceModel(TestCase):
     """Verifies behavior of Device models and instantiation helpers"""
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         """
         CALLED PER TEST CASE!
         """
         super().setUpClass()
-        Hume.objects.create(uuid=HUME_UUID)
+        self.hume = Hume.objects.create(uuid=HUME_UUID)
+        hume_user = User.objects.create_hume_user(HUME_UUID, "pw")
+        self.hume.hume_user = hume_user
+        self.hume.save()
 
     def test_create_stateful_device(self):
         """Verify a Basic LED device can be created without problems."""
-        create_device(
-            Hume.objects.get(uuid=HUME_UUID), copy.deepcopy(BASIC_LED_CAPS)
-        )
+        create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
 
         device = Device.objects.get(uuid=DEVICE_UUID_1)
         device_state_group = DeviceStateGroup.objects.get(
@@ -84,6 +84,20 @@ class ModelTests(TestCase):
         self.assertEqual(on.state_id, 1)
         self.assertEqual(off.state_id, 0)
         verify_device_fields(self, device, BASIC_LED_CAPS)
+
+    def test_cascade(self):
+        """
+        Verify a device is deleted when its hume is deleted.
+        """
+        create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
+
+        device = Device.objects.get(uuid=DEVICE_UUID_1)
+        verify_device_fields(self, device, BASIC_LED_CAPS)
+
+        self.hume.delete()
+
+        with self.assertRaises(Device.DoesNotExist):
+            Device.objects.get(uuid=DEVICE_UUID_1)
 
 
 class DevicesApi(TestCase):
