@@ -21,6 +21,14 @@ export class HomeService {
 
   constructor(private httpClient: HttpClient) { }
 
+  private static discoverDevicesUrl(homeID: number) {
+    return HOMES_URL + '/' + String(homeID) + '/devices/discover';
+  }
+
+  private static homeUrl(homeID: number) {
+    return HOMES_URL + '/' + String(homeID);
+  }
+
   createHome(name: string): Promise<Home> {
     return new Promise<Home>((resolve, reject) => {
       this.httpClient.post(HOMES_URL, {name})
@@ -81,14 +89,14 @@ export class HomeService {
           name: newName,
         })
         .subscribe(
-          (home: Home) => {
-            this.updateHome(home);
-            resolve(home);
+          (patchedHome: Home) => {
+            this.updateHome(patchedHome);
+            resolve(patchedHome);
           },
           error => {
             reject(error);
           }
-        )
+        );
     });
   }
 
@@ -123,13 +131,5 @@ export class HomeService {
 
   private updateHome(newHome: Home) {
     this.homes.set(newHome.id, newHome);
-  }
-
-  private static discoverDevicesUrl(homeID: number) {
-    return HOMES_URL + '/' + String(homeID) + '/devices/discover';
-  }
-
-  private static homeUrl(homeID: number) {
-    return HOMES_URL + '/' + String(homeID);
   }
 }

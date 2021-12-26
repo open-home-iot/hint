@@ -13,7 +13,7 @@ export class HomeEditComponent implements OnInit {
 
   home: Home;
   // To avoid string interpolation error on page load.
-  homeName: string = "";
+  homeName = '';
   humes: Hume[];
 
   displayChangeHomeNameForm = false;
@@ -29,11 +29,11 @@ export class HomeEditComponent implements OnInit {
       name: ['', [Validators.required, Validators.maxLength(50)]]
     });
 
-    this.homeService.getHome(Number(this.route.snapshot.params['id']))
+    this.homeService.getHome(Number(this.route.snapshot.params.id))
       .then(this.onGetHome.bind(this))
       .catch(this.onGetHomeFailed);
 
-    this.humeService.getHomeHumes(Number(this.route.snapshot.params['id']))
+    this.humeService.getHomeHumes(Number(this.route.snapshot.params.id))
       .then(this.onGetHomeHumes.bind(this))
       .catch(this.onGetHomeHumesFailed);
   }
@@ -54,7 +54,7 @@ export class HomeEditComponent implements OnInit {
   }
 
   deleteHome() {
-    console.log("deleting home");
+    console.log('deleting home');
   }
 
   private onGetHome(home: Home) {

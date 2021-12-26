@@ -4,7 +4,12 @@ from django.contrib import admin
 from django.http import JsonResponse
 from rest_framework import status
 
-from backend.home.views import Homes, HomeRooms, HomeDiscoverDevices, HomeSingle
+from backend.home.views import (
+    Homes,
+    HomeRooms,
+    HomeDiscoverDevices,
+    HomeSingle
+)
 from backend.device.views import (
     Devices,
     HomeDevices,
