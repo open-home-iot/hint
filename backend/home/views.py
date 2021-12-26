@@ -2,8 +2,8 @@ from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import status
 
-from backend.home.serializers import HomeSerializer, RoomSerializer
-from backend.home.models import Room, Home
+from backend.home.serializers import HomeSerializer
+from backend.home.models import Home
 from backend.hume.models import Hume
 from backend.broker import producer
 
@@ -84,45 +84,6 @@ class HomeSingle(views.APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         return Response(status=status.HTTP_200_OK)
-
-
-class HomeRooms(views.APIView):
-    """Exposes Room fetching/creation"""
-
-    @staticmethod
-    def get(request, home_id):
-        """
-        Get all rooms related to a home_id.
-        """
-        # TODO restrict access to homes that do not belong to the current user
-        rooms = Room.objects.filter(home=home_id,
-                                    home__users__id=request.user.id)
-        serializer = RoomSerializer(rooms, many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @staticmethod
-    def post(request, home_id):
-        """
-        Create a new room for a home.
-        """
-        if Home.objects.filter(id=home_id,
-                               users__id=request.user.id).exists():
-            data_dict = {
-                "home": home_id,
-                "name": request.data["name"]
-            }
-            serializer = RoomSerializer(data=data_dict)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({"error": "That home does not exist."},
-                            status=status.HTTP_404_NOT_FOUND)
 
 
 class HomeDiscoverDevices(views.APIView):

@@ -6,7 +6,6 @@ from rest_framework import status
 
 from backend.home.views import (
     Homes,
-    HomeRooms,
     HomeDiscoverDevices,
     HomeSingle
 )
@@ -14,8 +13,6 @@ from backend.device.views import (
     Devices,
     HomeDevices,
     DeviceAction,
-    RoomDevices,
-    ChangeDeviceRoom,
     DeviceSingle
 )
 from backend.hume.views import (
@@ -57,16 +54,11 @@ webapp_urls = [
 device_urls = [
     path("<str:address>/attach", HumeAttachDevice.as_view()),
     path("<str:device_uuid>/action", DeviceAction.as_view()),
-    path("<str:device_uuid>/change-room", ChangeDeviceRoom.as_view()),
     path("<str:device_uuid>", DeviceSingle.as_view()),
 ]
 
 hume_urls = [
     path("<str:hume_uuid>/devices/", include(device_urls)),
-]
-
-room_urls = [
-    path("<int:room_id>/devices", RoomDevices.as_view()),
 ]
 
 home_urls = [
@@ -77,9 +69,6 @@ home_urls = [
     path("<int:home_id>/humes/", include(hume_urls)),
 
     path("<int:home_id>/devices", HomeDevices.as_view()),
-
-    path("<int:home_id>/rooms", HomeRooms.as_view()),
-    path("<int:home_id>/rooms/", include(room_urls)),
 ]
 
 api_urlpatterns = [

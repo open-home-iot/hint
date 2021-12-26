@@ -10,7 +10,7 @@ from rest_framework import status
 # Refer to models under test with an absolute path as the root path of run
 # tests are from ../backend.
 from backend.user.models import User
-from backend.home.models import Home, Room
+from backend.home.models import Home
 from backend.hume.models import Hume
 
 
@@ -243,102 +243,6 @@ class HomeSingleApi(TestCase):
         self.assertEqual(res.data, None)
         with self.assertRaises(Home.DoesNotExist):
             Home.objects.get(id=self.home.id)
-
-
-class HomeRoomsApi(TestCase):
-
-    URL = "/api/homes/{}/rooms"
-
-    @classmethod
-    def setUpClass(cls):
-        """
-        Sets up global user for authentication.
-        """
-        super().setUpClass()
-        User.objects.create_user(email="suite@t.se", password="pw")
-
-    def setUp(self):
-        """
-        CALLED PER TEST CASE!
-
-        Create shared test case data.
-        """
-        self.client = APIClient()
-        self.client.login(username="suite@t.se", password="pw")
-
-        self.home = Home.objects.create(name="home")
-        self.home.users.add(User.objects.get(email="suite@t.se"))
-
-    def test_create_room(self):
-        """Test creating a Room instance through the API."""
-        res = self.client.post(HomeRoomsApi.URL.format(self.home.id),
-                               {"name": "test"})
-
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(res.data["name"], "test")
-        self.assertEqual(res.data["id"], 1)
-
-    def test_verify_other_users_cannot_create_room(self):
-        """
-        Verify that a user cannot create a room for a home that user does not
-        own.
-        """
-        user = User.objects.create_user(email="o@o.se", password="pw")
-        home2 = Home.objects.create(name="home2")
-        home2.users.add(user)
-
-        res = self.client.post(HomeRoomsApi.URL.format(home2.id),
-                               {"name": "test"})
-
-        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_get_all_rooms_of_home(self):
-        """Verify that rooms associated to a home can be gotten."""
-        Room.objects.create(home=self.home, name="room1")
-
-        res = self.client.get(HomeRoomsApi.URL.format(self.home.id))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        [_room] = res.data
-
-    def test_verify_no_rooms_leak_between_homes(self):
-        """
-        Verify that if multiple homes exist, each with individual rooms, no
-        rooms leak when rooms of one home is queried for.
-        """
-        Room.objects.create(home=self.home, name="room")
-
-        home2 = Home.objects.create(name="home2")
-        home2.users.add(User.objects.get(email="suite@t.se"))
-        home2.save()
-        Room.objects.create(name="living", home=home2)
-        Room.objects.create(name="toilet", home=home2)
-
-        res = self.client.get(HomeRoomsApi.URL.format(self.home.id))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        [room] = res.data
-        self.assertEqual(room["name"], "room")
-
-        # Fetch rooms associated to the other home, should be 2 of them.
-        res = self.client.get(HomeRoomsApi.URL.format(home2.id))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        [room1, room2] = res.data
-        if room1["name"] != "living" and room1["name"] != "toilet":
-            self.fail("room1 does not match either of the created rooms")
-
-        if room2["name"] != "living" and room2["name"] != "toilet":
-            self.fail("room2 does not match either of the created rooms")
-
-    def test_no_rooms_leak_between_users(self):
-        """Verify rooms cannot be gotten by users not owning the home."""
-        User.objects.create_user(email="t@t.se", password="password")
-
-        client = APIClient()
-        client.login(username="t@t.se", password="password")
-
-        # Not this user's home instance.
-        res = client.get(HomeRoomsApi.URL.format(self.home.id))
-
-        self.assertEqual(len(res.data), 0)
 
 
 class HomeDiscoverDevicesApi(TestCase):

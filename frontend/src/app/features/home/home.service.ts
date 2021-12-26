@@ -1,15 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {HANDLE_ERROR} from '../../core/utility';
 
 export interface Home {
   id: number;
-  name: string;
-}
-
-export interface Room {
-  id: number;
-  home: number;
   name: string;
 }
 
@@ -130,10 +123,6 @@ export class HomeService {
     });
 
   }
-
-  getHomeRooms(bla): any {}
-
-  getRoom(bla): any {}
 
   private setHomes(homes: Home[]) {
     if (this.homes === undefined) {

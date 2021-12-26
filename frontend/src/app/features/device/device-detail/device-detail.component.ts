@@ -37,10 +37,6 @@ export class DeviceDetailComponent implements OnInit {
     this.deviceService.changeState(this.device, newState);
   }
 
-  onRoomSelected(roomID: number) {
-    this.deviceService.changeRoom(this.device, roomID);
-  }
-
   deleteDevice() {
     this.deviceService.delete(this.device);
   }
