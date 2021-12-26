@@ -33,7 +33,7 @@ const HOMES_URL = window.location.origin + '/api/homes/';
 @Injectable()
 export class DeviceService {
 
-  private homeDevices = new Map();
+  private homeDevices = new Map<number, Device[]>();
   private roomDevices = new Map();
 
   constructor(private homeService: HomeService,
@@ -70,18 +70,11 @@ export class DeviceService {
       return Promise.resolve(this.homeDevices.get(homeID));
     }
 
-    return new Promise<Device[]>((resolve, reject) => {
-      this.httpClient.get(this.getHomeDevicesUrl(homeID))
-        .subscribe(
-          (devices: Device[]) => {
-            this.replaceHomeDevices(homeID, devices);
-            resolve(this.homeDevices.get(homeID));
-          },
-          error => {
-            reject(error);
-          }
-        );
-    });
+    return this.sendHomeDevicesRequest(homeID);
+  }
+
+  refreshHomeDevices(homeID: number): Promise<Device[]> {
+    return this.sendHomeDevicesRequest(homeID);
   }
 
   getRoomDevicesUrl(homeID: number, roomID: number) {
@@ -183,5 +176,20 @@ export class DeviceService {
         _success => null,
         error => { console.error(error); }
       );
+  }
+
+  private sendHomeDevicesRequest(homeID: number): Promise<Device[]> {
+    return new Promise<Device[]>((resolve, reject) => {
+      this.httpClient.get(this.getHomeDevicesUrl(homeID))
+        .subscribe(
+          (devices: Device[]) => {
+            this.replaceHomeDevices(homeID, devices);
+            resolve(this.homeDevices.get(homeID));
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
   }
 }

@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Hume, HumeService} from '../hume.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HANDLE_ERROR} from '../../../core/utility';
+import {DeviceService} from '../../device/device.service';
 
 @Component({
   selector: 'app-hume-detail',
@@ -15,7 +16,8 @@ export class HumeDetailComponent implements OnInit {
   changeHumeNameForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              private humeService: HumeService) { }
+              private humeService: HumeService,
+              private deviceService: DeviceService) { }
 
   ngOnInit(): void {
     this.changeHumeNameForm = this.formBuilder.group({
@@ -36,7 +38,9 @@ export class HumeDetailComponent implements OnInit {
 
   deleteHume() {
     this.humeService.deleteHume(this.hume)
-      .then(_ => null)
+      .then((deletedHume: Hume) => {
+        this.deviceService.refreshHomeDevices(deletedHume.home);
+      })
       .catch(HANDLE_ERROR);
   }
 

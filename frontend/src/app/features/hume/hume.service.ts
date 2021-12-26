@@ -122,13 +122,13 @@ export class HumeService {
     });
   }
 
-  deleteHume(hume: Hume): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+  deleteHume(hume: Hume): Promise<Hume> {
+    return new Promise<Hume>((resolve, reject) => {
       this.httpClient.delete(HumeService.humeUrl(hume.uuid))
         .subscribe(
           _success => {
             this.clearHume(hume);
-            resolve();
+            resolve(hume);
           },
           error => {
             reject(error);
