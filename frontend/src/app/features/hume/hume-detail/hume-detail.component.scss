@@ -5,7 +5,30 @@
 
   div.hume_header {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+
+    div.input_and_submit {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 2.5em;
+      margin-top: 0.2em;
+      margin-bottom: 0.3em;
+
+      input {
+        height: 100%;
+        margin-right: 0.3em;
+      }
+      button {
+        height: 100%;
+      }
+    }
+  }
+
+  button.delete_hume {
+    width: 100%;
+    margin-bottom: 0.5em;
   }
 
   div.hume_footer {

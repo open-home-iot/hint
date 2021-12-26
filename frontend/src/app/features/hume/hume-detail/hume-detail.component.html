@@ -1,6 +1,28 @@
 <div class="hume_header">
-
+  <h4>Hub</h4>
+  <form id="change_hume_name_form"
+      (ngSubmit)="changeHumeName()"
+      [formGroup]="changeHumeNameForm">
+    <div class="input_and_submit">
+      <input id="name"
+             name="name"
+             type="text"
+             placeholder="hub name"
+             formControlName="name">
+      <button class="btn btn-outline-dark" type="submit" [disabled]="!changeHumeNameForm.valid" name="button">Save</button>
+    </div>
+    <div *ngIf="name.touched && name.errors?.required"
+         class="form_error">
+      You must provide a name for the hub.
+    </div>
+    <div *ngIf="name.touched && name.errors?.maxlength"
+         class="form_error">
+      The hub name cannot exceed 50 characters.
+    </div>
+  </form>
 </div>
+
+<button class="delete_hume btn btn-danger" (click)="deleteHume()">Delete</button>
 
 <div class="hume_footer">
   <hr>

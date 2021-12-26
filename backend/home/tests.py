@@ -187,7 +187,7 @@ class HomeSingleApi(TestCase):
         self.home = Home.objects.create(name="home")
         self.home.users.add(User.objects.get(email="suite@t.se"))
 
-    def test_get_home(self):
+    def test_api_get_home(self):
         """
         Get a single home.
         """
@@ -196,7 +196,7 @@ class HomeSingleApi(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data["id"], 1)
 
-    def test_get_home_authauthorized(self):
+    def test_api_get_home_authauthorized(self):
         """
         Tests the endpoint authentication, same for all methods so no need to
         re-test for others.
@@ -210,7 +210,7 @@ class HomeSingleApi(TestCase):
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(res.data, None)
 
-    def test_change_home_name(self):
+    def test_api_change_home_name(self):
         """
         Change a home's name.
         """
@@ -223,7 +223,7 @@ class HomeSingleApi(TestCase):
         # Confirm change in DB as well
         self.assertEqual(Home.objects.get(id=self.home.id).name, new_name)
 
-    def test_change_home_name_failed_too_long(self):
+    def test_api_change_home_name_failed_too_long(self):
         """
         Verify changing a home name fails if the name exceeds the column size.
         """
@@ -233,7 +233,7 @@ class HomeSingleApi(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_delete_home(self):
+    def test_api_delete_home(self):
         """
         Delete a home.
         """

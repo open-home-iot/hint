@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Hume} from '../hume.service';
+import {Hume, HumeService} from '../hume.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {HANDLE_ERROR} from '../../../core/utility';
 
 @Component({
   selector: 'app-hume-detail',
@@ -10,9 +12,35 @@ export class HumeDetailComponent implements OnInit {
 
   @Input() hume: Hume;
 
-  constructor() { }
+  changeHumeNameForm: FormGroup;
+
+  constructor(private formBuilder: FormBuilder,
+              private humeService: HumeService) { }
 
   ngOnInit(): void {
+    this.changeHumeNameForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.maxLength(50)]]
+    });
+
+    // update input field value to current hume's name.
+    this.name.setValue(this.hume.name);
   }
 
+  get name() { return this.changeHumeNameForm.get('name'); }
+
+  changeHumeName() {
+    this.humeService.changeName(this.hume, this.name.value)
+      .then(this.onChangeHumeName.bind(this))
+      .catch(HANDLE_ERROR);
+  }
+
+  deleteHume() {
+    this.humeService.deleteHume(this.hume)
+      .then(_ => null)
+      .catch(HANDLE_ERROR);
+  }
+
+  private onChangeHumeName(hume: Hume) {
+    this.name.setValue(hume.name);
+  }
 }

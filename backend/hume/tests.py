@@ -163,7 +163,7 @@ class BrokerCredentialsApi(TestCase):
         self.assertEqual(res.data.get("password"), None)
 
 
-class HumeFindApi(TestCase):
+class HumeSingleApi(TestCase):
 
     URL = "/api/humes/{}"
 
@@ -182,17 +182,17 @@ class HumeFindApi(TestCase):
         Create shared test case data, what's created here needs to be torn
         down in tearDown().
         """
+        self.user = User.objects.get(email="suite@t.se")
         self.client = APIClient()
         self.client.login(email="suite@t.se", password="pw")
+        self.hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
 
     def test_api_find_hume(self):
         """
         Verify that a HUME can be found through supplying a correct UUID to the
         find endpoint, given the HUME is unassociated.
         """
-        hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
-
-        ret = self.client.get(HumeFindApi.URL.format(hume.uuid))
+        ret = self.client.get(HumeSingleApi.URL.format(self.hume.uuid))
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
 
@@ -203,10 +203,10 @@ class HumeFindApi(TestCase):
         home = Home.objects.create(name="Home1")
         home.users.add(User.objects.get(email="suite@t.se"))
         home.save()
-        hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c",
-                                   home=home)
+        self.hume.home = home
+        self.hume.save()
 
-        ret = self.client.get(HumeFindApi.URL.format(hume.uuid))
+        ret = self.client.get(HumeSingleApi.URL.format(self.hume.uuid))
 
         self.assertEqual(ret.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -215,9 +215,7 @@ class HumeFindApi(TestCase):
         Verify that trying to search using a faulty UUID results in a
         validation error.
         """
-        Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
-
-        ret = self.client.get(HumeFindApi.URL.format("faulty-uuid"))
+        ret = self.client.get(HumeSingleApi.URL.format("faulty-uuid"))
 
         self.assertEqual(ret.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -227,11 +225,42 @@ class HumeFindApi(TestCase):
         unauthenticated.
         """
         client_wo_auth = APIClient()
-        hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
-
-        ret = client_wo_auth.get(HumeFindApi.URL.format(hume.uuid))
+        ret = client_wo_auth.get(HumeSingleApi.URL.format(self.hume.uuid))
 
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_api_change_hume_name(self):
+        """
+        Change a hume name.
+        """
+        home = Home.objects.create(name="home")
+        home.users.add(self.user)
+        self.hume.home = home
+        self.hume.save()
+
+        new_name = "new_name"
+        res = self.client.patch(HumeSingleApi.URL.format(self.hume.uuid),
+                                {"name": new_name})
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data["name"], new_name)
+
+        self.assertEqual(Hume.objects.get(uuid=self.hume.uuid).name, new_name)
+
+    def test_api_delete_hume(self):
+        """
+        Delete a hume.
+        """
+        home = Home.objects.create(name="home")
+        home.users.add(self.user)
+        self.hume.home = home
+        hume_user = User.objects.create_hume_user(self.hume.uuid, "pw")
+        self.hume.hume_user = hume_user
+        self.hume.save()
+
+        res = self.client.delete(HumeSingleApi.URL.format(self.hume.uuid))
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(Hume.objects.all()), 0)
 
 
 class HumeConfirmPairingApi(TestCase):

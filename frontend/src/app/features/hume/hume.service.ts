@@ -24,13 +24,25 @@ export class HumeService {
   constructor(private httpClient: HttpClient,
               private eventService: EventService) { }
 
+  private static homeHumesUrl(homeId: number): string {
+    return HOME_URL + String(homeId) + '/humes';
+  }
+
+  private static humePairUrl(humeUuid: string): string {
+    return HUME_URL + humeUuid + '/confirm-pairing';
+  }
+
+  private static humeUrl(humeUuid: string): string {
+    return HUME_URL + humeUuid;
+  }
+
   getHomeHumes(homeID: number): Promise<Hume[]> {
     if (this.homeHumeMap.has(homeID)) {
       return Promise.resolve(this.homeHumeMap.get(homeID));
     }
 
     return new Promise<Hume[]>((resolve, reject) => {
-      this.httpClient.get(this.homeHumesUrl(homeID))
+      this.httpClient.get(HumeService.homeHumesUrl(homeID))
         .subscribe(
           (humes: Hume[]) => {
             this.replaceHomeHumes(homeID, humes);
@@ -80,11 +92,43 @@ export class HumeService {
 
   pairHume(homeId: number, hume: Hume): Promise<Hume> {
     return new Promise<Hume>((resolve, reject) => {
-      this.httpClient.post(this.humePairUrl(hume.uuid),{home_id: homeId})
+      this.httpClient.post(HumeService.humePairUrl(hume.uuid),{home_id: homeId})
         .subscribe(
           () => {
             resolve(hume);
             this.humePaired(homeId, hume);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  changeName(hume: Hume, newName: string): Promise<Hume> {
+    return new Promise<Hume>((resolve, reject) => {
+      this.httpClient.patch(HumeService.humeUrl(hume.uuid), {name: newName})
+        .subscribe(
+          (updatedHume: Hume) => {
+            // update the name in the humeMap, same object reference exists
+            // in homeHumeMap so name will be updated in both places.
+            let existingHume = this.humeMap.get(hume.uuid);
+            existingHume.name = updatedHume.name;
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  deleteHume(hume: Hume): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.httpClient.delete(HumeService.humeUrl(hume.uuid))
+        .subscribe(
+          _success => {
+            this.clearHume(hume);
+            resolve();
           },
           error => {
             reject(error);
@@ -116,11 +160,16 @@ export class HumeService {
     this.eventService.monitorHume(hume.uuid);
   }
 
-  private homeHumesUrl(homeId: number): string {
-    return HOME_URL + String(homeId) + '/humes';
-  }
+  private clearHume(hume: Hume) {
+    this.humeMap.delete(hume.uuid);
 
-  private humePairUrl(humeUuid: string): string {
-    return HUME_URL + humeUuid + '/confirm-pairing';
+    let humes = this.homeHumeMap.get(hume.home);
+
+    const INDEX = humes.indexOf(hume);
+    const DELETED_ITEMS = humes.splice(INDEX, 1);
+
+    if (DELETED_ITEMS.length !== 1) {
+      console.error('failed to delete the hume from the array');
+    }
   }
 }

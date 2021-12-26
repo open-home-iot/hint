@@ -22,7 +22,7 @@ from backend.hume.views import (
     HumeAttachDevice,
     Humes,
     BrokerCredentials,
-    HumeFind,
+    HumeSingle,
     HumeConfirmPairing
 )
 from backend.user.views import UserSignup, login_user, logout_user, UserSelf
@@ -93,7 +93,7 @@ api_urlpatterns = [
     path("humes", Humes.as_view()),  # not AJAX
     path("humes/broker-credentials", BrokerCredentials.as_view()),  # not AJAX
     # DO NOT PUT THIS URL ABOVE /broker-credentials :-)
-    path("humes/<str:hume_uuid>", HumeFind.as_view()),
+    path("humes/<str:hume_uuid>", HumeSingle.as_view()),
     path("humes/<str:hume_uuid>/devices", Devices.as_view()),  # not AJAX
     path("humes/<str:hume_uuid>/confirm-pairing",
          HumeConfirmPairing.as_view()),
