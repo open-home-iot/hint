@@ -112,8 +112,8 @@ export class HumeService {
           (updatedHume: Hume) => {
             // update the name in the humeMap, same object reference exists
             // in homeHumeMap so name will be updated in both places.
-            let existingHume = this.humeMap.get(hume.uuid);
-            existingHume.name = updatedHume.name;
+            const EXISTING_HUME = this.humeMap.get(hume.uuid);
+            EXISTING_HUME.name = updatedHume.name;
           },
           error => {
             reject(error);
@@ -163,10 +163,10 @@ export class HumeService {
   private clearHume(hume: Hume) {
     this.humeMap.delete(hume.uuid);
 
-    let humes = this.homeHumeMap.get(hume.home);
+    const HUMES = this.homeHumeMap.get(hume.home);
 
-    const INDEX = humes.indexOf(hume);
-    const DELETED_ITEMS = humes.splice(INDEX, 1);
+    const INDEX = HUMES.indexOf(hume);
+    const DELETED_ITEMS = HUMES.splice(INDEX, 1);
 
     if (DELETED_ITEMS.length !== 1) {
       console.error('failed to delete the hume from the array');

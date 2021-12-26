@@ -109,4 +109,3 @@ def unpair(hume_uuid):
     global _producer
     _producer.publish(json.dumps(payload).encode('utf-8'),
                       queue_params=QueueParams(hume_uuid, durable=True))
-

@@ -185,7 +185,9 @@ class HumeSingleApi(TestCase):
         self.user = User.objects.get(email="suite@t.se")
         self.client = APIClient()
         self.client.login(email="suite@t.se", password="pw")
-        self.hume = Hume.objects.create(uuid="c4a19f7e0fd911eb97a060f81dbb505c")
+        self.hume = Hume.objects.create(
+            uuid="c4a19f7e0fd911eb97a060f81dbb505c"
+        )
 
     def test_api_find_hume(self):
         """
