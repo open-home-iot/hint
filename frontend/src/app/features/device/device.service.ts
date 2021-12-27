@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { HomeService } from '../home/home.service';
 import {Hume, HumeService} from '../hume/hume.service';
 
+export interface DiscoveredDevice {
+  name: string;
+  address: string;
+}
+
 export interface Device {
   name: string;
   address: string;

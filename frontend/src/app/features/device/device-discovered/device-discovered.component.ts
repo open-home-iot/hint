@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {HumeEvent} from '../../event/event.service';
+import {DiscoveredDevice} from '../device.service';
 
 @Component({
   selector: 'app-device-discovered',
@@ -8,7 +8,7 @@ import {HumeEvent} from '../../event/event.service';
 })
 export class DeviceDiscoveredComponent {
 
-  @Input() discoveredDevice: HumeEvent;
+  @Input() discoveredDevice: DiscoveredDevice;
 
   constructor() { }
 }

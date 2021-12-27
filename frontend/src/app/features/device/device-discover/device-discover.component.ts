@@ -9,6 +9,10 @@ import {
   HUB_DISCOVER_DEVICES,
   HumeEvent
 } from '../../event/event.service';
+import {DiscoveredDevice} from '../device.service';
+import {
+  DeviceDiscoveredComponent
+} from '../device-discovered/device-discovered.component';
 
 @Component({
   selector: 'app-device-discover',
@@ -25,13 +29,17 @@ export class DeviceDiscoverComponent implements OnDestroy {
   showDiscoveryFailure = false;
   discoveryErrorMessage = '';
 
-  discoveredDevices: HumeEvent[] = [];
+  discoveredDevices: DiscoveredDevice[] = [];
 
   private timeout;
   private subscriptions: number[] = [];
 
   constructor(private eventService: EventService,
               private homeService: HomeService) { }
+
+  private static extractContent(event: HumeEvent): DiscoveredDevice[] {
+    return event.content;
+  }
 
   ngOnDestroy() {
     for (const SUBSCRIPTION of this.subscriptions) {
@@ -72,7 +80,9 @@ export class DeviceDiscoverComponent implements OnDestroy {
   }
 
   private deviceDiscovered(event: HumeEvent) {
-    this.discoveredDevices.push(event);
+    DeviceDiscoverComponent.extractContent(event).forEach(discoveredDevice => {
+      this.discoveredDevices.push(discoveredDevice);
+    });
   }
 
   private discoveryStarted() {}
