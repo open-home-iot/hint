@@ -1,0 +1,2 @@
+<app-hume-find [home]="home" [humes]="humes"></app-hume-find>
+<p *ngIf="humes !== undefined && humes.length !== 0">{{ humes.length }} connected hub<span *ngIf="humes.length > 1">s</span></p>

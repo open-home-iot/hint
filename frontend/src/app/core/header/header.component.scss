@@ -1,44 +1,32 @@
-@import "/src/variables";
 :host {
-  display: block;
-  height: 12%;
-}
+  width: 100%;
+  height: 15vh;
+  padding: 0 1em 0 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-bottom: 1px gray solid;
 
-#header {
-  display: block;
-  height: 100%;
-  margin: auto;
-
-  .link-unadorned {
-    text-decoration: none;
-    color: black !important;
-  }
-
-  h5 {
-    font-size: 2rem;
-  }
-
-  #main-navigation {
-    #authenticated {
-      .d-inline-block.dropdown {
-        cursor: pointer;
-
-        .dropdown-toggle::after {
-          display: none;
-        }
-      }
-      .d-inline-block.show.dropdown {
-        .dropdown-menu.show {
-          display: flex;
-          flex-direction: column;
-        }
-      }
-    }
-
-    #unathenticated {
-    }
+  div.title_box {
+    display: flex;
+    flex-direction: row;
   }
 }
+
+a {
+  text-decoration: none;
+  color: black !important;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h5 {
+  font-size: 2rem;
+}
+
 .btn {
   margin: 5px;
 }

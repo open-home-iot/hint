@@ -1,0 +1,14 @@
+:host {
+  width: 100%;
+
+  svg {
+    circle {
+      opacity: 0.2;
+      fill: #60A4E6;
+    }
+    path {
+      opacity: 0.2;
+      stroke: #60A4E6;
+    }
+  }
+}

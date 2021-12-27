@@ -1,3 +1,7 @@
 #logout_link {
   cursor: pointer;
+  text-decoration: none;
+}
+#logout_link:hover {
+  text-decoration: underline;
 }

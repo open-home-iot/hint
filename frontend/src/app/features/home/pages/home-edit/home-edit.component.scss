@@ -1,0 +1,61 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: calc(100% - 2em);
+  margin: 1em 1em;
+  padding: 1em;
+  background-color: white;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+}
+
+div.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+
+  div.home-name {
+    display: flex;
+    flex-direction: row;
+
+    button {
+      margin-left: .5em;
+    }
+  }
+}
+
+hr {
+    color: black;
+    width: 100%;
+}
+
+#change_home_name_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+  padding: 0.5em;
+  background-color: white;
+
+  button {
+    margin-top: .5em;
+    margin-left: 1em;
+  }
+}
+
+div.hume_container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  app-hume-detail:not(:last-child) {
+    margin-right: 0.5em;
+  }
+  app-hume-detail {
+    margin-bottom: 0.5em;
+  }
+}

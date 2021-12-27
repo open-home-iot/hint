@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+button.add_home {
+  height: 100%;
+  width: 100%;
+  border: 2px dashed black;
+  border-radius: 0.5rem;
+  line-height: 0;
+  padding: 0;
+}
+
+:host-context(.add_home_large) button.add_home {
+  font-size: 6em;
+}
+
+#add_home_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+  padding: 0.5em;
+  background-color: white;
+
+  button {
+    margin-top: .5em;
+    margin-left: 1em;
+  }
+}

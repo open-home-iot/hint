@@ -1,31 +1,33 @@
-<h1>Login</h1>
-
-<form id="login_form"
-      (ngSubmit)="login()"
-      *ngIf="!authenticated"
-      [formGroup]="loginForm">
-  <div class="form_wrapper">
-    <div class="label_input_pair">
-      <label for="email">Email</label>
-      <input id="email"
-             name="email"
-             type="email"
-             formControlName="email"
-             placeholder="john@doe.com">
-    </div>
-    <div class="label_input_pair">
-      <label for="password">Password</label>
-      <input id="password"
-             name="password"
-             type="password"
-             formControlName="password"
-             placeholder="abc123">
-    </div>
-    <button type="submit" class="btn btn-outline-dark">Log in</button>
-    <div *ngIf="apiLoginError">
-      <div *ngFor="let error of apiLoginErrorMessages" class="form_error">
-        {{ error }}
+<div class="login_container">
+  <h1>Login</h1>
+  <form id="login_form"
+        (ngSubmit)="login()"
+        [formGroup]="loginForm">
+    <div class="form_wrapper">
+      <div class="label_input_pair">
+        <label for="email">Email</label>
+        <input id="email"
+               name="email"
+               type="email"
+               formControlName="email"
+               placeholder="john@doe.com"
+               autocomplete="username">
+      </div>
+      <div class="label_input_pair">
+        <label for="password">Password</label>
+        <input id="password"
+               name="password"
+               type="password"
+               formControlName="password"
+               placeholder="abc123"
+               autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-outline-dark">Log in</button>
+      <div *ngIf="apiLoginError">
+        <div *ngFor="let error of apiLoginErrorMessages" class="form_error">
+          {{ error }}
+        </div>
       </div>
     </div>
-  </div>
-</form>
+  </form>
+</div>

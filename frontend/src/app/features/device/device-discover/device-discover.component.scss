@@ -1,0 +1,54 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3em;
+  width: 15em;
+
+  span {
+    margin-right: 0.2em;
+  }
+}
+
+div.discovery_container {
+  display: flex;
+  flex-direction: column;
+  width: 20em;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+  padding: 0.5em;
+  background-color: white;
+
+  div.close_discovery_container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 0.5em;
+
+    button {
+      width: inherit;
+    }
+  }
+
+  div.discovery_failure {
+    display: flex;
+    justify-content: center;
+
+    p {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+
+      span.warning_icon {
+        color: #e8b61b;
+        margin-right: 0.3em;
+      }
+    }
+  }
+}

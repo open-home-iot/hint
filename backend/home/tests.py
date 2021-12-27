@@ -1,3 +1,7 @@
+import uuid
+
+from unittest.mock import patch, ANY
+
 from django.test import TestCase
 
 from rest_framework.test import APIClient
@@ -6,7 +10,8 @@ from rest_framework import status
 # Refer to models under test with an absolute path as the root path of run
 # tests are from ../backend.
 from backend.user.models import User
-from backend.home.models import Home, Room
+from backend.home.models import Home
+from backend.hume.models import Hume
 
 
 class HomeModel(TestCase):
@@ -19,16 +24,30 @@ class HomeModel(TestCase):
         when each test case ends and do not need to be removed.
         """
         self.user = User.objects.create_user("t@t.se", password="pw")
+        self.home = Home.objects.create(name="home1")
+        self.home.users.add(self.user)
+        self.home.save()
 
-    def test_create_home(self):
+    def test_delete_home_cascade_works(self):
         """
-        Verify a HOME model instance can be created.
+        Verify deleting a home also deletes all its humes.
         """
-        home = Home.objects.create(name="home1")
-        home.users.add(self.user)
-        home.save()
+        hume_user_1 = User.objects.create_hume_user(str(uuid.uuid4()), "pw")
+        hume_1 = Hume.objects.create(
+            uuid=str(uuid.uuid4()), hume_user=hume_user_1
+        )
+        hume_1.home = self.home
+        hume_1.save()
+        hume_user_2 = User.objects.create_hume_user(str(uuid.uuid4()), "pw")
+        hume_2 = Hume.objects.create(
+            uuid=str(uuid.uuid4()), hume_user=hume_user_2
+        )
+        hume_2.home = self.home
+        hume_2.save()
 
-        [_user] = home.users.all()
+        self.assertEqual(len(Hume.objects.all()), 2)
+        self.home.delete()
+        self.assertEqual(len(Hume.objects.all()), 0)
 
 
 class HomesApi(TestCase):
@@ -149,9 +168,86 @@ class HomesApi(TestCase):
         self.assertEqual(ret.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class HomeRoomsApi(TestCase):
+class HomeSingleApi(TestCase):
 
-    URL = "/api/homes/{}/rooms"
+    URL = "/api/homes/{}"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+
+    def test_api_get_home(self):
+        """
+        Get a single home.
+        """
+        res = self.client.get(HomeSingleApi.URL.format(self.home.id))
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data["id"], 1)
+
+    def test_api_get_home_authauthorized(self):
+        """
+        Tests the endpoint authentication, same for all methods so no need to
+        re-test for others.
+        """
+        User.objects.create_user(email="t@t.se", password="pw")
+        api_client = APIClient()
+        api_client.login(username="t@t.se", password="pw")
+
+        res = api_client.get(HomeSingleApi.URL.format(self.home.id))
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(res.data, None)
+
+    def test_api_change_home_name(self):
+        """
+        Change a home's name.
+        """
+        new_name = "new_name"
+        res = self.client.patch(HomeSingleApi.URL.format(self.home.id),
+                                {"name": new_name})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data["name"], new_name)
+        # Confirm change in DB as well
+        self.assertEqual(Home.objects.get(id=self.home.id).name, new_name)
+
+    def test_api_change_home_name_failed_too_long(self):
+        """
+        Verify changing a home name fails if the name exceeds the column size.
+        """
+        too_long_name = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
+        res = self.client.patch(HomeSingleApi.URL.format(self.home.id),
+                                {"name": too_long_name})
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_api_delete_home(self):
+        """
+        Delete a home.
+        """
+        res = self.client.delete(HomeSingleApi.URL.format(self.home.id))
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, None)
+        with self.assertRaises(Home.DoesNotExist):
+            Home.objects.get(id=self.home.id)
+
+
+class HomeDiscoverDevicesApi(TestCase):
+
+    URL = "/api/homes/{}/devices/discover"
 
     @classmethod
     def setUpClass(cls):
@@ -165,81 +261,83 @@ class HomeRoomsApi(TestCase):
         """
         CALLED PER TEST CASE!
 
-        Create shared test case data.
+        Create shared test case data, what's created here needs to be torn
+        down in tearDown().
         """
         self.client = APIClient()
-        self.client.login(username="suite@t.se", password="pw")
+        self.client.login(email="suite@t.se", password="pw")
 
-        self.home = Home.objects.create(name="home")
+        hume_user = User.objects.create_hume_user(str(uuid.uuid4()), "pw")
+
+        self.hume = Hume.objects.create(
+            uuid="c4a19f7e-0fd9-11eb-97a0-60f81dbb505c",
+            hume_user=hume_user
+        )
+
+        self.home = Home.objects.create(name="Home1")
         self.home.users.add(User.objects.get(email="suite@t.se"))
+        self.home.save()
 
-    def test_create_room(self):
-        """Test creating a Room instance through the API."""
-        res = self.client.post(HomeRoomsApi.URL.format(self.home.id),
-                               {"name": "test"})
+        self.hume.home = self.home
+        self.hume.save()
 
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(res.data["name"], "test")
-        self.assertEqual(res.data["id"], 1)
+    @patch("backend.home.views.producer")
+    def test_discover_devices(self, producer):
+        """Verify the discover devices action."""
+        res = self.client.get(
+            HomeDiscoverDevicesApi.URL.format(self.home.id)
+        )
 
-    def test_verify_other_users_cannot_create_room(self):
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        producer.discover_devices.assert_called_with(self.hume.uuid, ANY)
+
+    @patch("backend.home.views.producer")
+    def test_discover_devices_fail_no_such_hume(self, producer):
         """
-        Verify that a user cannot create a room for a home that user does not
-        own.
+        Verify that URL pieces must point to a hume the user owns.
         """
-        user = User.objects.create_user(email="o@o.se", password="pw")
-        home2 = Home.objects.create(name="home2")
-        home2.users.add(user)
-
-        res = self.client.post(HomeRoomsApi.URL.format(home2.id),
-                               {"name": "test"})
+        # Home ID is wrong
+        res = self.client.get(
+            HomeDiscoverDevicesApi.URL.format(1337)
+        )
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_get_all_rooms_of_home(self):
-        """Verify that rooms associated to a home can be gotten."""
-        Room.objects.create(home=self.home, name="room1")
-
-        res = self.client.get(HomeRoomsApi.URL.format(self.home.id))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        [_room] = res.data
-
-    def test_verify_no_rooms_leak_between_homes(self):
-        """
-        Verify that if multiple homes exist, each with individual rooms, no
-        rooms leak when rooms of one home is queried for.
-        """
-        Room.objects.create(home=self.home, name="room")
-
-        home2 = Home.objects.create(name="home2")
-        home2.users.add(User.objects.get(email="suite@t.se"))
-        home2.save()
-        Room.objects.create(name="living", home=home2)
-        Room.objects.create(name="toilet", home=home2)
-
-        res = self.client.get(HomeRoomsApi.URL.format(self.home.id))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        [room] = res.data
-        self.assertEqual(room["name"], "room")
-
-        # Fetch rooms associated to the other home, should be 2 of them.
-        res = self.client.get(HomeRoomsApi.URL.format(home2.id))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        [room1, room2] = res.data
-        if room1["name"] != "living" and room1["name"] != "toilet":
-            self.fail("room1 does not match either of the created rooms")
-
-        if room2["name"] != "living" and room2["name"] != "toilet":
-            self.fail("room2 does not match either of the created rooms")
-
-    def test_no_rooms_leak_between_users(self):
-        """Verify rooms cannot be gotten by users not owning the home."""
-        User.objects.create_user(email="t@t.se", password="password")
-
+        # Wrong user, access denied
+        user = User.objects.create_user(email="t@t.se", password="pw")
         client = APIClient()
-        client.login(username="t@t.se", password="password")
+        client.login(username=user.email, password="pw")
 
-        # Not this user's home instance.
-        res = client.get(HomeRoomsApi.URL.format(self.home.id))
+        # Hume does not belong to the current user
+        res = client.get(
+            HomeDiscoverDevicesApi.URL.format(self.home.id, self.hume.uuid)
+        )
 
-        self.assertEqual(len(res.data), 0)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Home has no humes
+        self.hume.delete()
+
+        res = self.client.get(
+            HomeDiscoverDevicesApi.URL.format(self.home.id)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Generally...
+        producer.discover_devices.assert_not_called()
+
+    @patch("backend.home.views.producer")
+    def test_discover_devices_for_home_with_more_than_one_hume(self, producer):
+        """Verify the discover devices action."""
+        Hume.objects.create(
+            uuid="ef59d369-40dd-4af9-853e-63707e72c61e",
+            home=self.home
+        )
+
+        res = self.client.get(
+            HomeDiscoverDevicesApi.URL.format(self.home.id)
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(producer.discover_devices.call_count, 2)

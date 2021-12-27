@@ -1,0 +1,26 @@
+<button class="discovery_button btn btn-outline-dark"
+        (click)="discoverDevices()">
+  <span class="material-icons">wifi</span> discover devices
+</button>
+
+<div class="discovery_container absolute_center"
+     [hidden]="!showDiscoveryBox">
+
+  <div class="discovered_devices">
+    <app-device-discovered *ngFor="let discoveredDevice of discoveredDevices"
+                           [discoveredDevice]="discoveredDevice"
+                           style="z-index: 10;">
+    </app-device-discovered>
+  </div>
+
+  <div class="discovery_failure"
+       [hidden]="!showDiscoveryFailure">
+    <p>
+      <span class="warning_icon material-icons">warning</span>{{ discoveryErrorMessage }}
+    </p>
+  </div>
+
+  <div class="close_discovery_container">
+    <button class="btn btn-outline-dark" (click)="hideDiscoveryBox()">Close</button>
+  </div>
+</div>

@@ -15,10 +15,20 @@ export class Utility {
 
     return csrfToken;
   }
+}
 
-  static generateRandomID(): string {
-    const MAX = 100000;
-    const MIN = 1;
-    return String(Math.floor(Math.random() * (MAX - MIN + 1)) + MIN);
+export function* idGenerator() {
+  let i = 0;
+  while (true) {
+    yield i++;
   }
 }
+
+/**
+ * Generic error handling function.
+ *
+ * @param error
+ */
+export const HANDLE_ERROR = (error) => {
+  console.error(error);
+};

@@ -1,0 +1,47 @@
+:host {
+  padding: 0.5em;
+  background-color: white;
+  border: 1px solid gray;
+
+  div.hume_header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    div.input_and_submit {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 2.5em;
+      margin-top: 0.2em;
+      margin-bottom: 0.3em;
+
+      input {
+        height: 100%;
+        margin-right: 0.3em;
+      }
+      button {
+        height: 100%;
+      }
+    }
+  }
+
+  button.delete_hume {
+    width: 100%;
+    margin-bottom: 0.5em;
+  }
+
+  div.hume_footer {
+    hr {
+      margin: .2em 0 0 0;
+      padding: 0;
+    }
+    span.hume_details {
+      display: block;
+      margin: 0;
+      padding: 0;
+      font-size: 0.6em;
+      color: lightgray;
+    }
+  }
+}

@@ -2,14 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-// COMPONENTS
-import { HomeAddComponent } from './home-add/home-add.component';
-import { HomeListComponent } from './home-list/home-list.component';
-import { RoomAddComponent } from './room-add/room-add.component';
-
 // PAGES
 import { HomeOverviewComponent } from './pages/home-overview/home-overview.component';
-import { RoomOverviewComponent } from './pages/room-overview/room-overview.component';
 
 // SERVICES
 import { HomeService } from './home.service';
@@ -19,14 +13,18 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HumeModule } from '../hume/hume.module';
 import { DeviceModule } from '../device/device.module';
 
+// COMPONENTS
+import { HomeAddComponent } from './home-add/home-add.component';
+import { HomeSelectComponent } from './home-select/home-select.component';
+import { HomeEditComponent } from './pages/home-edit/home-edit.component';
+
 
 @NgModule({
   declarations: [
     HomeOverviewComponent,
     HomeAddComponent,
-    HomeListComponent,
-    RoomAddComponent,
-    RoomOverviewComponent
+    HomeSelectComponent,
+    HomeEditComponent
   ],
   imports: [
     HomeRoutingModule,

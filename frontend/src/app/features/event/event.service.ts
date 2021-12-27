@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Utility } from '../../core/utility';
 import { WebSocketService } from '../../core/websocket/websocket.service';
-
+import {idGenerator} from '../../core/utility';
 
 export interface HumeEvent {
   hume_uuid: string;
-  device_uuid: string;
   event_type: number;
   content: any;
 }
@@ -24,7 +22,8 @@ export const HUB_DISCOVER_DEVICES = 0;
 })
 export class EventService {
 
-  private subscriptionMap = new Map<string, Subscription>();
+  private subscriptionMap = new Map<number, Subscription>();
+  private idGenerator = idGenerator();
 
   constructor(private webSocketService: WebSocketService) {
     this.webSocketService.registerCallback(this.onEvent.bind(this));
@@ -34,7 +33,6 @@ export class EventService {
     this.subscriptionMap.forEach(
       (subscription: Subscription, _) => {
         if (subscription.hume_uuid === event.hume_uuid) {
-
           if (subscription.event_type === event.event_type) {
             subscription.callback(event);
           }
@@ -45,13 +43,8 @@ export class EventService {
 
   subscribe(humeUUID: string,
             eventType: number,
-            callback: (event) => void): string {
-    const SUBSCRIPTION_ID = Utility.generateRandomID();
-
-    if (this.subscriptionMap.has(SUBSCRIPTION_ID)) {
-      throw new Error('Input subscriptionID already taken');
-    }
-
+            callback: (event) => void): number {
+    const SUBSCRIPTION_ID = Number(this.idGenerator.next().value);
     this.subscriptionMap.set(
       SUBSCRIPTION_ID,
       {
@@ -64,7 +57,7 @@ export class EventService {
     return SUBSCRIPTION_ID;
   }
 
-  unsubscribe(subscriptionID: string) {
+  unsubscribe(subscriptionID: number) {
     this.subscriptionMap.delete(subscriptionID);
   }
 

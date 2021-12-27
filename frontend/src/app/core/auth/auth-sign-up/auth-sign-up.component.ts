@@ -53,14 +53,14 @@ export class AuthSignUpComponent implements OnInit {
         password:   this.password.value
       })
       .subscribe(
-        response => {
+        _ => {
           this.router.navigate(['/']);
         },
         (error: HttpErrorResponse) => {
-          this.apiEmailError = false;
           if (error.error.email) {
-            this.apiEmailError = true;
             this.apiEmailErrorMessages = Object.assign([], error.error.email);
+          } else {
+            this.apiEmailErrorMessages.length = 0;
           }
         }
       );

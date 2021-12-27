@@ -3,7 +3,6 @@ import {
   Device,
   DeviceService,
   DeviceState,
-  DeviceStateGroup
 } from '../device.service';
 import {HomeService} from '../../home/home.service';
 
@@ -38,7 +37,7 @@ export class DeviceDetailComponent implements OnInit {
     this.deviceService.changeState(this.device, newState);
   }
 
-  onRoomSelected(roomID: number) {
-    this.deviceService.changeRoom(this.device, roomID);
+  deleteDevice() {
+    this.deviceService.delete(this.device);
   }
 }

@@ -1,24 +1,60 @@
 :host {
-  min-width: 33vw;
-  margin: 1em 0 0 1em;
   padding: 0.5em;
   background-color: white;
   border: 1px solid gray;
-  border-radius: 0.5em;
-  box-shadow: 0.2em 0.2em 0.2em gray;
 
-  .device_header {
+  div.device_header {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+
+    div.device_title_box {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      span.delete_icon:hover {
+        cursor: pointer;
+        color: #dc3545;
+        text-decoration: underline;
+      }
+    }
   }
 
-  .device_footer {
+  div.device_action_set {
+    margin: 0.2em;
+    padding: 0.2em;
+    background-color: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    .device_details {
+    div.state_group_actions {
+      display: flex;
+      flex-direction: row;
+
+      button {
+        background-color: white;
+      }
+      button:hover {
+        background-color: black;
+      }
+    }
+    div.state_group_actions button:not(:last-child) {
+      margin-right: 0.2em;
+    }
+  }
+
+  div.device_footer {
+    hr {
+      margin: .2em 0 0 0;
+      padding: 0;
+    }
+    span.device_details {
       display: block;
       margin: 0;
       padding: 0;
-      font-size: 0.5em;
+      font-size: 0.6em;
       color: lightgray;
     }
   }

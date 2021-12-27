@@ -1,0 +1,76 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: calc(100% - 2em);
+  margin: 1em 1em;
+  padding: 1em;
+  background-color: white;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+}
+
+.user_container {
+  h4 {
+    margin-left: .5em;
+  }
+  #name_form {
+    min-height: 6em;
+
+    p {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      min-height: 1.5em;
+      font-size: 1.5em;
+      margin-top: 1em;
+      margin-left: 1em;
+      margin-right: 1em;
+
+      span {
+        border-radius: 0.1em;
+        height: 100%;
+        margin-right: 0.1em;
+        padding: 3px;
+      }
+      input {
+        border-radius: 0.1em;
+        height: 100%;
+        margin-right: 0.1em;
+        padding: 3px;
+      }
+
+      span.name:hover {
+        padding: 2px;
+        border: 1px solid gray;
+      }
+    }
+
+    button {
+      margin-left: 1em;
+    }
+  }
+}
+
+#email_form {
+  div.label_input_pair {
+    div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      button {
+        margin-left: 1em;
+      }
+    }
+  }
+}
+
+#auth_form {
+  margin-bottom: 1em;
+  #auth_submit {
+    margin: 1em 1em 0 1em;
+    button {
+      width: 100%;
+    }
+  }
+}

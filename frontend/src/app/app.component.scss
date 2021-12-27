@@ -3,3 +3,9 @@
   min-height: 100%;
   background-color: rgb(221, 221, 221);
 }
+
+#main {
+  width: 100%;
+  min-height: 70vh;
+  overflow: auto;  // To prevent margin collapse
+}

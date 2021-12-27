@@ -4,26 +4,28 @@ from django.contrib import admin
 from django.http import JsonResponse
 from rest_framework import status
 
-from backend.home.views import Homes, HomeRooms
+from backend.home.views import (
+    Homes,
+    HomeDiscoverDevices,
+    HomeSingle
+)
 from backend.device.views import (
     Devices,
     HomeDevices,
     DeviceAction,
-    RoomDevices,
-    ChangeDeviceRoom
+    DeviceSingle
 )
 from backend.hume.views import (
     HomeHumes,
     HumeAttachDevice,
-    HumeDiscoverDevices,
     Humes,
     BrokerCredentials,
-    HumeFind,
+    HumeSingle,
     HumeConfirmPairing
 )
 from backend.user.views import UserSignup, login_user, logout_user, UserSelf
 
-from backend.webapp.views import AppView
+from backend.webapp.views import AppView, revision
 
 
 def api_path_not_found(_request, url=None):
@@ -50,28 +52,23 @@ webapp_urls = [
 ]
 
 device_urls = [
-    path("discover", HumeDiscoverDevices.as_view()),
     path("<str:address>/attach", HumeAttachDevice.as_view()),
     path("<str:device_uuid>/action", DeviceAction.as_view()),
-    path("<str:device_uuid>/change-room", ChangeDeviceRoom.as_view()),
+    path("<str:device_uuid>", DeviceSingle.as_view()),
 ]
 
 hume_urls = [
     path("<str:hume_uuid>/devices/", include(device_urls)),
 ]
 
-room_urls = [
-    path("<int:room_id>/devices", RoomDevices.as_view()),
-]
-
 home_urls = [
+    path("<int:home_id>", HomeSingle.as_view()),
+    path("<int:home_id>/devices/discover", HomeDiscoverDevices.as_view()),
+
     path("<int:home_id>/humes", HomeHumes.as_view()),
     path("<int:home_id>/humes/", include(hume_urls)),
 
     path("<int:home_id>/devices", HomeDevices.as_view()),
-
-    path("<int:home_id>/rooms", HomeRooms.as_view()),
-    path("<int:home_id>/rooms/", include(room_urls)),
 ]
 
 api_urlpatterns = [
@@ -87,7 +84,7 @@ api_urlpatterns = [
     path("humes", Humes.as_view()),  # not AJAX
     path("humes/broker-credentials", BrokerCredentials.as_view()),  # not AJAX
     # DO NOT PUT THIS URL ABOVE /broker-credentials :-)
-    path("humes/<str:hume_uuid>", HumeFind.as_view()),
+    path("humes/<str:hume_uuid>", HumeSingle.as_view()),
     path("humes/<str:hume_uuid>/devices", Devices.as_view()),  # not AJAX
     path("humes/<str:hume_uuid>/confirm-pairing",
          HumeConfirmPairing.as_view()),
@@ -111,6 +108,7 @@ urlpatterns = [
 
     # Empty path will forward to front end Angular application.
     path("", include(webapp_urls)),
+    path("revision", revision),
     # Catch all is forwarded to the Angular front end application, event 404's
     # are handled by the Angular application.
     path("<path:url>", include(webapp_urls)),

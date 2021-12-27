@@ -1,17 +1,31 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 
-import { Device } from '../device.service';
+import {Device, DeviceService} from '../device.service';
+import { Home } from '../../home/home.service';
 
 @Component({
   selector: 'app-device-list',
   templateUrl: './device-list.component.html',
   styleUrls: ['./device-list.component.scss']
 })
-export class DeviceListComponent implements OnInit {
+export class DeviceListComponent implements OnChanges {
 
-  @Input() devices: Device[];
+  @Input() home: Home;
+  devices: Device[];
 
-  constructor() { }
+  constructor(private deviceService: DeviceService) { }
 
-  ngOnInit(): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+    this.deviceService.getHomeDevices(this.home.id)
+      .then(this.onHomeDevicesGotten.bind(this))
+      .catch(this.onHomeDevicesGetFailed);
+  }
+
+  private onHomeDevicesGotten(devices: Device[]) {
+    this.devices = devices;
+  }
+
+  private onHomeDevicesGetFailed(error) {
+    console.error(error);
+  }
 }

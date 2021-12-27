@@ -12,7 +12,14 @@ from backend.broker.defs import MessageType
 
 
 # Producer instance with which to publish messages.
-producer: RMQProducer
+_producer: RMQProducer
+
+
+# For testing
+class FakeProducer:
+
+    def publish(self, *args, **kwargs):
+        ...
 
 
 def init(producer_instance: RMQProducer):
@@ -23,19 +30,19 @@ def init(producer_instance: RMQProducer):
     :param producer_instance: RMQProducer instance to set as the global
         instance.
     """
-    global producer
-    producer = producer_instance
+    global _producer
+    _producer = producer_instance
 
 
 def discover_devices(hume_uuid: str, message_content: str):
     """
-    Issue a discover devices command to a HUME.
+    Issue a Discover devices command to a HUME.
 
-    :param hume_uuid: UUID of the HUME to send the discover devices message to.
+    :param hume_uuid: UUID of the HUME to send the Discover devices message to.
     :param message_content: discover devices message content.
     """
-    global producer
-    producer.publish(
+    global _producer
+    _producer.publish(
         json.dumps(
             {
                 "type": MessageType.DISCOVER_DEVICES,
@@ -53,8 +60,8 @@ def attach(hume_uuid: str, device_address: str):
     :param hume_uuid: UUID of the HUME that discovered the device.
     :param device_address: address of the device to attach.
     """
-    global producer
-    producer.publish(
+    global _producer
+    _producer.publish(
         json.dumps(
             {
                 "type": MessageType.ATTACH_DEVICE,
@@ -86,6 +93,32 @@ def send_device_action(hume_uuid: str,
         "device_uuid": device_uuid,
     }
     payload.update(kwargs)
-    global producer
-    producer.publish(json.dumps(payload).encode('utf-8'),
-                     queue_params=QueueParams(hume_uuid, durable=True))
+    global _producer
+    _producer.publish(json.dumps(payload).encode('utf-8'),
+                      queue_params=QueueParams(hume_uuid, durable=True))
+
+
+def unpair(hume_uuid):
+    """
+    Issues an unpairing command to the target HUME. This will lead to the HUME
+    being factory reset, and any device information is lost on the HUME end.
+    """
+    payload = {
+        "type": MessageType.UNPAIR
+    }
+    global _producer
+    _producer.publish(json.dumps(payload).encode('utf-8'),
+                      queue_params=QueueParams(hume_uuid, durable=True))
+
+
+def detach(hume_uuid, device_uuid):
+    """
+    Issues a detach command to the a hume for a device.
+    """
+    payload = {
+        "type": MessageType.DETACH,
+        "device_uuid": device_uuid
+    }
+    global _producer
+    _producer.publish(json.dumps(payload).encode('utf-8'),
+                      queue_params=QueueParams(hume_uuid, durable=True))

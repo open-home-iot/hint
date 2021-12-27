@@ -1,4 +1,131 @@
-<div *ngIf="user" id="user_information">
-  <p>{{ user.email }}</p>
-  <p>{{ user.first_name }} {{ user.last_name }}</p>
+<div class="user_container" *ngIf="user !== undefined">
+  <form id="name_form"
+        [formGroup]="nameForm"
+        (ngSubmit)="nameSubmit()">
+    <p>
+      <span class="greeting">Hello</span>
+
+      <span class="name"
+            id="first_name_text"
+            (click)="changeName = true"
+            [hidden]="changeName">
+        {{ user.first_name }}
+      </span>
+      <input id="first_name_input"
+             name="first_name"
+             type="text"
+             formControlName="firstName"
+             [hidden]="!changeName"
+             [size]="firstNameLength"
+             (input)="firstNameChange()"/>
+
+      <span class="name"
+            id="last_name_text"
+            (click)="changeName = true"
+            [hidden]="changeName">
+        {{ user.last_name }}
+      </span>
+      <input id="last_name_input"
+             name="last_name"
+             type="text"
+             formControlName="lastName"
+             [hidden]="!changeName"
+             [size]="lastNameLength"
+             (input)="lastNameChange()"/>
+
+    </p>
+    <div *ngIf="(firstName.touched && firstName.errors?.maxlength) ||
+                (lastName.touched && lastName.errors?.maxlength)"
+         class="form_error">
+        Names must keep within 50 characters.
+    </div>
+    <div *ngFor="let errorMsg of apiNameErrorMessages"
+         class="form_error">
+      {{ errorMsg }}
+    </div>
+    <div>
+      <button [hidden]="!changeName"
+              [disabled]="!nameForm.valid"
+              type="submit"
+              class="btn btn-outline-dark"
+              style="margin-top: 0.5em">Save</button>
+    </div>
+  </form>
+
+  <hr>
+
+  <h4>Change email</h4>
+  <form id="email_form"
+        (ngSubmit)="emailSubmit()"
+        [formGroup]="emailForm">
+    <div class="label_input_pair">
+        <label for="email">Email</label>
+        <div>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            formControlName="email">
+          <button class="btn btn-outline-dark" [disabled]="!emailForm.valid" type="submit">Save</button>
+        </div>
+      </div>
+    <div *ngIf="email.touched && email.errors?.required"
+         class="form_error">
+      You need to provide an email address.
+    </div>
+    <div *ngIf="email.touched && email.errors?.email"
+         class="form_error">
+      That's not an email address.
+    </div>
+    <div *ngFor="let errorMsg of apiEmailErrorMessages"
+         class="form_error">
+      {{ errorMsg }}
+    </div>
+  </form>
+
+  <hr>
+
+  <h4>Change password</h4>
+  <form id="auth_form"
+        (ngSubmit)="authSubmit()"
+        [formGroup]="authForm">
+    <div formGroupName="auth">
+      <div class="label_input_pair">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autocomplete="password"
+          placeholder="A strong password"
+          formControlName="password">
+      </div>
+      <div *ngIf="password.touched && password.errors?.required"
+           class="form_error">
+        You need to provide a password.
+      </div>
+
+      <div class="label_input_pair">
+        <label for="confirm_password">Confirm password</label>
+        <input
+          id="confirm_password"
+          name="confirm_password"
+          type="password"
+          autocomplete="confirm-password"
+          placeholder="A strong password... again"
+          formControlName="confirmPassword">
+      </div>
+      <div *ngIf="confirmPassword.touched && confirmPassword.errors?.required"
+           class="form_error">
+        You need to confirm your chosen password.
+      </div>
+      <div *ngIf="password.touched && confirmPassword.touched && authForm.errors?.noMatch"
+           class="form_error">
+        Passwords do not match.
+      </div>
+    </div>
+    <div id="auth_submit">
+      <button class="btn btn-outline-dark" [disabled]="!authForm.valid" type="submit">Update password</button>
+    </div>
+  </form>
 </div>

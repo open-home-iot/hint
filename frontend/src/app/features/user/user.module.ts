@@ -11,6 +11,7 @@ import { UserService } from './user.service';
 
 // MODULES
 import { UserRoutingModule } from './user-routing.module';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { UserRoutingModule } from './user-routing.module';
   ],
   imports: [
     UserRoutingModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
   ],
   exports: [
 

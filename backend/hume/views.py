@@ -82,7 +82,7 @@ class BrokerCredentials(views.APIView):
 ###############################################################################
 # AJAX VIEWS
 ###############################################################################
-class HumeFind(views.APIView):
+class HumeSingle(views.APIView):
     """Search endpoint to find an unpaired Hume."""
 
     @staticmethod
@@ -102,6 +102,39 @@ class HumeFind(views.APIView):
 
         serializer = HumeSerializer(hume)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def patch(request, hume_uuid):
+        """
+        Change the name of a hume.
+        """
+        try:
+            hume = Hume.objects.get(uuid=hume_uuid,
+                                    home__users__id=request.user.id)
+        except Hume.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = HumeSerializer(hume, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def delete(request, hume_uuid):
+        """
+        Delete a hume.
+        """
+        try:
+            hume_to_be_deleted = Hume.objects.get(
+                uuid=hume_uuid, home__users__id=request.user.id
+            )
+            hume_to_be_deleted.delete()
+        except Hume.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class HumeConfirmPairing(views.APIView):
@@ -151,28 +184,6 @@ class HomeHumes(views.APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response([], status=status.HTTP_200_OK)
-
-
-class HumeDiscoverDevices(views.APIView):
-    """Discover devices nearby a Hume."""
-
-    @staticmethod
-    def get(request, home_id, hume_uuid):
-        """
-        Request that HINT tell HUME to discover devices.
-        """
-        try:
-            Hume.objects.get(
-                uuid=hume_uuid,
-                home__id=home_id,
-                home__users__id=request.user.id
-            )
-        except Hume.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        producer.discover_devices(hume_uuid, "")
-
-        return Response(status=status.HTTP_200_OK)
 
 
 class HumeAttachDevice(views.APIView):

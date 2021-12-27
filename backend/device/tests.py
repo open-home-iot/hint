@@ -16,7 +16,7 @@ from backend.device.models import (
     create_device,
 )
 from backend.hume.models import Hume
-from backend.home.models import Home, Room
+from backend.home.models import Home
 from backend.user.models import User
 from backend.device.test_defs import (  # noqa
     BASIC_LED_CAPS,
@@ -25,7 +25,6 @@ from backend.device.test_defs import (  # noqa
     DEVICE_UUID_2,
     DEVICE_UUID_3,
 )
-from backend.broker import producer
 
 
 def create_dummy_device(hume: Hume) -> Device:
@@ -58,22 +57,22 @@ def verify_device_fields(test_case: TestCase, device, device_spec):
     test_case.assertEqual(device.type, device_spec["type"])
 
 
-class ModelTests(TestCase):
+class DeviceModel(TestCase):
     """Verifies behavior of Device models and instantiation helpers"""
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         """
         CALLED PER TEST CASE!
         """
         super().setUpClass()
-        Hume.objects.create(uuid=HUME_UUID)
+        self.hume = Hume.objects.create(uuid=HUME_UUID)
+        hume_user = User.objects.create_hume_user(HUME_UUID, "pw")
+        self.hume.hume_user = hume_user
+        self.hume.save()
 
     def test_create_stateful_device(self):
         """Verify a Basic LED device can be created without problems."""
-        create_device(
-            Hume.objects.get(uuid=HUME_UUID), copy.deepcopy(BASIC_LED_CAPS)
-        )
+        create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
 
         device = Device.objects.get(uuid=DEVICE_UUID_1)
         device_state_group = DeviceStateGroup.objects.get(
@@ -84,6 +83,34 @@ class ModelTests(TestCase):
         self.assertEqual(on.state_id, 1)
         self.assertEqual(off.state_id, 0)
         verify_device_fields(self, device, BASIC_LED_CAPS)
+
+    def test_cascade(self):
+        """
+        Verify a device is deleted when its hume is deleted.
+        """
+        create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
+
+        device = Device.objects.get(uuid=DEVICE_UUID_1)
+        verify_device_fields(self, device, BASIC_LED_CAPS)
+
+        self.hume.delete()
+
+        with self.assertRaises(Device.DoesNotExist):
+            Device.objects.get(uuid=DEVICE_UUID_1)
+
+    @patch('backend.device.signal_handlers.producer')
+    def test_signal(self, producer_mock):
+        """
+        Ensure a deleted device results in a message sent to the device's
+        hume.
+        """
+        create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
+
+        device = Device.objects.get(uuid=DEVICE_UUID_1)
+        verify_device_fields(self, device, BASIC_LED_CAPS)
+
+        device.delete()
+        producer_mock.detach.assert_called_with(self.hume.uuid, DEVICE_UUID_1)
 
 
 class DevicesApi(TestCase):
@@ -154,15 +181,13 @@ class HomeDevicesApi(TestCase):
 
         self.home = Home.objects.create(name="home")
         self.home.users.add(User.objects.get(email="suite@t.se"))
-        self.room = Room.objects.create(name="room", home=self.home)
 
         self.hume = Hume.objects.create(uuid=uuid.uuid4(),
                                         home=self.home)
 
     def test_get_home_devices(self):
         """
-        Verify devices can be gotten when they do not belong to a specific
-        room.
+        Verify devices can be gotten based on a home id.
         """
         create_dummy_device(self.hume)
 
@@ -205,193 +230,6 @@ class HomeDevicesApi(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
 
-class RoomDevicesApi(TestCase):
-
-    URL = "/api/homes/{}/rooms/{}/devices"
-
-    @classmethod
-    def setUpClass(cls):
-        """
-        Sets up global user for authentication.
-        """
-        super().setUpClass()
-        User.objects.create_user(email="suite@t.se", password="pw")
-
-    def setUp(self):
-        """
-        Create shared test case data.
-        """
-        self.client = APIClient()
-        self.client.login(username="suite@t.se", password="pw")
-
-        self.home = Home.objects.create(name="home")
-        self.home.users.add(User.objects.get(email="suite@t.se"))
-        self.room = Room.objects.create(name="room", home=self.home)
-
-        self.hume = Hume.objects.create(uuid=uuid.uuid4(),
-                                        home=self.home)
-
-    def test_get_room_devices(self):
-        """
-        Verify devices can be gotten when associated with a room.
-        """
-        device = create_dummy_device(self.hume)
-        device.room = self.room
-        device.save()
-
-        res = self.client.get(RoomDevicesApi.URL.format(
-            self.home.id, self.room.id)
-        )
-
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-    def test_get_room_devices_no_inter_room_leakage(self):
-        """
-        Verify that if there are several devices, each belonging to a
-        different, or no, room, a GET directed at a particular room/
-        no room does not result in getting devices of a room that was
-        not pointed out.
-        """
-        device_1 = create_dummy_device(self.hume)
-        device_1.room = self.room
-        device_1.save()
-
-        device_2 = create_dummy_device(self.hume)
-        room_2 = Room.objects.create(home=self.home, name="room2")
-        device_2.room = room_2
-        device_2.save()
-
-        # One last with no room assigned
-        device_3 = create_dummy_device(self.hume)
-
-        # Get the device with self.room assigned:
-        res = self.client.get(
-            RoomDevicesApi.URL.format(self.home.id, self.room.id)
-        )
-        [device] = res.data
-
-        self.assertEqual(device["uuid"], device_1.uuid)
-
-        # Get the device with room_2 assigned:
-        res = self.client.get(
-            RoomDevicesApi.URL.format(self.home.id, room_2.id)
-        )
-        [device] = res.data
-
-        self.assertEqual(device["uuid"], device_2.uuid)
-
-        # Get the device with no room assigned:
-        res = self.client.get(HomeDevicesApi.URL.format(self.home.id))
-        [device] = res.data
-
-        self.assertEqual(device["uuid"], device_3.uuid)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-    def test_get_room_devices_no_user_leakage(self):
-        """
-        Verify that devices that belong to one user cannot be gotten by
-        another user who is not part of the device's home user list.
-        """
-        # Device with room assigned
-        device = create_dummy_device(self.hume)
-        device.room = self.room
-        device.save()
-
-        # Device with no room assigned, belonging to the Home.
-        create_dummy_device(self.hume)
-
-        User.objects.create_user(email="t@t.se", password="password")
-        client = APIClient()
-        client.login(username="t@t.se", password="password")
-
-        res = client.get(
-            RoomDevicesApi.URL.format(self.home.id, self.room.id)
-        )
-        self.assertEqual(len(res.data), 0)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-
-class ChangeDeviceRoomApi(TestCase):
-
-    URL = "/api/homes/{}/humes/{}/devices/{}/change-room"
-
-    @classmethod
-    def setUpClass(cls):
-        """
-        Sets up global user for authentication.
-        """
-        super().setUpClass()
-        User.objects.create_user(email="suite@t.se", password="pw")
-
-    def setUp(self):
-        """
-        Create shared test case data.
-        """
-        self.client = APIClient()
-        self.client.login(username="suite@t.se", password="pw")
-
-        self.home = Home.objects.create(name="home")
-        self.home.users.add(User.objects.get(email="suite@t.se"))
-        self.room = Room.objects.create(name="room", home=self.home)
-
-        self.hume = Hume.objects.create(uuid=uuid.uuid4(),
-                                        home=self.home)
-
-    def test_assign_device_to_a_room(self):
-        """Verify device room assignment works."""
-        device = create_dummy_device(self.hume)
-
-        res = self.client.patch(
-            ChangeDeviceRoomApi.URL.format(
-                self.home.id, self.hume.uuid, device.uuid
-            ),
-            {"new_id": self.room.id, "old_id": None})
-
-        device = Device.objects.get(uuid=device.uuid)
-        self.assertEqual(device.room.id, self.room.id)
-
-        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-
-    def test_assign_device_to_a_home(self):
-        """Verify assigning a device no room works."""
-        device = create_dummy_device(self.hume)
-        device.room = self.room
-        device.save()
-
-        res = self.client.patch(
-            ChangeDeviceRoomApi.URL.format(
-                self.home.id, self.hume.uuid, device.uuid
-            ),
-            {"new_id": None, "old_id": self.room.id})
-
-        device = Device.objects.get(uuid=device.uuid)
-
-        self.assertEqual(device.room, None)
-
-        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-
-    def test_deny_room_change_wrong_user(self):
-        """
-        Verify a user who does not own the device cannot change its room
-        assignment.
-        """
-        device = create_dummy_device(self.hume)
-
-        User.objects.create_user(email="t@t.se", password="pw")
-        client = APIClient()
-        client.login(username="t@t.se", password="pw")
-
-        res = client.patch(
-            ChangeDeviceRoomApi.URL.format(
-                self.home.id, self.hume.uuid, device.uuid
-            ),
-            {"new_id": self.room.id, "old_id": None}
-        )
-
-        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
-
-
 class DeviceActionApi(TestCase):
 
     URL = "/api/homes/{}/humes/{}/devices/{}/action"
@@ -413,27 +251,29 @@ class DeviceActionApi(TestCase):
 
         self.home = Home.objects.create(name="home")
         self.home.users.add(User.objects.get(email="suite@t.se"))
-        self.room = Room.objects.create(name="room", home=self.home)
 
         self.hume = Hume.objects.create(uuid=uuid.uuid4(),
                                         home=self.home)
 
-    def test_stateful_device_action(self):
+    @patch('backend.device.views.producer')
+    def test_stateful_device_action(self, producer_mock):
         """
         Verify the device action API accepts stateful device actions.
         """
-        producer_mock = Mock()
-        producer.init(producer_mock)
-
         create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
         device = Device.objects.get(uuid=DEVICE_UUID_1)
+        device_state_kwargs = {"device_state_group_id": 0, "device_state": 0}
 
-        res = self.client.post(DeviceActionApi.URL.format(
-            self.home.id, self.hume.uuid, device.uuid)
+        res = self.client.post(
+            DeviceActionApi.URL.format(
+                self.home.id, self.hume.uuid, device.uuid
+            ), device_state_kwargs
         )
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        producer_mock.publish.assert_called()
+        producer_mock.send_device_action.assert_called_with(
+            str(self.hume.uuid), str(device.uuid), **device_state_kwargs
+        )
 
     def test_device_action_unauthorized_user(self):
         """
