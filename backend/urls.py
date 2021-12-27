@@ -52,7 +52,7 @@ webapp_urls = [
 ]
 
 device_urls = [
-    path("<str:address>/attach", HumeAttachDevice.as_view()),
+    path("<str:identifier>/attach", HumeAttachDevice.as_view()),
     path("<str:device_uuid>/action", DeviceAction.as_view()),
     path("<str:device_uuid>", DeviceSingle.as_view()),
 ]

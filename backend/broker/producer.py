@@ -53,19 +53,19 @@ def discover_devices(hume_uuid: str, message_content: str):
     )
 
 
-def attach(hume_uuid: str, device_address: str):
+def attach(hume_uuid: str, identifier: str):
     """
     Issue an attach command for a device to a HUME.
 
     :param hume_uuid: UUID of the HUME that discovered the device.
-    :param device_address: address of the device to attach.
+    :param identifier: identifier of the device to attach.
     """
     global _producer
     _producer.publish(
         json.dumps(
             {
                 "type": MessageType.ATTACH_DEVICE,
-                "device_address": device_address
+                "identifier": identifier
             }
         ).encode('utf-8'),
         queue_params=QueueParams(hume_uuid, durable=True)

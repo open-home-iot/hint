@@ -5,7 +5,7 @@ import {Hume, HumeService} from '../hume/hume.service';
 
 export interface DiscoveredDevice {
   name: string;
-  address: string;
+  identifier: string;
 }
 
 export interface Device {

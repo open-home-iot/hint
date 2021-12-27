@@ -190,7 +190,7 @@ class HumeAttachDevice(views.APIView):
     """Attach a discovered device."""
 
     @staticmethod
-    def post(request, home_id, hume_uuid, address):
+    def post(request, home_id, hume_uuid, identifier):
         """
         Attach the device with the input address to the input HUME.
         """
@@ -203,6 +203,6 @@ class HumeAttachDevice(views.APIView):
         except Hume.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        producer.attach(hume_uuid, address)
+        producer.attach(hume_uuid, identifier)
 
         return Response(status=status.HTTP_200_OK)
