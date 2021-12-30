@@ -62,7 +62,7 @@ export class HumeFindComponent implements OnInit {
   }
 
   private onHumePaired(_hume: Hume) {
-
+    this.hideFindHumePrompt();
   }
 
   private onFailedToPairHume(error) {
