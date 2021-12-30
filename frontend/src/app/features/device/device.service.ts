@@ -16,6 +16,11 @@ export interface DiscoveredDevice {
   identifier: string;
 }
 
+export interface AttachedDevice {
+  identifier: string;
+  success: boolean;
+}
+
 export interface Device {
   name: string;
   address: string;
@@ -158,7 +163,13 @@ export class DeviceService {
   }
 
   private onDeviceAttached(event: HumeEvent) {
-    const HUME = this.humeService.getHume(event.hume_uuid);
-    this.requestHomeDevices(HUME.home);
+    const ATTACH_EVENT = event.content as AttachedDevice;
+
+    if (ATTACH_EVENT.success) {
+      const HUME = this.humeService.getHume(event.hume_uuid);
+      this.requestHomeDevices(HUME.home);
+    } else {
+      HANDLE_ERROR("failed to attach " + ATTACH_EVENT.identifier);
+    }
   }
 }
