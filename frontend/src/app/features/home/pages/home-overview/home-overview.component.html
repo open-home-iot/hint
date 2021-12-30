@@ -12,7 +12,7 @@
 <div class="home_overview_container" *ngIf="selectedHome; else elseBlock">
   <div class="home_header">
     <div class="home_name_container">
-      <app-home-add class="add_home_small" style="z-index: 10"></app-home-add>
+      <app-home-add (homeAdded)="homeSelected($event)" class="add_home_small" style="z-index: 10"></app-home-add>
       <app-home-select (homeSelected)="homeSelected($event)"
                        [selectedHome]="selectedHome"
                        [homes]="homes">
