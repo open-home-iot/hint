@@ -3,6 +3,7 @@
 cd "$(dirname "$0")"/.. || exit
 
 echo "Linting backend..."
+# shellcheck disable=SC2046
 flake8 $(find ./backend ! -path "*migrations*" -name "*.py")
 cd frontend && ng lint
 cd .. && ./manage.py test
