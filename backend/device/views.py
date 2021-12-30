@@ -29,16 +29,23 @@ class Devices(views.APIView):
         """
         create_device(Hume.objects.get(uuid=hume_uuid), request.data)
 
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            hume_uuid,
-            {
-                "type": "hume.event",
-                "hume_uuid": hume_uuid,
-                "event_type": MessageType.ATTACH_DEVICE,
-                "content": "",
-            }
-        )
+        try:
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                hume_uuid,
+                {
+                    "type": "hume.event",
+                    "hume_uuid": hume_uuid,
+                    "event_type": MessageType.ATTACH_DEVICE,
+                    "content": {
+                        "identifier": request.data["identifier"],
+                        "success": True,
+                    },
+                }
+            )
+        except Exception:  # noqa
+            # ignore message sending errors to avoid HUME-HINT mismatches
+            pass
 
         return Response(status=status.HTTP_201_CREATED)
 
