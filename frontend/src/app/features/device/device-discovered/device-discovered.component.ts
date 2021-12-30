@@ -1,5 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {DiscoveredDevice} from '../device.service';
+import {HumeService} from '../../hume/hume.service';
+import {HANDLE_ERROR} from '../../../core/utility';
 
 @Component({
   selector: 'app-device-discovered',
@@ -10,5 +12,11 @@ export class DeviceDiscoveredComponent {
 
   @Input() discoveredDevice: DiscoveredDevice;
 
-  constructor() { }
+  constructor(private humeService: HumeService) { }
+
+  connect() {
+    this.humeService.attach(this.discoveredDevice)
+      .then(_ => {})
+      .catch(HANDLE_ERROR);
+  }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EventService } from '../event/event.service';
-import {Device} from '../device/device.service';
+import {Device, DiscoveredDevice} from '../device/device.service';
 
 const HUME_URL = window.location.origin + '/api/humes/';
 
@@ -59,21 +59,25 @@ export class HumeService {
     return this.humeMap.get(humeUUID);
   }
 
-  attachDeviceUrl(homeID: number, device: Device) {
+  attachDeviceUrl(homeID: number, device: DiscoveredDevice) {
     return HOME_URL + String(homeID) + '/humes/' + device.hume + '/devices/' +
-      device.address + '/attach';
+      device.identifier + '/attach';
   }
 
-  attach(humeUuid: string, device: Device) {
-    const HUME = this.humeMap.get(humeUuid);
+  attach(device: DiscoveredDevice): Promise<void> {
+    const HUME = this.humeMap.get(device.hume);
 
-    this.httpClient.post(this.attachDeviceUrl(HUME.home, device), {})
-      .subscribe(
-        _ok => {},
-        error => {
-          console.error(error);
-        }
-      );
+    return new Promise<void>((resolve, reject) => {
+      this.httpClient.post(this.attachDeviceUrl(HUME.home, device), {})
+        .subscribe(
+          _success => {
+            resolve();
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
   }
 
   findHume(uuid: string): Promise<Hume> {
@@ -95,6 +99,9 @@ export class HumeService {
       this.httpClient.post(HumeService.humePairUrl(hume.uuid),{home_id: homeId})
         .subscribe(
           () => {
+            // hume has an unset homeID which can cause deletion issues if
+            // hume is deleted right after being paired.
+            hume.home = homeId;
             resolve(hume);
             this.humePaired(homeId, hume);
           },

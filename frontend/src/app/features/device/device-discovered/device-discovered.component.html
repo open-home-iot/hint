@@ -1,2 +1,7 @@
-<p>Name: {{ discoveredDevice.name }}</p>
-<p>Identifier: {{ discoveredDevice.identifier }}</p>
+<div>
+  <div>
+    <p>{{ discoveredDevice.name }}</p>
+    <p class="identifier monospace">{{ discoveredDevice.identifier }}</p>
+  </div>
+  <button (click)="connect()">Connect</button>
+</div>

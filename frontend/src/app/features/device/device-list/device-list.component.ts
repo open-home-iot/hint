@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 
 import {Device, DeviceService} from '../device.service';
 import { Home } from '../../home/home.service';
+import {HANDLE_ERROR} from '../../../core/utility';
 
 @Component({
   selector: 'app-device-list',
@@ -18,14 +19,10 @@ export class DeviceListComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.deviceService.getHomeDevices(this.home.id)
       .then(this.onHomeDevicesGotten.bind(this))
-      .catch(this.onHomeDevicesGetFailed);
+      .catch(HANDLE_ERROR);
   }
 
   private onHomeDevicesGotten(devices: Device[]) {
     this.devices = devices;
-  }
-
-  private onHomeDevicesGetFailed(error) {
-    console.error(error);
   }
 }

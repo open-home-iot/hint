@@ -15,7 +15,11 @@ interface Subscription {
   callback: (event) => void;
 }
 
+export const ALL_HUMES = "*"
+
+// event types
 export const HUB_DISCOVER_DEVICES = 0;
+export const DEVICE_ATTACHED = 1;
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +36,8 @@ export class EventService {
   onEvent(event: HumeEvent) {
     this.subscriptionMap.forEach(
       (subscription: Subscription, _) => {
-        if (subscription.hume_uuid === event.hume_uuid) {
+        if (subscription.hume_uuid === event.hume_uuid ||
+          subscription.hume_uuid === ALL_HUMES) {
           if (subscription.event_type === event.event_type) {
             subscription.callback(event);
           }
@@ -41,6 +46,14 @@ export class EventService {
     );
   }
 
+  /**
+   * Subscribe to an event type from a HUME, or all HUMEs (use the ALL_HUMES
+   * const).
+   *
+   * @param humeUUID
+   * @param eventType
+   * @param callback
+   */
   subscribe(humeUUID: string,
             eventType: number,
             callback: (event) => void): number {

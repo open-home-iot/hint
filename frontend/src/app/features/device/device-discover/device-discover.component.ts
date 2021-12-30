@@ -10,9 +10,6 @@ import {
   HumeEvent
 } from '../../event/event.service';
 import {DiscoveredDevice} from '../device.service';
-import {
-  DeviceDiscoveredComponent
-} from '../device-discovered/device-discovered.component';
 
 @Component({
   selector: 'app-device-discover',
@@ -38,7 +35,15 @@ export class DeviceDiscoverComponent implements OnDestroy {
               private homeService: HomeService) { }
 
   private static extractContent(event: HumeEvent): DiscoveredDevice[] {
-    return event.content;
+    const DISCOVERED_DEVICES: DiscoveredDevice[] = [];
+    event.content.forEach(D => {
+      DISCOVERED_DEVICES.push({
+        name: D.name,
+        hume: event.hume_uuid,
+        identifier: D.identifier,
+      })
+    })
+    return DISCOVERED_DEVICES;
   }
 
   ngOnDestroy() {
@@ -80,6 +85,7 @@ export class DeviceDiscoverComponent implements OnDestroy {
   }
 
   private deviceDiscovered(event: HumeEvent) {
+    console.debug(event);
     DeviceDiscoverComponent.extractContent(event).forEach(discoveredDevice => {
       this.discoveredDevices.push(discoveredDevice);
     });
