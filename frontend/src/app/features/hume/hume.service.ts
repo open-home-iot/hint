@@ -59,6 +59,13 @@ export class HumeService {
     return this.humeMap.get(humeUUID);
   }
 
+  /**
+   * Get all Humes currently in the HumeService.
+   */
+  getHumes(): Hume[] {
+    return Array.from(this.humeMap.values());
+  }
+
   attachDeviceUrl(homeID: number, device: DiscoveredDevice) {
     return HOME_URL + String(homeID) + '/humes/' + device.hume + '/devices/' +
       device.identifier + '/attach';

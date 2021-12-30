@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { WebSocketService } from '../../core/websocket/websocket.service';
+import { WebSocketService, NOTIF_SOCKET_OPEN } from '../../core/websocket/websocket.service';
 import {idGenerator} from '../../core/utility';
+import {HumeService} from '../hume/hume.service';
 
 export interface HumeEvent {
   hume_uuid: string;
@@ -15,7 +16,7 @@ interface Subscription {
   callback: (event) => void;
 }
 
-export const ALL_HUMES = "*"
+export const ALL_HUMES = '*';
 
 // event types
 export const HUB_DISCOVER_DEVICES = 0;
@@ -28,22 +29,10 @@ export class EventService {
 
   private subscriptionMap = new Map<number, Subscription>();
   private idGenerator = idGenerator();
+  private monitoredHumes: string[] = [];
 
   constructor(private webSocketService: WebSocketService) {
     this.webSocketService.registerCallback(this.onEvent.bind(this));
-  }
-
-  onEvent(event: HumeEvent) {
-    this.subscriptionMap.forEach(
-      (subscription: Subscription, _) => {
-        if (subscription.hume_uuid === event.hume_uuid ||
-          subscription.hume_uuid === ALL_HUMES) {
-          if (subscription.event_type === event.event_type) {
-            subscription.callback(event);
-          }
-        }
-      }
-    );
   }
 
   /**
@@ -78,5 +67,32 @@ export class EventService {
     // This will cause events related to this home to arrive as WS messages
     // in the onEvent method.
     this.webSocketService.send(JSON.stringify({ hume_uuid: humeUUID }));
+    this.monitoredHumes.push(humeUUID);
+  }
+
+  private onEvent(event: HumeEvent | string) {
+    // Websocket has connected (or reconnected). Make sure we're subscribed
+    // to HUME events.
+    if (typeof event === 'string' || event instanceof String) {
+      if (event === NOTIF_SOCKET_OPEN) {
+        for (const HUME_UUID of this.monitoredHumes) {
+          this.webSocketService.send(
+            JSON.stringify({ hume_uuid: HUME_UUID})
+          );
+        }
+      }
+      return;
+    }
+
+    this.subscriptionMap.forEach(
+      (subscription: Subscription, _) => {
+        if (subscription.hume_uuid === event.hume_uuid ||
+          subscription.hume_uuid === ALL_HUMES) {
+          if (subscription.event_type === event.event_type) {
+            subscription.callback(event);
+          }
+        }
+      }
+    );
   }
 }

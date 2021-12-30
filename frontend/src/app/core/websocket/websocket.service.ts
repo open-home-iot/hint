@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {HANDLE_ERROR} from '../utility';
 
 const WS_BASE_URL = window.location.origin;
 
@@ -9,6 +10,8 @@ const MSG_GET_CONNECTION_TIMEOUT_SECONDS = 'get_connection_timeout_seconds';
 
 const KEY_CONNECTION_TIMEOUT_SECONDS = 'connection_timeout_seconds';
 
+export const NOTIF_SOCKET_OPEN = 'socket_opened';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +20,7 @@ export class WebSocketService {
   private ws: WebSocket;
   private callback: any;
   private messageBuffer: string[] = [];
-  private connectionTimeoutSeconds: number;
+  private connectionTimeoutSeconds = 600;  // set default to avoid race
 
   constructor() {
     this.initializeWebSocket();
@@ -41,7 +44,7 @@ export class WebSocketService {
     );
     this.ws.onopen = this.onSocketOpen.bind(this);
     this.ws.onclose = this.onSocketClose.bind(this);
-    this.ws.onerror = this.onSocketError.bind(this);
+    this.ws.onerror = HANDLE_ERROR;
     this.ws.onmessage = this.onSocketMessage.bind(this);
   }
 
@@ -56,6 +59,11 @@ export class WebSocketService {
     }
 
     this.startConnectionRefreshTimer();
+
+    // To allow users to act on re-established connections
+    if (this.callback !== undefined) {
+      this.callback(NOTIF_SOCKET_OPEN);
+    }
   }
 
   private startConnectionRefreshTimer() {
@@ -75,10 +83,6 @@ export class WebSocketService {
       this.initializeWebSocket.bind(this),
       EVENT_WS_CLOSE_REOPEN_MS
     );
-  }
-
-  private onSocketError(event: Event) {
-    // console.error(event);
   }
 
   private onSocketMessage(event: MessageEvent) {

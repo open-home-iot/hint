@@ -8,6 +8,7 @@ import {
   DEVICE_ATTACHED,
   HumeEvent
 } from '../event/event.service';
+import {HANDLE_ERROR} from '../../core/utility';
 
 export interface DiscoveredDevice {
   name: string;
@@ -71,6 +72,7 @@ export class DeviceService {
   /**
    * Requests devices for the input home if not already gotten and returns
    * the result.
+   *
    * @param homeID
    */
   getHomeDevices(homeID: number): Promise<Device[]> {
@@ -83,6 +85,7 @@ export class DeviceService {
 
   /**
    * Requests devices for the input home and returns the result.
+   *
    * @param homeID
    */
   refreshHomeDevices(homeID: number): Promise<Device[]> {
@@ -114,17 +117,15 @@ export class DeviceService {
     })
       .subscribe(
         _success => null,
-        error => { console.error(error); }
+        error => { HANDLE_ERROR(error); }
       );
   }
 
   private requestHomeDevices(homeID: number): Promise<Device[]> {
-    console.log("getting home", homeID, "devices");
     return new Promise<Device[]>((resolve, reject) => {
       this.httpClient.get(DeviceService.getHomeDevicesUrl(homeID))
         .subscribe(
           (devices: Device[]) => {
-            console.log("successfully got devices, replacing device list");
             this.replaceHomeDevices(homeID, devices);
             resolve(this.homeDevices.get(homeID));
           },
@@ -146,7 +147,6 @@ export class DeviceService {
 
   private replaceHomeDevices(homeID: number, devices: Device[]) {
     if (!this.homeDevices.has(homeID)) {
-      console.log("no homeID", homeID, "existed, creating new list");
       this.homeDevices.set(homeID, []);
     }
 
@@ -155,11 +155,9 @@ export class DeviceService {
     for (const DEVICE of devices) {
       this.addHomeDevice(homeID, DEVICE);
     }
-    console.log("resulting list", this.homeDevices.get(homeID));
   }
 
   private onDeviceAttached(event: HumeEvent) {
-    console.log("device service got device attached event, firing get for devices related to hume", event.hume_uuid);
     const HUME = this.humeService.getHume(event.hume_uuid);
     this.requestHomeDevices(HUME.home);
   }

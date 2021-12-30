@@ -41,8 +41,8 @@ export class DeviceDiscoverComponent implements OnDestroy {
         name: D.name,
         hume: event.hume_uuid,
         identifier: D.identifier,
-      })
-    })
+      });
+    });
     return DISCOVERED_DEVICES;
   }
 
@@ -85,7 +85,6 @@ export class DeviceDiscoverComponent implements OnDestroy {
   }
 
   private deviceDiscovered(event: HumeEvent) {
-    console.debug(event);
     DeviceDiscoverComponent.extractContent(event).forEach(discoveredDevice => {
       this.discoveredDevices.push(discoveredDevice);
     });

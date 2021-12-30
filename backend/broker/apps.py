@@ -34,6 +34,8 @@ def incoming_message(message: bytes):
 
     decoded_command = json.loads(message.decode('utf-8'))
 
+    print(decoded_command)
+
     # Extract message fields.
     hume_uuid = decoded_command["uuid"]
     command_type = decoded_command["type"]
