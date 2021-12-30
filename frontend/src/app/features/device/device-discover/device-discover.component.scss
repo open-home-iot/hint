@@ -26,11 +26,11 @@ div.discovery_container {
   div.close_discovery_container {
     display: flex;
     justify-content: flex-end;
-    width: 100%;
+    min-width: 15em;
     padding: 0.5em;
 
     button {
-      width: inherit;
+      width: 100%;
     }
   }
 

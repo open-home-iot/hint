@@ -3,8 +3,19 @@ div.discovered_device_container {
   flex-direction: row;
   justify-content: space-between;
 
-  button {
-    margin-left: 1em;
+  div.attach_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 7em;
+
+    button {
+      margin-left: 1em;
+    }
+
+    span {
+      color: #0f5132;
+    }
   }
 }
 

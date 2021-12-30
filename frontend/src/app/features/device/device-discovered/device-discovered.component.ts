@@ -12,11 +12,17 @@ export class DeviceDiscoveredComponent {
 
   @Input() discoveredDevice: DiscoveredDevice;
 
+  attached: boolean;
+
   constructor(private humeService: HumeService) { }
 
   connect() {
     this.humeService.attach(this.discoveredDevice)
-      .then(_ => {})
+      .then(this.onAttach.bind(this))
       .catch(HANDLE_ERROR);
+  }
+
+  private onAttach() {
+    this.attached = true;
   }
 }

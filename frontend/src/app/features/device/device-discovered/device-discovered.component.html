@@ -3,5 +3,8 @@
     <p>{{ discoveredDevice.name }}</p>
     <p class="identifier monospace">{{ discoveredDevice.identifier }}</p>
   </div>
-  <button class="btn btn-outline-dark" (click)="connect()">Connect</button>
+  <div class="attach_container">
+    <button *ngIf="!attached" class="btn btn-outline-dark" (click)="connect()">Connect</button>
+    <span *ngIf="attached" class="icon material-icons">done</span>
+  </div>
 </div>
