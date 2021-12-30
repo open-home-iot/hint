@@ -17,8 +17,8 @@ export class DeviceDiscoveredComponent implements OnInit, OnDestroy {
 
   @Input() discoveredDevice: DiscoveredDevice;
 
-  private subscription: number;
   attached: boolean;
+  private subscription: number;
 
   constructor(private humeService: HumeService,
               private eventService: EventService) { }

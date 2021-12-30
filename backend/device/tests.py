@@ -123,7 +123,7 @@ class DevicesApi(TestCase):
         Hume.objects.create(uuid=HUME_UUID)
         User.objects.create_hume_user(HUME_UUID, "pw")
 
-    def setUp(self) -> None:
+    def setUp(self):
         self.client = APIClient()
         self.client.login(
             username=f"{HUME_UUID.replace('-', '')}@fake.com", password="pw"

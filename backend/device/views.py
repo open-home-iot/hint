@@ -38,7 +38,7 @@ class Devices(views.APIView):
                     "hume_uuid": hume_uuid,
                     "event_type": MessageType.ATTACH_DEVICE,
                     "content": {
-                        "identifier": request.data["identifier"],
+                        "identifier": request.data.get("identifier"),
                         "success": True,
                     },
                 }

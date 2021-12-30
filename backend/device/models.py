@@ -49,8 +49,7 @@ class DataType(_Choices):
 
 def create_device(hume: Hume, device_spec: dict):
     """
-    Creates all objects necessary from the device specification: Device,
-    DeviceDataSource (if present).
+    Creates all objects necessary from the device specification.
 
     EXAMPLE STATEFUL DEVICE SPEC:
     {
