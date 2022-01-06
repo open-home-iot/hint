@@ -5,7 +5,7 @@ import {HANDLE_ERROR} from '../../../core/utility';
 import {
   DEVICE_ATTACHED,
   EventService,
-  HumeEvent
+  HumeEvent, NO_DEVICE_UUID
 } from '../../event/event.service';
 
 @Component({
@@ -26,6 +26,7 @@ export class DeviceDiscoveredComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.eventService.subscribe(
       this.discoveredDevice.hume,
+      NO_DEVICE_UUID,
       DEVICE_ATTACHED,
       this.onDeviceAttached.bind(this)
     );

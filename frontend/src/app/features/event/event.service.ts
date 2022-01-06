@@ -1,26 +1,30 @@
 import { Injectable } from '@angular/core';
 
 import { WebSocketService, NOTIF_SOCKET_OPEN } from '../../core/websocket/websocket.service';
-import {idGenerator} from '../../core/utility';
-import {HumeService} from '../hume/hume.service';
+import { idGenerator } from '../../core/utility';
 
 export interface HumeEvent {
   hume_uuid: string;
+  device_uuid: string;
   event_type: number;
   content: any;
 }
 
 interface Subscription {
   hume_uuid: string;
+  device_uuid: string;
   event_type: number;
   callback: (event) => void;
 }
 
 export const ALL_HUMES = '*';
+export const NO_HUME_UUID = '';
+export const NO_DEVICE_UUID = '';
 
 // event types
 export const HUB_DISCOVER_DEVICES = 0;
 export const DEVICE_ATTACHED = 1;
+export const STATEFUL_ACTION = 2;
 
 @Injectable({
   providedIn: 'root'
@@ -40,10 +44,12 @@ export class EventService {
    * const).
    *
    * @param humeUUID
+   * @param deviceUUID
    * @param eventType
    * @param callback
    */
   subscribe(humeUUID: string,
+            deviceUUID: string,
             eventType: number,
             callback: (event) => void): number {
     const SUBSCRIPTION_ID = Number(this.idGenerator.next().value);
@@ -51,6 +57,7 @@ export class EventService {
       SUBSCRIPTION_ID,
       {
         hume_uuid:  humeUUID,
+        device_uuid: deviceUUID,
         event_type: eventType,
         callback,
       }
@@ -71,6 +78,8 @@ export class EventService {
   }
 
   private onEvent(event: HumeEvent | string) {
+    console.log(event);
+
     // Websocket has connected (or reconnected). Make sure we're subscribed
     // to HUME events.
     if (typeof event === 'string' || event instanceof String) {
@@ -87,7 +96,8 @@ export class EventService {
     this.subscriptionMap.forEach(
       (subscription: Subscription, _) => {
         if (subscription.hume_uuid === event.hume_uuid ||
-          subscription.hume_uuid === ALL_HUMES) {
+          subscription.hume_uuid === ALL_HUMES ||
+          subscription.device_uuid === event.device_uuid) {
           if (subscription.event_type === event.event_type) {
             subscription.callback(event);
           }

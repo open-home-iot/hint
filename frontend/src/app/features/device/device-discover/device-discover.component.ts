@@ -7,7 +7,7 @@ import {Hume} from '../../hume/hume.service';
 import {
   EventService,
   HUB_DISCOVER_DEVICES,
-  HumeEvent
+  HumeEvent, NO_DEVICE_UUID
 } from '../../event/event.service';
 import {DiscoveredDevice} from '../device.service';
 
@@ -66,7 +66,10 @@ export class DeviceDiscoverComponent implements OnDestroy {
     for (const HUME of this.humes) {
       this.subscriptions.push(
         this.eventService.subscribe(
-          HUME.uuid, HUB_DISCOVER_DEVICES, this.deviceDiscovered.bind(this)
+          HUME.uuid,
+          NO_DEVICE_UUID,
+          HUB_DISCOVER_DEVICES,
+          this.deviceDiscovered.bind(this)
         )
       );
     }

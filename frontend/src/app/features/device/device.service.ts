@@ -6,7 +6,7 @@ import {
   EventService,
   ALL_HUMES,
   DEVICE_ATTACHED,
-  HumeEvent
+  HumeEvent, NO_DEVICE_UUID
 } from '../event/event.service';
 import {HANDLE_ERROR} from '../../core/utility';
 
@@ -18,6 +18,12 @@ export interface DiscoveredDevice {
 
 export interface AttachedDevice {
   identifier: string;
+  success: boolean;
+}
+
+export interface StatefulAction {
+  group_id: number;
+  state_id: number;
   success: boolean;
 }
 
@@ -57,7 +63,10 @@ export class DeviceService {
               private eventService: EventService,
               private httpClient: HttpClient) {
     this.eventService.subscribe(
-      ALL_HUMES, DEVICE_ATTACHED, this.onDeviceAttached.bind(this)
+      ALL_HUMES,
+      NO_DEVICE_UUID,
+      DEVICE_ATTACHED,
+      this.onDeviceAttached.bind(this)
     );
   }
 
@@ -117,8 +126,8 @@ export class DeviceService {
     const HUME = this.humeService.getHume(device.hume);
 
     this.httpClient.post(DeviceService.getDeviceActionUrl(HUME, device), {
-      device_state_group_id: newState.device_state_group.group_id,
-      device_state_id: newState.state_id,
+      group_id: newState.device_state_group.group_id,
+      state_id: newState.state_id,
     })
       .subscribe(
         _success => null,

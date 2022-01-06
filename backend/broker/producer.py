@@ -85,11 +85,11 @@ def send_device_action(hume_uuid: str,
 
         For a STATEFUL action, both of these parameters must be provided:
 
-        device_state_group_id: group ID of a pointed out new device state.
-        device_state: new device state.
+        group_id: group ID of a pointed out new device state.
+        state_id: new device state.
     """
     payload = {
-        "type": MessageType.DEVICE_ACTION,
+        "type": MessageType.ACTION_STATEFUL,
         "device_uuid": device_uuid,
     }
     payload.update(kwargs)
