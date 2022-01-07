@@ -39,7 +39,7 @@ class Humes(views.APIView):
         try:
             Hume.objects.get(uuid=request.data["uuid"])
             return Response(status=status.HTTP_409_CONFLICT)
-        except Hume.DoesNotExist:
+        except (Hume.DoesNotExist, ValidationError):
             pass
 
         serializer = HumeSerializer(data=request.data)

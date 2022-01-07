@@ -95,7 +95,7 @@ class HumesApi(TestCase):
 
         # And same again...
         ret = self.client.post(HumesApi.URL, {"uuid": uid})
-        self.assertEqual(ret.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(ret.status_code, status.HTTP_409_CONFLICT)
 
         [_hume] = Hume.objects.all()
 
