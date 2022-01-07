@@ -30,9 +30,18 @@ class Humes(views.APIView):
         If the HUME does not exist, and there is a ValidHume record:
         - Create a new HUME
 
+        Elif a HUME already exists:
+        - Conflict!
+
         Else:
         - Invalid request!
         """
+        try:
+            Hume.objects.get(uuid=request.data["uuid"])
+            return Response(status=status.HTTP_409_CONFLICT)
+        except Hume.DoesNotExist:
+            pass
+
         serializer = HumeSerializer(data=request.data)
 
         if serializer.is_valid():

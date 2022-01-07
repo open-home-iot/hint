@@ -22,7 +22,6 @@ TAG = subprocess.check_output(
 def revision(request):
     """
     Return the revision of HINT currently in use.
-    TODO: add git tag once in use
     """
     return JsonResponse({"commit_id": COMMIT_ID, "tag": TAG},
                         status=status.HTTP_200_OK)
