@@ -6,12 +6,13 @@
   <h5>{{ device.type_name }}</h5>
 </div>
 
-<div *ngFor="let state_group of state_groups | keyvalue" class="device_action_set">
-  {{ state_group.key | titlecase }}
+<div *ngFor="let stateGroup of stateGroups | keyvalue" class="device_action_set">
+  {{ stateGroup.key | titlecase }}
   <div class="state_group_actions">
-    <button *ngFor="let state of state_group.value"
-            (click)="stateChange(state)"
-            class="btn btn-outline-dark">{{ state.state_name }}</button>
+    <button *ngFor="let state of stateGroup.value"
+            (click)="changeState(state)"
+            [class.active-state]="activeState === stateHash(state.group.group_id, state.state_id)"
+            class="btn btn-outline-dark">{{ state.name }}</button>
   </div>
 </div>
 

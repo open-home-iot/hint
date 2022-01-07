@@ -78,8 +78,6 @@ export class EventService {
   }
 
   private onEvent(event: HumeEvent | string) {
-    console.log(event);
-
     // Websocket has connected (or reconnected). Make sure we're subscribed
     // to HUME events.
     if (typeof event === 'string' || event instanceof String) {

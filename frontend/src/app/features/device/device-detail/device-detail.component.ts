@@ -11,6 +11,7 @@ import {
   HumeEvent, NO_HUME_UUID,
   STATEFUL_ACTION
 } from '../../event/event.service';
+import {HANDLE_ERROR} from '../../../core/utility';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
 
   @Input() device: Device;
   // group_name -> DeviceStates
-  state_groups: Map<string, DeviceState[]>;
+  stateGroups: Map<string, DeviceState[]>;
+  activeState: string;
 
   private subscription: number;
 
@@ -36,15 +38,15 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
         NO_HUME_UUID,
         this.device.uuid,
         STATEFUL_ACTION,
-        this.onStatefulAction.bind(this)
+        this.onStatefulAction.bind(this),
       );
-      this.state_groups = new Map<string, DeviceState[]>();
 
+      this.stateGroups = new Map<string, DeviceState[]>();
       for (const STATE of this.device.states) {
-        if (this.state_groups.has(STATE.device_state_group.group_name)) {
-          this.state_groups.get(STATE.device_state_group.group_name).push(STATE);
+        if (this.stateGroups.has(STATE.group.name)) {
+          this.stateGroups.get(STATE.group.name).push(STATE);
         } else {
-          this.state_groups.set(STATE.device_state_group.group_name, [STATE]);
+          this.stateGroups.set(STATE.group.name, [STATE]);
         }
       }
     }
@@ -54,7 +56,7 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
     this.eventService.unsubscribe(this.subscription);
   }
 
-  stateChange(newState: DeviceState) {
+  changeState(newState: DeviceState) {
     this.deviceService.changeState(this.device, newState);
   }
 
@@ -62,9 +64,20 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
     this.deviceService.delete(this.device);
   }
 
+  stateHash(groupID: number, stateID: number) {
+    return String(groupID) + String(stateID);
+  }
+
   private onStatefulAction(event: HumeEvent) {
-    const STATEFUL_ACTION = event.content as StatefulAction;
-    
-    console.log(STATEFUL_ACTION);
+    const STATEFUL_ACTION_EVENT = event.content as StatefulAction;
+
+    if (!STATEFUL_ACTION_EVENT.success) {
+      HANDLE_ERROR('stateful action failed');
+      return;
+    }
+
+    this.activeState = this.stateHash(
+      STATEFUL_ACTION_EVENT.group_id, STATEFUL_ACTION_EVENT.state_id,
+    );
   }
 }

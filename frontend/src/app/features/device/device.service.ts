@@ -41,14 +41,14 @@ export interface Device {
 }
 
 export interface DeviceState {
-  device_state_group: DeviceStateGroup;
+  group: DeviceStateGroup;
   state_id: number;
-  state_name: string;
+  name: string;
 }
 
 export interface DeviceStateGroup {
   group_id: number;
-  group_name: string;
+  name: string;
 }
 
 const HOMES_URL = window.location.origin + '/api/homes/';
@@ -126,7 +126,7 @@ export class DeviceService {
     const HUME = this.humeService.getHume(device.hume);
 
     this.httpClient.post(DeviceService.getDeviceActionUrl(HUME, device), {
-      group_id: newState.device_state_group.group_id,
+      group_id: newState.group.group_id,
       state_id: newState.state_id,
     })
       .subscribe(
