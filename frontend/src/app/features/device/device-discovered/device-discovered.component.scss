@@ -1,0 +1,27 @@
+div.discovered_device_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  div.attach_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 7em;
+
+    button {
+      margin-left: 1em;
+    }
+
+    span {
+      color: #0f5132;
+    }
+  }
+}
+
+p.identifier {
+  margin: 0;
+  padding: 0;
+  font-size: 0.6em;
+  color: lightgray;
+}

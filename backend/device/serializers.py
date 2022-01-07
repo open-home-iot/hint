@@ -7,19 +7,16 @@ class DeviceStateGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DeviceStateGroup
-        fields = ('group_id',
-                  'group_name',)
+        fields = ('group_id', 'name',)
 
 
 class DeviceStateSerializer(serializers.ModelSerializer):
 
-    device_state_group = DeviceStateGroupSerializer()
+    group = DeviceStateGroupSerializer()
 
     class Meta:
         model = DeviceState
-        fields = ('device_state_group',
-                  'state_id',
-                  'state_name',)
+        fields = ('group', 'state_id', 'name',)
 
 
 class DeviceSerializer(serializers.ModelSerializer):

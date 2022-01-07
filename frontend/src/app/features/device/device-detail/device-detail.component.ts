@@ -1,10 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {
   Device,
   DeviceService,
   DeviceState,
+  StatefulAction,
 } from '../device.service';
 import {HomeService} from '../../home/home.service';
+import {
+  EventService,
+  HumeEvent, NO_HUME_UUID,
+  STATEFUL_ACTION
+} from '../../event/event.service';
+import {HANDLE_ERROR} from '../../../core/utility';
 
 
 @Component({
@@ -12,32 +19,65 @@ import {HomeService} from '../../home/home.service';
   templateUrl: './device-detail.component.html',
   styleUrls: ['./device-detail.component.scss']
 })
-export class DeviceDetailComponent implements OnInit {
+export class DeviceDetailComponent implements OnInit, OnDestroy {
 
   @Input() device: Device;
   // group_name -> DeviceStates
-  state_groups: Map<string, DeviceState[]>;
+  stateGroups: Map<string, DeviceState[]>;
+  activeState: string;
+
+  private subscription: number;
 
   constructor(private homeService: HomeService,
-              private deviceService: DeviceService) { }
+              private deviceService: DeviceService,
+              private eventService: EventService) { }
 
   ngOnInit(): void {
-    this.state_groups = new Map<string, DeviceState[]>();
+    if (this.device.states.length > 0) {
+      this.subscription = this.eventService.subscribe(
+        NO_HUME_UUID,
+        this.device.uuid,
+        STATEFUL_ACTION,
+        this.onStatefulAction.bind(this),
+      );
 
-    for (const STATE of this.device.states) {
-      if (this.state_groups.has(STATE.device_state_group.group_name)) {
-        this.state_groups.get(STATE.device_state_group.group_name).push(STATE);
-      } else {
-        this.state_groups.set(STATE.device_state_group.group_name, [STATE]);
+      this.stateGroups = new Map<string, DeviceState[]>();
+      for (const STATE of this.device.states) {
+        if (this.stateGroups.has(STATE.group.name)) {
+          this.stateGroups.get(STATE.group.name).push(STATE);
+        } else {
+          this.stateGroups.set(STATE.group.name, [STATE]);
+        }
       }
     }
   }
 
-  stateChange(newState: DeviceState) {
+  ngOnDestroy() {
+    this.eventService.unsubscribe(this.subscription);
+  }
+
+  changeState(newState: DeviceState) {
     this.deviceService.changeState(this.device, newState);
   }
 
   deleteDevice() {
     this.deviceService.delete(this.device);
+  }
+
+  stateHash(groupID: number, stateID: number) {
+    return String(groupID) + String(stateID);
+  }
+
+  private onStatefulAction(event: HumeEvent) {
+    const STATEFUL_ACTION_EVENT = event.content as StatefulAction;
+
+    if (!STATEFUL_ACTION_EVENT.success) {
+      HANDLE_ERROR('stateful action failed');
+      return;
+    }
+
+    this.activeState = this.stateHash(
+      STATEFUL_ACTION_EVENT.group_id, STATEFUL_ACTION_EVENT.state_id,
+    );
   }
 }

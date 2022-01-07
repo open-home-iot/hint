@@ -49,8 +49,7 @@ class DataType(_Choices):
 
 def create_device(hume: Hume, device_spec: dict):
     """
-    Creates all objects necessary from the device specification: Device,
-    DeviceDataSource (if present).
+    Creates all objects necessary from the device specification.
 
     EXAMPLE STATEFUL DEVICE SPEC:
     {
@@ -102,17 +101,17 @@ def create_device(hume: Hume, device_spec: dict):
             # {
             #     'control': [{'on': 1}, {'off': 0}]
             # }
-            group_name = list(state_group.keys())[0]  # only group name left
-            device_state_group.group_name = group_name
+            name = list(state_group.keys())[0]  # only group name left
+            device_state_group.name = name
             other_objects.append(device_state_group)
 
-            group_states = state_group[group_name]
+            group_states = state_group[name]
             # [{'on': 1}, {'off': 0}]
             for state in group_states:
                 device_state = DeviceState(
-                    device_state_group=device_state_group,
+                    group=device_state_group,
                     state_id=list(state.values())[0],
-                    state_name=list(state.keys())[0],
+                    name=list(state.keys())[0],
                 )
                 other_objects.append(device_state)
 
@@ -206,9 +205,8 @@ class Device(models.Model):
 
         :returns: [DeviceState]
         """
-        return DeviceState.objects.select_related(
-            'device_state_group'
-        ).filter(device_state_group__device__uuid=self.uuid)
+        return DeviceState.objects.select_related('group')\
+            .filter(group__device__uuid=self.uuid)
 
     def __str__(self):
         """str representation of a Device instance"""
@@ -228,7 +226,7 @@ class DeviceStateGroup(models.Model):
 
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     group_id = models.IntegerField()
-    group_name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20)
 
 
 class DeviceState(models.Model):
@@ -236,36 +234,7 @@ class DeviceState(models.Model):
     Models a device's states, related to a device state group.
     """
 
-    device_state_group = models.ForeignKey(
+    group = models.ForeignKey(
         DeviceStateGroup, on_delete=models.CASCADE)
     state_id = models.IntegerField()
-    state_name = models.CharField(max_length=50)
-
-
-class DeviceDataSource(models.Model):
-    """TODO"""
-
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    data_type = models.IntegerField(choices=DataType.CHOICES)
-
-    def __str__(self):
-        """str representation of a DeviceDataSource instance"""
-        return f"<{self.__class__.__name__} instance {self.id} (related " \
-               f"device: {self.device.uuid}, name: {self.name}, data_type: " \
-               f"{DataType.get_verbose_name(self.data_type)})>"
-
-
-class DeviceReading(models.Model):
-    """TODO"""
-
-    data_source = models.ForeignKey(DeviceDataSource, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField()
-    data = models.CharField(max_length=25)
-
-    def __str__(self):
-        """str representation of a DeviceReading instance"""
-        return f"<{self.__class__.__name__} instance {self.id} (" \
-               f"data_source: {self.data_source.id}, " \
-               f"timestamp: {self.timestamp}, data: " \
-               f"{self.data})>"

@@ -1,4 +1,5 @@
 import json
+from uuid import UUID
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -59,7 +60,7 @@ class HumeConsumer(WebsocketConsumer):
             return
 
         decoded_data = json.loads(text_data)
-        hume_uuid = decoded_data["hume_uuid"]
+        hume_uuid = decoded_data.get("hume_uuid")
 
         self.monitor_new_hume_uuid(hume_uuid)
 
@@ -67,6 +68,12 @@ class HumeConsumer(WebsocketConsumer):
         """
         Adds the input hume_uuid to the consumers list of monitored UUIDs.
         """
+        # Verify no garbage is received, must be a valid v4 UUID.
+        try:
+            UUID(hume_uuid, version=4)
+        except ValueError:
+            return
+
         # IMPORTANT
         # Verify the consumer user owns the hub in question, do NOT allow
         # information leaks through the websocket consumer!

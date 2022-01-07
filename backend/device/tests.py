@@ -76,9 +76,11 @@ class DeviceModel(TestCase):
 
         device = Device.objects.get(uuid=DEVICE_UUID_1)
         device_state_group = DeviceStateGroup.objects.get(
-            device=device, group_id=0)
+            device=device, group_id=0
+        )
         on, off = DeviceState.objects.filter(
-            device_state_group=device_state_group)
+            group=device_state_group
+        )
 
         self.assertEqual(on.state_id, 1)
         self.assertEqual(off.state_id, 0)
@@ -123,7 +125,7 @@ class DevicesApi(TestCase):
         Hume.objects.create(uuid=HUME_UUID)
         User.objects.create_hume_user(HUME_UUID, "pw")
 
-    def setUp(self) -> None:
+    def setUp(self):
         self.client = APIClient()
         self.client.login(
             username=f"{HUME_UUID.replace('-', '')}@fake.com", password="pw"

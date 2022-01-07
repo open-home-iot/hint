@@ -7,8 +7,9 @@ import {Hume} from '../../hume/hume.service';
 import {
   EventService,
   HUB_DISCOVER_DEVICES,
-  HumeEvent
+  HumeEvent, NO_DEVICE_UUID
 } from '../../event/event.service';
+import {DiscoveredDevice} from '../device.service';
 
 @Component({
   selector: 'app-device-discover',
@@ -25,13 +26,25 @@ export class DeviceDiscoverComponent implements OnDestroy {
   showDiscoveryFailure = false;
   discoveryErrorMessage = '';
 
-  discoveredDevices: HumeEvent[] = [];
+  discoveredDevices: DiscoveredDevice[] = [];
 
   private timeout;
   private subscriptions: number[] = [];
 
   constructor(private eventService: EventService,
               private homeService: HomeService) { }
+
+  private static extractContent(event: HumeEvent): DiscoveredDevice[] {
+    const DISCOVERED_DEVICES: DiscoveredDevice[] = [];
+    event.content.forEach(D => {
+      DISCOVERED_DEVICES.push({
+        name: D.name,
+        hume: event.hume_uuid,
+        identifier: D.identifier,
+      });
+    });
+    return DISCOVERED_DEVICES;
+  }
 
   ngOnDestroy() {
     for (const SUBSCRIPTION of this.subscriptions) {
@@ -53,7 +66,10 @@ export class DeviceDiscoverComponent implements OnDestroy {
     for (const HUME of this.humes) {
       this.subscriptions.push(
         this.eventService.subscribe(
-          HUME.uuid, HUB_DISCOVER_DEVICES, this.deviceDiscovered.bind(this)
+          HUME.uuid,
+          NO_DEVICE_UUID,
+          HUB_DISCOVER_DEVICES,
+          this.deviceDiscovered.bind(this)
         )
       );
     }
@@ -72,7 +88,9 @@ export class DeviceDiscoverComponent implements OnDestroy {
   }
 
   private deviceDiscovered(event: HumeEvent) {
-    this.discoveredDevices.push(event);
+    DeviceDiscoverComponent.extractContent(event).forEach(discoveredDevice => {
+      this.discoveredDevices.push(discoveredDevice);
+    });
   }
 
   private discoveryStarted() {}

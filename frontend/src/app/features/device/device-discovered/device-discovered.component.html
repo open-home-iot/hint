@@ -1,3 +1,10 @@
-<p>hume_uuid: {{ discoveredDevice.hume_uuid }}</p>
-<p>event_type: {{ discoveredDevice.event_type }}</p>
-<p>content: {{ discoveredDevice.content }}</p>
+<div class="discovered_device_container">
+  <div>
+    <p>{{ discoveredDevice.name }}</p>
+    <p class="identifier monospace">{{ discoveredDevice.identifier }}</p>
+  </div>
+  <div class="attach_container">
+    <button *ngIf="!attached" class="btn btn-outline-dark" (click)="connect()">Connect</button>
+    <span *ngIf="attached" class="icon material-icons">done</span>
+  </div>
+</div>

@@ -53,19 +53,19 @@ def discover_devices(hume_uuid: str, message_content: str):
     )
 
 
-def attach(hume_uuid: str, device_address: str):
+def attach(hume_uuid: str, identifier: str):
     """
     Issue an attach command for a device to a HUME.
 
     :param hume_uuid: UUID of the HUME that discovered the device.
-    :param device_address: address of the device to attach.
+    :param identifier: identifier of the device to attach.
     """
     global _producer
     _producer.publish(
         json.dumps(
             {
                 "type": MessageType.ATTACH_DEVICE,
-                "device_address": device_address
+                "identifier": identifier
             }
         ).encode('utf-8'),
         queue_params=QueueParams(hume_uuid, durable=True)
@@ -85,11 +85,11 @@ def send_device_action(hume_uuid: str,
 
         For a STATEFUL action, both of these parameters must be provided:
 
-        device_state_group_id: group ID of a pointed out new device state.
-        device_state: new device state.
+        group_id: group ID of a pointed out new device state.
+        state_id: new device state.
     """
     payload = {
-        "type": MessageType.DEVICE_ACTION,
+        "type": MessageType.ACTION_STATEFUL,
         "device_uuid": device_uuid,
     }
     payload.update(kwargs)
