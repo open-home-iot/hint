@@ -11,7 +11,7 @@
   <div class="state_group_actions">
     <button *ngFor="let state of stateGroup.value"
             (click)="changeState(state)"
-            [class.active-state]="activeState === stateHash(state.group.group_id, state.state_id)"
+            [class.active-state]="activeState[state.group.group_id] === state.state_id"
             class="btn btn-outline-dark">{{ state.name }}</button>
   </div>
 </div>

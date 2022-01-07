@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {
   Device,
   DeviceService,
-  DeviceState,
+  DeviceState, DeviceStateGroup,
   StatefulAction,
 } from '../device.service';
 import {HomeService} from '../../home/home.service';
@@ -24,7 +24,7 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
   @Input() device: Device;
   // group_name -> DeviceStates
   stateGroups: Map<string, DeviceState[]>;
-  activeState: string;
+  activeState: Map<number, number> = new Map<number, number>();
 
   private subscription: number;
 
@@ -33,6 +33,7 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
               private eventService: EventService) { }
 
   ngOnInit(): void {
+    console.log("init detail:", this.device.uuid);
     if (this.device.states.length > 0) {
       this.subscription = this.eventService.subscribe(
         NO_HUME_UUID,
@@ -64,20 +65,16 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
     this.deviceService.delete(this.device);
   }
 
-  stateHash(groupID: number, stateID: number) {
-    return String(groupID) + String(stateID);
-  }
-
   private onStatefulAction(event: HumeEvent) {
     const STATEFUL_ACTION_EVENT = event.content as StatefulAction;
+    console.log("got event", event);
 
     if (!STATEFUL_ACTION_EVENT.success) {
       HANDLE_ERROR('stateful action failed');
       return;
     }
 
-    this.activeState = this.stateHash(
-      STATEFUL_ACTION_EVENT.group_id, STATEFUL_ACTION_EVENT.state_id,
-    );
+    this.activeState[STATEFUL_ACTION_EVENT.group_id] =
+      STATEFUL_ACTION_EVENT.state_id;
   }
 }
