@@ -1,4 +1,4 @@
-import uuid
+import os
 
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
@@ -31,7 +31,9 @@ class Command(BaseCommand):
         self.stdout.write(f"Created superuser '{superuser.email}'")
 
         # ValidHume
-        unpaired_valid_hume = ValidHume.objects.create(uuid=uuid.uuid4())
+        unpaired_valid_hume = ValidHume.objects.create(
+            uuid=os.environ["HUME_UUID"]
+        )
         unpaired_hume_uuid = str(unpaired_valid_hume.uuid)
         self.stdout.write(f"ValidHume: "
                           f"{self.style.SUCCESS(unpaired_hume_uuid)}")

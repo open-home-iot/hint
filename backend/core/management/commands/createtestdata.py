@@ -1,3 +1,4 @@
+import os
 import uuid
 
 from django.core.management.base import BaseCommand
@@ -54,7 +55,9 @@ class Command(BaseCommand):
                               f"for home '{home1.name}'")
 
         # One more ValidHume for testing pairing procedure
-        unpaired_valid_hume = ValidHume.objects.create(uuid=uuid.uuid4())
+        unpaired_valid_hume = ValidHume.objects.create(
+            uuid=os.environ["HUME_UUID"]
+        )
         unpaired_hume_uuid = str(unpaired_valid_hume.uuid)
 
         # Hume for home2
