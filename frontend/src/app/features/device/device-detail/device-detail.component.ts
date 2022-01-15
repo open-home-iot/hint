@@ -33,7 +33,6 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
               private eventService: EventService) { }
 
   ngOnInit(): void {
-    console.log("init detail:", this.device.uuid);
     if (this.device.states.length > 0) {
       this.subscription = this.eventService.subscribe(
         NO_HUME_UUID,
@@ -67,7 +66,6 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
 
   private onStatefulAction(event: HumeEvent) {
     const STATEFUL_ACTION_EVENT = event.content as StatefulAction;
-    console.log("got event", event);
 
     if (!STATEFUL_ACTION_EVENT.success) {
       HANDLE_ERROR('stateful action failed');

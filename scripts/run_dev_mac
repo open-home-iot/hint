@@ -1,10 +1,39 @@
 #!/bin/zsh
 
-# First Terminal for running the django dev server
-osascript -e 'tell app "Terminal"
-  do script "cd ~/repos/hint; workon hint; ./manage.py runserver"
-  do script "cd ~/repos/hint/frontend; ng build --watch=true --outputPath=/Users/mansthornvik/repos/hint/backend/static/ang"
-end tell'
+function check_container_start() {
+  # shellcheck disable=SC2181
+  if [ $? -eq 0 ];
+  then
+      echo "successfully started container, now running with above hash"
+  else
+    substring="already in use"
+    if test "${1#*$substring}" != "$1"
+    then
+        echo "already started"
+    else
+        echo "$1"
+        echo "docker run failed, fix the problem and try again"
+        exit 1
+    fi
+  fi
+}
 
-docker run -d -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-docker run -d -it --rm --name redis -p 6379:6379 redis
+# RabbitMQ & Redis
+echo "starting RabbitMQ"
+rabbitmq=$(docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management 2>&1)
+check_container_start "$rabbitmq"
+
+echo "starting Redis"
+redis=$(docker run -d --rm --name redis -p 6379:6379 redis 2>&1)
+check_container_start "$redis"
+
+# HINT
+echo "starting HINT backend and frontend"
+
+scriptpath=${0:a:h}
+if ! cd "$scriptpath";
+then
+  echo "failed to cd to $scriptpath"
+  exit 1
+fi
+osascript run_hint_in_separate_tabs.scpt "$scriptpath"

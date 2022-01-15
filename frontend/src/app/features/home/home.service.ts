@@ -19,7 +19,7 @@ export class HomeService {
     return HOMES_URL + '/' + String(homeID) + '/devices/discover';
   }
 
-  private static homeUrl(homeID: number) {
+  private static homeUrl(homeID: number): string {
     return HOMES_URL + '/' + String(homeID);
   }
 

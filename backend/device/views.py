@@ -27,7 +27,10 @@ class Devices(views.APIView):
         """
         Create a new device.
         """
-        create_device(Hume.objects.get(uuid=hume_uuid), request.data)
+        try:
+            create_device(Hume.objects.get(uuid=hume_uuid), request.data)
+        except ValueError:
+            return Response(status=status.HTTP_409_CONFLICT)
 
         try:
             channel_layer = get_channel_layer()

@@ -80,6 +80,9 @@ def create_device(hume: Hume, device_spec: dict):
     if device_spec.get("description") is not None:
         device_dict["description"] = device_spec["description"]
 
+    if Device.objects.filter(uuid=device_dict["uuid"]).exists():
+        raise ValueError("a device with that UUID already exists")
+
     device = Device(**device_dict)
 
     # States, data sources, etc.
