@@ -71,6 +71,9 @@ home_urls = [
     path("<int:home_id>/devices", HomeDevices.as_view()),
 ]
 
+"""
+AJAX API patterns
+"""
 api_urlpatterns = [
     #
     # HOMES
@@ -81,13 +84,8 @@ api_urlpatterns = [
     #
     # HUMES
     #
-    path("humes", Humes.as_view()),  # not AJAX
-    path("humes/broker-credentials", BrokerCredentials.as_view()),  # not AJAX
-    # DO NOT PUT THIS URL ABOVE /broker-credentials :-)
     path("humes/<str:hume_uuid>", HumeSingle.as_view()),
-    path("humes/<str:hume_uuid>/devices", Devices.as_view()),  # not AJAX
-    path("humes/<str:hume_uuid>/confirm-pairing",
-         HumeConfirmPairing.as_view()),
+    path("humes/<str:hume_uuid>/confirm-pairing", HumeConfirmPairing.as_view()),
 
     #
     # USERS
@@ -102,8 +100,26 @@ api_urlpatterns = [
     path("<path:url>", api_path_not_found)
 ]
 
+"""
+HUME API patterns
+"""
+hume_api_urlpatterns = [
+    path("broker-credentials", BrokerCredentials.as_view()),
+
+    path("humes", Humes.as_view()),
+    path("humes/<str:hume_uuid>/devices", Devices.as_view()),
+
+    path("users/login", login_user),
+    path("users/logout", logout_user),
+
+    # 404!
+    path("", api_path_not_found),
+    path("<path:url>", api_path_not_found)
+]
+
 urlpatterns = [
     path("api/", include(api_urlpatterns)),
+    path("hume-api/", include(hume_api_urlpatterns)),
     path("admin/", admin.site.urls),
 
     # Empty path will forward to front end Angular application.

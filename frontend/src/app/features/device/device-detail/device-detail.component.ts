@@ -67,11 +67,6 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
   private onStatefulAction(event: HumeEvent) {
     const STATEFUL_ACTION_EVENT = event.content as StatefulAction;
 
-    if (!STATEFUL_ACTION_EVENT.success) {
-      HANDLE_ERROR('stateful action failed');
-      return;
-    }
-
     this.activeState[STATEFUL_ACTION_EVENT.group_id] =
       STATEFUL_ACTION_EVENT.state_id;
   }

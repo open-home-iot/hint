@@ -1,4 +1,4 @@
-class MessageType:
+class HumeMessage:
     """
     Message types for HUME communication, both incoming and outgoing.
     """

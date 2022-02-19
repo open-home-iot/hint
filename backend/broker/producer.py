@@ -8,7 +8,7 @@ import json
 
 from rabbitmq_client import RMQProducer, QueueParams
 
-from backend.broker.defs import MessageType
+from backend.broker.defs import HumeMessage
 
 
 # Producer instance with which to publish messages.
@@ -45,7 +45,7 @@ def discover_devices(hume_uuid: str, message_content: str):
     _producer.publish(
         json.dumps(
             {
-                "type": MessageType.DISCOVER_DEVICES,
+                "type": HumeMessage.DISCOVER_DEVICES,
                 "content": message_content
             }
         ).encode('utf-8'),
@@ -64,7 +64,7 @@ def attach(hume_uuid: str, identifier: str):
     _producer.publish(
         json.dumps(
             {
-                "type": MessageType.ATTACH_DEVICE,
+                "type": HumeMessage.ATTACH_DEVICE,
                 "identifier": identifier
             }
         ).encode('utf-8'),
@@ -89,7 +89,7 @@ def send_device_action(hume_uuid: str,
         state_id: new device state.
     """
     payload = {
-        "type": MessageType.ACTION_STATEFUL,
+        "type": HumeMessage.ACTION_STATEFUL,
         "device_uuid": device_uuid,
     }
     payload.update(kwargs)
@@ -104,7 +104,7 @@ def unpair(hume_uuid):
     being factory reset, and any device information is lost on the HUME end.
     """
     payload = {
-        "type": MessageType.UNPAIR
+        "type": HumeMessage.UNPAIR
     }
     global _producer
     _producer.publish(json.dumps(payload).encode('utf-8'),
@@ -116,7 +116,7 @@ def detach(hume_uuid, device_uuid):
     Issues a detach command to the a hume for a device.
     """
     payload = {
-        "type": MessageType.DETACH,
+        "type": HumeMessage.DETACH,
         "device_uuid": device_uuid
     }
     global _producer

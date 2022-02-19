@@ -24,7 +24,6 @@ export interface AttachedDevice {
 export interface StatefulAction {
   group_id: number;
   state_id: number;
-  success: boolean;
 }
 
 export interface Device {

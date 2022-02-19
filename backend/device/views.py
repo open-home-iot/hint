@@ -9,7 +9,7 @@ from asgiref.sync import async_to_sync
 from backend.device.models import Device, create_device
 from backend.device.serializers import DeviceSerializer
 from backend.hume.models import Hume
-from backend.broker.defs import MessageType
+from backend.broker.defs import HumeMessage
 from backend.broker import producer
 from backend.user.permissions import IsHume
 
@@ -39,7 +39,7 @@ class Devices(views.APIView):
                 {
                     "type": "hume.event",
                     "hume_uuid": hume_uuid,
-                    "event_type": MessageType.ATTACH_DEVICE,
+                    "event_type": HumeMessage.ATTACH_DEVICE,
                     "content": {
                         "identifier": request.data.get("identifier"),
                         "success": True,
