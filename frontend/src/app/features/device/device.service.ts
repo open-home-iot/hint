@@ -80,7 +80,7 @@ export class DeviceService {
 
   private static getDeviceActionStatesUrl(hume: Hume, device: Device): string {
     return HOMES_URL + hume.home + '/humes/' + hume.uuid + '/devices/' +
-      device.uuid + '/action-states'
+      device.uuid + '/action-states';
   }
 
   private static deviceUrl(hume: Hume, device: Device): string {
