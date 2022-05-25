@@ -330,3 +330,82 @@ class DeviceActionApi(TestCase):
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
 
         producer_mock.send_device_action.assert_not_called()
+
+
+class DeviceActionStatesApi(TestCase):
+
+    URL = "/api/homes/{}/humes/{}/devices/{}/action-states"
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up global user for authentication.
+        """
+        super().setUpClass()
+        User.objects.create_user(email="suite@t.se", password="pw")
+
+    def setUp(self):
+        """
+        Create shared test case data.
+        """
+        self.client = APIClient()
+        self.client.login(username="suite@t.se", password="pw")
+
+        self.home = Home.objects.create(name="home")
+        self.home.users.add(User.objects.get(email="suite@t.se"))
+
+        self.hume = Hume.objects.create(uuid=uuid.uuid4(),
+                                        home=self.home)
+
+    @patch('backend.device.views.producer')
+    def test_action_states(self, producer_mock):
+        create_device(self.hume, copy.deepcopy(BASIC_LED_CAPS))
+        device = Device.objects.get(uuid=DEVICE_UUID_1)
+
+        res = self.client.get(
+            DeviceActionStatesApi.URL.format(
+                self.home.id, self.hume.uuid, device.uuid
+            )
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        producer_mock.send_device_action_state_request.assert_called_with(
+            str(self.hume.uuid), str(device.uuid)
+        )
+
+    @patch("backend.device.views.producer")
+    def test_device_action_states_fails_no_such_device(self, producer_mock):
+        """
+        Verify that all URL pieces matter in pointing out which device should
+        execute and action.
+        """
+        device = create_dummy_device(self.hume)
+
+        # Bogus home ID
+        res = self.client.get(DeviceActionStatesApi.URL.format(
+            1337, self.hume.uuid, device.uuid
+        ))
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Bogus Hume UUID
+        res = self.client.get(DeviceActionStatesApi.URL.format(
+            self.home.id, str(uuid.uuid4()), device.uuid
+        ))
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Bogus device UUID
+        res = self.client.get(DeviceActionStatesApi.URL.format(
+            self.home.id, self.hume.uuid, str(uuid.uuid4())
+        ))
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Bogus user
+        user = User.objects.create_user(email="t@t.se", password="pw")
+        client = APIClient()
+        client.login(username=user.email, password="pw")
+        res = client.get(DeviceActionStatesApi.URL.format(
+            self.home.id, self.hume.uuid, device.uuid
+        ))
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        producer_mock.send_device_action.assert_not_called()
