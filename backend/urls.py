@@ -13,6 +13,7 @@ from backend.device.views import (
     Devices,
     HomeDevices,
     DeviceAction,
+    DeviceActionStates,
     DeviceSingle
 )
 from backend.hume.views import (
@@ -54,6 +55,7 @@ webapp_urls = [
 device_urls = [
     path("<str:identifier>/attach", HumeAttachDevice.as_view()),
     path("<str:device_uuid>/action", DeviceAction.as_view()),
+    path("<str:device_uuid>/action-states", DeviceActionStates.as_view()),
     path("<str:device_uuid>", DeviceSingle.as_view()),
 ]
 

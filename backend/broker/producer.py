@@ -98,6 +98,19 @@ def send_device_action(hume_uuid: str,
                       queue_params=QueueParams(hume_uuid, durable=True))
 
 
+def send_device_action_state_request(hume_uuid: str, device_uuid: str):
+    """
+    Issue a HUME a request to get all stateful action states for a device.
+    """
+    payload = {
+        "type": HumeMessage.ACTION_STATES,
+        "device_uuid": device_uuid
+    }
+    global _producer
+    _producer.publish(json.dumps(payload).encode('utf-8'),
+                      queue_params=QueueParams(hume_uuid, durable=True))
+
+
 def unpair(hume_uuid):
     """
     Issues an unpairing command to the target HUME. This will lead to the HUME
