@@ -85,7 +85,8 @@ api_urlpatterns = [
     # HUMES
     #
     path("humes/<str:hume_uuid>", HumeSingle.as_view()),
-    path("humes/<str:hume_uuid>/confirm-pairing", HumeConfirmPairing.as_view()),
+    path("humes/<str:hume_uuid>/confirm-pairing",
+         HumeConfirmPairing.as_view()),
 
     #
     # USERS
