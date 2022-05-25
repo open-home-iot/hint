@@ -362,7 +362,7 @@ class IsHumePermission(TestCase):
         client = APIClient()
         client.login(username=user.email, password="pw")
 
-        res = client.get("/api/humes/broker-credentials")
+        res = client.get("/hume-api/broker-credentials")
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
@@ -374,6 +374,6 @@ class IsHumePermission(TestCase):
         client = APIClient()
         client.login(username=user.email, password="pw")
 
-        res = client.get("/api/humes/broker-credentials")
+        res = client.get("/hume-api/broker-credentials")
 
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)

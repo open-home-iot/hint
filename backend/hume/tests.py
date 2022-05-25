@@ -59,7 +59,7 @@ class HumeModel(TestCase):
 
 class HumesApi(TestCase):
 
-    URL = "/api/humes"
+    URL = "/hume-api/humes"
 
     def setUp(self):
         """
@@ -125,7 +125,7 @@ class HumesApi(TestCase):
 
 class BrokerCredentialsApi(TestCase):
 
-    URL = "/api/humes/broker-credentials"
+    URL = "/hume-api/broker-credentials"
 
     @classmethod
     def setUpClass(cls):

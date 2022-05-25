@@ -117,7 +117,7 @@ class DeviceModel(TestCase):
 
 class DevicesApi(TestCase):
 
-    URL = "/api/humes/{}/devices"
+    URL = "/hume-api/humes/{}/devices"
 
     @classmethod
     def setUpClass(cls):
