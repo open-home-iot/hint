@@ -49,6 +49,8 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
           this.stateGroups.set(STATE.group.name, [STATE]);
         }
       }
+      // Expect feedback through the event bus.
+      this.deviceService.getCurrentStates(this.device);
     }
   }
 
@@ -57,6 +59,7 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
   }
 
   changeState(newState: DeviceState) {
+    // Expect feedback through the event bus.
     this.deviceService.changeState(this.device, newState);
   }
 

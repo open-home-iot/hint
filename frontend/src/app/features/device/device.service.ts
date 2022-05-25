@@ -78,6 +78,11 @@ export class DeviceService {
       device.uuid + '/action';
   }
 
+  private static getDeviceActionStatesUrl(hume: Hume, device: Device): string {
+    return HOMES_URL + hume.home + '/humes/' + hume.uuid + '/devices/' +
+      device.uuid + '/action-states';
+  }
+
   private static deviceUrl(hume: Hume, device: Device): string {
     return HOMES_URL + String(hume.home) + '/humes/' + hume.uuid + '/devices/' + device.uuid;
   }
@@ -128,6 +133,16 @@ export class DeviceService {
       group_id: newState.group.group_id,
       state_id: newState.state_id,
     })
+      .subscribe(
+        _success => null,
+        error => { HANDLE_ERROR(error); }
+      );
+  }
+
+  getCurrentStates(device: Device) {
+    const HUME = this.humeService.getHume(device.hume);
+
+    this.httpClient.get(DeviceService.getDeviceActionStatesUrl(HUME, device))
       .subscribe(
         _success => null,
         error => { HANDLE_ERROR(error); }

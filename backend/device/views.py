@@ -110,3 +110,20 @@ class DeviceAction(views.APIView):
             return Response(status=status.HTTP_200_OK)
         except Device.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class DeviceActionStates(views.APIView):
+    """Fetch current device action states."""
+
+    @staticmethod
+    def get(request, home_id, hume_uuid, device_uuid):
+        """Get the current states of the device's actions (if any)."""
+        try:
+            Device.objects.get(uuid=device_uuid,
+                               hume__uuid=hume_uuid,
+                               hume__home__id=home_id,
+                               hume__home__users__id=request.user.id)
+            producer.send_device_action_state_request(hume_uuid, device_uuid)
+            return Response(status=status.HTTP_200_OK)
+        except Device.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
