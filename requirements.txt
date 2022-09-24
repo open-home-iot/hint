@@ -23,7 +23,7 @@ pyasn1-modules==0.2.8
 pycparser==2.20
 pyOpenSSL==20.0.1
 pytz==2021.1
-rabbitmq-client==2.0.3
+rabbitmq-client==2.4.0
 service-identity==21.1.0
 six==1.16.0
 sqlparse==0.4.1

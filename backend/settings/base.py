@@ -17,7 +17,7 @@ SECRET_KEY = '$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q'
 DEBUG = True
 BUILD = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
