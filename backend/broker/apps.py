@@ -3,6 +3,7 @@ import os
 import signal
 import functools
 import json
+from typing import Callable
 
 import pika
 
@@ -22,12 +23,10 @@ from rabbitmq_client import (
 from backend.broker import producer as producer_module
 
 
-def incoming_message(message: bytes):
+def incoming_message(message: bytes, ack: Callable = None, **kwargs):
     """
     ! NOTE ! Avoid putting expensive operations here or this will become a
     bottleneck and a half. No database lookups allowed!
-
-    :param message: message consumed from the HINT master command queue
     """
     if isinstance(message, ConsumeOK):
         return
@@ -56,6 +55,8 @@ def incoming_message(message: bytes):
     # Dispatch message to websocket consumers.
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(hume_uuid, hume_event)
+
+    ack()
 
 
 class BrokerConfig(AppConfig):
