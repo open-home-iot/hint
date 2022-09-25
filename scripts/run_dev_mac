@@ -38,6 +38,6 @@ then
 fi
 
 osascript -e 'tell app "Terminal"
-  do script "cd ~/repos/hint; workon hint; ./manage.py runserver"
-  do script "cd ~/repos/hint/frontend; ng build --watch --output-path=/Users/mansthornvik/repos/hint/backend/static/ang
+  do script "cd ~/repos/hint; workon hint; ./manage.py runserver 0.0.0.0:8000"
+  do script "cd ~/repos/hint/frontend; ng build --watch --output-path=/Users/mansthornvik/repos/hint/backend/static/ang"
 end tell'
