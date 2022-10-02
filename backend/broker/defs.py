@@ -11,3 +11,5 @@ class HumeMessage:
 
     UNPAIR = 3
     DETACH = 4
+
+    LATENCY_TEST = 5

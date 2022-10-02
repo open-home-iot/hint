@@ -22,7 +22,6 @@ export class GodmodeAuthGuard implements CanActivate, CanActivateChild {
           if (authenticated) {
             return this.userService.getUser()
               .then((user: User) => {
-                console.log("user is super?", user.is_superuser);
                 return user.is_superuser;
               })
           } else {

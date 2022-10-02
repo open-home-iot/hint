@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: calc(100% - 2em);
+  margin: 1em 1em;
+  padding: 1em;
+  background-color: white;
+  border: 1px solid gray;
+  box-shadow: 0 0 10px rgb(108, 108, 108);
+}
+
+div.latency_testing {
+  display: flex;
+  flex-direction: column;
+}
