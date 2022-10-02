@@ -10,7 +10,33 @@
   box-shadow: 0 0 10px rgb(108, 108, 108);
 }
 
+@keyframes colorchange {
+  0% {background-color: red;}
+  10% {background-color: green;}
+  20% {background-color: pink;}
+  30% {background-color: turquoise;}
+  40% {background-color: blue;}
+  50% {background-color: purple;}
+  60% {background-color: yellow;}
+  70% {background-color: yellowgreen;}
+  80% {background-color: lime;}
+  90% {background-color: orange;}
+  100% {background-color: orangered;}
+}
+
 .user_container {
+  .godmode_container {
+    display: flex;
+    justify-content: center;
+
+    button {
+      font-size: 3em;
+      animation: colorchange 10s infinite;
+      border: 0;
+      color: white;
+    }
+  }
+
   h4 {
     margin-left: .5em;
   }

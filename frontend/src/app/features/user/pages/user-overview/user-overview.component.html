@@ -1,4 +1,7 @@
 <div class="user_container" *ngIf="user !== undefined">
+  <div class="godmode_container">
+    <button class="btn btn-outline-dark" routerLink="/godmode">GODMODE!</button>
+  </div>
   <form id="name_form"
         [formGroup]="nameForm"
         (ngSubmit)="nameSubmit()">
