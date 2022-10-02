@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {GodmodeRoutingModule} from './godmode-routing.module';
-import { GodmodeOverviewComponent } from './godmode-overview/godmode-overview.component';
+import { GodmodeOverviewComponent } from './pages/godmode-overview/godmode-overview.component';
 
 
 

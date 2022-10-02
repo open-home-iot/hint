@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import {
   GodmodeOverviewComponent
-} from './godmode-overview/godmode-overview.component';
+} from './pages/godmode-overview/godmode-overview.component';
 import {GodmodeAuthGuard} from './godmode-auth.guard';
 
 /*
