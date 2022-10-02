@@ -21,9 +21,7 @@ export class GodmodeAuthGuard implements CanActivate, CanActivateChild {
         (authenticated: boolean) => {
           if (authenticated) {
             return this.userService.getUser()
-              .then((user: User) => {
-                return user.is_superuser;
-              })
+              .then((user: User) => user.is_superuser);
           } else {
             this.router.navigate(['/']);
             return false;
