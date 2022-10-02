@@ -24,7 +24,7 @@ from backend.hume.views import (
     HumeSingle,
     HumeConfirmPairing
 )
-from godmode.views import LatencyTest, Homes as GodmodeHomes
+from backend.godmode.views import LatencyTest, Homes as GodmodeHomes
 from backend.user.views import UserSignup, login_user, logout_user, UserSelf
 from backend.webapp.views import AppView, revision
 

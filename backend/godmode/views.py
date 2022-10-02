@@ -7,14 +7,17 @@ from backend.broker import producer
 from backend.user.permissions import IsSuperUser
 from backend.home.models import Home
 from backend.hume.models import Hume
-from home.serializers import HomeSerializer
-from hume.serializers import HumeSerializer
+from backend.home.serializers import HomeSerializer
+from backend.hume.serializers import HumeSerializer
 
 
 class Homes(views.APIView, LimitOffsetPagination):
     """Allows superusers access to list HOMEs."""
 
     permission_classes = [IsAuthenticated, IsSuperUser]
+
+    # DON'T REMOVE, EVERYTHING BREAKS :((((
+    default_limit = 5
 
     def get(self, request):
         """
@@ -24,8 +27,11 @@ class Homes(views.APIView, LimitOffsetPagination):
         default and returns links for both previous and next pages in the
         response body.
         """
-        queryset = self.paginate_queryset(Home.objects.all(), request)
-        return self.get_paginated_response(HomeSerializer(queryset, many=True).data)
+        homes = Home.objects.all()
+        queryset = self.paginate_queryset(homes, request)
+        return self.get_paginated_response(
+            HomeSerializer(queryset, many=True).data
+        )
 
 
 class Humes(views.APIView):

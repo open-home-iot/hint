@@ -77,7 +77,8 @@ class UserCreateApi(TestCase):
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ret.data, {'email': 't@t.se',
                                     'first_name': '',
-                                    'last_name': ''})
+                                    'last_name': '',
+                                    'is_superuser': False})
         self.assertEqual(1, len(User.objects.all()))
 
     def test_api_create_user_with_name(self):
@@ -90,7 +91,8 @@ class UserCreateApi(TestCase):
         self.assertEqual(ret.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ret.data, {'email': 't@t.se',
                                     'first_name': 'test1',
-                                    'last_name': 'test2'})
+                                    'last_name': 'test2',
+                                    'is_superuser': False})
         user = User.objects.get(email='t@t.se')
         self.assertEqual(user.first_name, 'test1')
         self.assertEqual(user.last_name, 'test2')
@@ -106,7 +108,8 @@ class UserCreateApi(TestCase):
         self.assertEqual(ret.data,
                          {'email': 't@t.se',
                           'first_name': '',
-                          'last_name': ''})
+                          'last_name': '',
+                          'is_superuser': False})
         user = User.objects.get(email='t@t.se')
         self.assertEqual(user.first_name, '')
         self.assertEqual(user.last_name, '')
@@ -202,7 +205,7 @@ class UserGetApi(TestCase):
 
         self.assertEqual(ret.status_code, status.HTTP_200_OK)
         self.assertEqual(ret.data, {'email': 't@t.se', 'first_name': '',
-                                    'last_name': ''})
+                                    'last_name': '', 'is_superuser': False})
 
     def test_api_get_user_self_fail_unauthenticated(self):
         """
