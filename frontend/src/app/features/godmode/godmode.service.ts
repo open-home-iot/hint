@@ -3,6 +3,7 @@ import {Home} from '../home/home.service';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {PaginatedResponse} from '../../core/model';
 import {Hume} from '../hume/hume.service';
+import {error} from 'protractor';
 
 const HOMES_URL = window.location.origin + '/api/godmode/homes';
 const TEST_URL = window.location.origin + '/api/godmode/latency-test';

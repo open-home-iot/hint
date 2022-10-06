@@ -31,7 +31,7 @@ import {
 })
 export class IconComponent implements OnInit, OnDestroy {
 
-  intervalTimer: number;
+  intervalTimer: number | NodeJS.Timer;
   wifiPulse = false;
 
   constructor() { }

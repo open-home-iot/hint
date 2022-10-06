@@ -32,7 +32,8 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
   constructor(private godmodeService: GodmodeService,
               private eventService: EventService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   ngOnDestroy(): void {
     this.unsubscribe();

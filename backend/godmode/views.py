@@ -55,6 +55,11 @@ class LatencyTest(views.APIView):
         """
         Start a latency test for the given HOME.
         """
-        producer.latency_test(request.query_params["humes"])
+        humes = request.query_params.get("humes")
+        if humes is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        for hume in humes.split(","):
+            producer.latency_test(hume)
 
         return Response(status=status.HTTP_200_OK)
