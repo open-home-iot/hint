@@ -20,12 +20,7 @@ export class GodmodeHomeSelectionComponent implements OnInit {
   constructor(private godmodeService: GodmodeService) { }
 
   ngOnInit(): void {
-  }
-
-  listHomes(): void {
-    this.godmodeService.listHomes()
-      .then(response => this.handleResponse(response))
-      .catch(error => HANDLE_ERROR(error));
+    this.listHomes();
   }
 
   nextHomes(): void {
@@ -38,6 +33,12 @@ export class GodmodeHomeSelectionComponent implements OnInit {
 
   selectHome(home: Home) {
     this.homeSelected.emit(home);
+  }
+
+  private listHomes(): void {
+    this.godmodeService.listHomes()
+      .then(response => this.handleResponse(response))
+      .catch(error => HANDLE_ERROR(error));
   }
 
   private paginate(url: string): void {

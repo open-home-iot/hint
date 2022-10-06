@@ -12,6 +12,12 @@ import {
 interface Content {
   hint_hume_sent: number;
   hint_hume_received: number;
+  hint_hume_returned: number;
+}
+
+interface HumeStats {
+  oneWay: number;
+  roundTrip: number;
 }
 
 @Component({
@@ -25,7 +31,7 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
   selectedHumes: Hume[] = [];
 
   testing = false;
-  hintHumeLatency = 0;
+  humeStats: Map<string, HumeStats> = new Map<string, HumeStats>();
 
   private subscriptions: number[] = [];
 
@@ -71,6 +77,7 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
     this.selectedHumes.length = 0;
     for (const HUME of humes) {
       this.selectedHumes.push(HUME);
+      this.humeStats.set(HUME.uuid, { oneWay: 0, roundTrip: 0 });
       this.eventService.monitorHume(HUME.uuid);
     }
   }
@@ -100,10 +107,13 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
     The event contains sent/received timings in the content-field.
      */
     const CONTENT: Content = event.content;
-    this.hintHumeLatency = CONTENT.hint_hume_received / 1000000 -
+    const STATS = this.humeStats.get(event.uuid);
+    STATS.oneWay = CONTENT.hint_hume_received / 1000000 -
+      CONTENT.hint_hume_sent / 1000000;
+    STATS.roundTrip = CONTENT.hint_hume_returned / 1000000 -
       CONTENT.hint_hume_sent / 1000000;
 
-    setTimeout(() => {
+    window.setTimeout(() => {
       // Still testing, send another test signal after a small delay.
       if (this.testing) {
         this.godmodeService.latencyTest(this.selectedHumes)
