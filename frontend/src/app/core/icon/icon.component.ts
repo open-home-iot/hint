@@ -37,7 +37,7 @@ export class IconComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit(): void {
-    this.intervalTimer = setInterval(() => {
+    this.intervalTimer = window.setInterval(() => {
       this.wifiPulse = !this.wifiPulse;
     }, 1200);
   }

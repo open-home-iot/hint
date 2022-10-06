@@ -49,8 +49,10 @@ class CustomUserManager(BaseUserManager):
             last_name=last_name
         )
 
+        # A superuser holds ALL roles.
         user.is_superuser = True
         user.is_staff = True
+        user.is_hume = True
         user.save(using=self._db)
         return user
 

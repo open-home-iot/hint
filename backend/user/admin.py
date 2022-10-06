@@ -64,7 +64,7 @@ class CustomUserAdmin(UserAdmin):
 
     ordering = ('email',)
     list_display = ('email', 'first_name', 'last_name', 'is_active',
-                    'is_staff', 'is_superuser', 'last_login')
+                    'is_staff', 'is_hume', 'is_superuser', 'last_login')
 
     add_fieldsets = (
         (None, {

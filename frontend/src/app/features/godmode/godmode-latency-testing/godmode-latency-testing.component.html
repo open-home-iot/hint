@@ -1,0 +1,27 @@
+<h2>Latency testing</h2>
+<div class="latency_testing_container">
+  <app-godmode-home-selection (homeSelected)="homeSelected($event)"></app-godmode-home-selection>
+
+  <div class="home_view_container">
+
+    <div *ngIf="selectedHome !== undefined" class="home_latency">
+      <div class="home_container">
+        <span class="material-icons icon">home</span>
+        <p class="identifier">{{ selectedHome.id }} | {{ selectedHome.name}} </p>
+      </div>
+
+      <div class="hume_stats_container">
+        <div *ngFor="let pair of humeStats | keyvalue">
+          <div class="hume_container">
+            <span class="material-icons icon">router</span>
+            <p class="identifier">{{ pair.key }}</p>
+            <p class="reading">OW: {{ pair.value.oneWay }}ms</p>
+            <p class="reading">RT: {{ pair.value.roundTrip }}ms</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button [ngClass]="{'testing': testing}" [disabled]="selectedHome === undefined" class="btn btn-outline-dark" (click)="toggleLatencyTest()">Toggle latency testing</button>
+  </div>
+</div>

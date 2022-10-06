@@ -6,3 +6,10 @@ class IsHume(BasePermission):
 
     def has_permission(self, request, view):
         return request.user.is_hume
+
+
+class IsSuperUser(BasePermission):
+    """Permission check to ensure that a user is a super user."""
+
+    def has_permission(self, request, view):
+        return request.user.is_superuser

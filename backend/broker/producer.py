@@ -2,8 +2,7 @@
 This module contains shortcut functions to issue standardized commands to a
 HUME, such as discover devices, executing device actions, etc.
 """
-
-
+import time
 import json
 
 from rabbitmq_client import RMQProducer, QueueParams
@@ -131,6 +130,21 @@ def detach(hume_uuid, device_uuid):
     payload = {
         "type": HumeMessage.DETACH,
         "device_uuid": device_uuid
+    }
+    global _producer
+    _producer.publish(json.dumps(payload).encode('utf-8'),
+                      queue_params=QueueParams(hume_uuid, durable=True))
+
+
+def latency_test(hume_uuid):
+    """
+    Issue a latency test message to the target HUME.
+    """
+    payload = {
+        "type": HumeMessage.LATENCY_TEST,
+        "content": {
+            "hint_hume_sent": time.time_ns()
+        }
     }
     global _producer
     _producer.publish(json.dumps(payload).encode('utf-8'),

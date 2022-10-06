@@ -24,8 +24,12 @@ from backend.hume.views import (
     HumeSingle,
     HumeConfirmPairing
 )
+from backend.godmode.views import (
+    LatencyTest,
+    Homes as GodmodeHomes,
+    Humes as GodmodeHumes
+)
 from backend.user.views import UserSignup, login_user, logout_user, UserSelf
-
 from backend.webapp.views import AppView, revision
 
 
@@ -97,6 +101,13 @@ api_urlpatterns = [
     path("users/login", login_user),
     path("users/logout", logout_user),
     path("users/self", UserSelf.as_view()),
+
+    #
+    # GODMODE
+    #
+    path("godmode/homes", GodmodeHomes.as_view()),
+    path("godmode/homes/<int:home_id>/humes", GodmodeHumes.as_view()),
+    path("godmode/latency-test", LatencyTest.as_view()),
 
     # 404!
     path("", api_path_not_found),

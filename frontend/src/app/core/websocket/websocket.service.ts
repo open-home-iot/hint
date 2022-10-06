@@ -87,6 +87,7 @@ export class WebSocketService {
 
   private onSocketMessage(event: MessageEvent) {
     const DECODED_DATA = JSON.parse(event.data);
+    // console.debug(DECODED_DATA);
 
     if (KEY_CONNECTION_TIMEOUT_SECONDS in DECODED_DATA) {
       this.connectionTimeoutSeconds = DECODED_DATA.connection_timeout_seconds;

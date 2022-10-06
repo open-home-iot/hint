@@ -189,7 +189,7 @@ export class DeviceService {
     const ATTACH_EVENT = event.content as AttachedDevice;
 
     if (ATTACH_EVENT.success) {
-      const HUME = this.humeService.getHume(event.hume_uuid);
+      const HUME = this.humeService.getHume(event.uuid);
       this.requestHomeDevices(HUME.home);
     } else {
       HANDLE_ERROR('failed to attach ' + ATTACH_EVENT.identifier);

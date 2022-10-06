@@ -3,9 +3,11 @@ import os
 import signal
 import functools
 import json
-from typing import Callable
+import time
 
 import pika
+
+from typing import Callable
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -21,6 +23,7 @@ from rabbitmq_client import (
 )
 
 from backend.broker import producer as producer_module
+from backend.broker import HumeMessage
 
 
 def incoming_message(message: bytes, ack: Callable = None, **kwargs):
@@ -31,30 +34,27 @@ def incoming_message(message: bytes, ack: Callable = None, **kwargs):
     if isinstance(message, ConsumeOK):
         return
 
-    decoded_command = json.loads(message.decode('utf-8'))
-
-    # Extract message fields.
-    hume_uuid = decoded_command["uuid"]
-    command_type = decoded_command["type"]
-    content = decoded_command["content"]
-
-    # Perform message-specific handling here...
-    # ...
+    decoded_event = json.loads(message.decode('utf-8'))
 
     hume_event = {
         # Setting the "type" field here will lead to hume_event being
         # invoked for consumers listening on the HUME's UUID group/topic.
         "type": "hume.event",
-        "hume_uuid": hume_uuid,
-        "device_uuid": decoded_command["device_uuid"] \
-        if decoded_command.get("device_uuid") is not None else "",
-        "event_type": command_type,
-        "content": content
+        "uuid": decoded_event["uuid"],
+        "event_type": decoded_event["type"],
+        "content": decoded_event["content"]
     }
+
+    if decoded_event.get("device_uuid") is not None:
+        hume_event["device_uuid"] = decoded_event["device_uuid"]
+
+    if decoded_event["type"] == HumeMessage.LATENCY_TEST:
+        hume_event["content"]["hint_hume_returned"] = time.time_ns()
 
     # Dispatch message to websocket consumers.
     channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(hume_uuid, hume_event)
+    async_to_sync(channel_layer.group_send)(decoded_event["uuid"],
+                                            hume_event)
 
     ack()
 

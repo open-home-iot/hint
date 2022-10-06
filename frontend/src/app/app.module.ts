@@ -29,6 +29,7 @@ import { DeviceModule } from './features/device/device.module';
 import { UserModule } from './features/user/user.module';
 import { EventModule } from './features/event/event.module';
 import { IconComponent } from './core/icon/icon.component';
+import {GodmodeModule} from './features/godmode/godmode.module';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ import { IconComponent } from './core/icon/icon.component';
     DeviceModule,
     UserModule,
     EventModule,
+    GodmodeModule,
 
     // CORE ROUTING MODULE, DO NOT REMOVE!
     // NEEDS TO DECLARED LAST OR CATCH ALL ROUTE REGISTERS BEFORE CHILD ROUTES!
