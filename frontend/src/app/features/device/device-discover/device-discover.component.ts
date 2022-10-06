@@ -39,7 +39,7 @@ export class DeviceDiscoverComponent implements OnDestroy {
     event.content.forEach(D => {
       DISCOVERED_DEVICES.push({
         name: D.name,
-        hume: event.hume_uuid,
+        hume: event.uuid,
         identifier: D.identifier,
       });
     });

@@ -1,0 +1,9 @@
+<button (click)="listHomes()">List homes</button>
+<p>Shows all homes by 'id: name'</p>
+<div class="home_list">
+  <div *ngFor="let home of homes" class="home_item">
+    {{ home.id }}: {{ home.name }} <button (click)="selectHome(home)">Select</button>
+  </div>
+  <button [disabled]="previous === null" (click)="previousHomes()">Previous</button><button [disabled]="next === null" (click)="nextHomes()">Next</button>
+</div>
+

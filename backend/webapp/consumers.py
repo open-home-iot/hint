@@ -1,4 +1,5 @@
 import json
+
 from uuid import UUID
 
 from asgiref.sync import async_to_sync
@@ -60,7 +61,7 @@ class HumeConsumer(WebsocketConsumer):
             return
 
         decoded_data = json.loads(text_data)
-        hume_uuid = decoded_data.get("hume_uuid")
+        hume_uuid = decoded_data.get("uuid")
 
         self.monitor_new_hume_uuid(hume_uuid)
 
@@ -68,10 +69,12 @@ class HumeConsumer(WebsocketConsumer):
         """
         Adds the input hume_uuid to the consumers list of monitored UUIDs.
         """
+        print("subscribing to websocket hume events:", hume_uuid)
+
         # Verify no garbage is received, must be a valid v4 UUID.
         try:
             UUID(hume_uuid, version=4)
-        except ValueError:
+        except (ValueError, TypeError):
             return
 
         # IMPORTANT

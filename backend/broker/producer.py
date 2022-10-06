@@ -2,7 +2,7 @@
 This module contains shortcut functions to issue standardized commands to a
 HUME, such as discover devices, executing device actions, etc.
 """
-import datetime
+import time
 import json
 
 from rabbitmq_client import RMQProducer, QueueParams
@@ -142,7 +142,9 @@ def latency_test(hume_uuid):
     """
     payload = {
         "type": HumeMessage.LATENCY_TEST,
-        "hint_hume_sent": datetime.datetime.now()
+        "content": {
+            "hint_hume_sent": time.time_ns()
+        }
     }
     global _producer
     _producer.publish(json.dumps(payload).encode('utf-8'),

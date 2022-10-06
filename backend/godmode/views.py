@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from backend.broker import producer
 from backend.user.permissions import IsSuperUser
 from backend.home.models import Home
-from backend.hume.models import Hume
 from backend.home.serializers import HomeSerializer
+from backend.hume.models import Hume
 from backend.hume.serializers import HumeSerializer
 
 
@@ -35,18 +35,14 @@ class Homes(views.APIView, LimitOffsetPagination):
 
 
 class Humes(views.APIView):
-    """Allows superusers access to list HUMEs."""
 
     permission_classes = [IsAuthenticated, IsSuperUser]
 
     @staticmethod
     def get(request, home_id: int):
-        """
-        Fetch HUMEs of a HOME.
-        """
-        return Response(HumeSerializer(
-            Hume.objects.filter(home__id=home_id), many=True
-        ).data, status=status.HTTP_200_OK)
+        """Get all humes related to a home."""
+        queryset = Hume.objects.filter(home__id=home_id)
+        return Response(data=HumeSerializer(queryset, many=True).data)
 
 
 class LatencyTest(views.APIView):
@@ -55,9 +51,10 @@ class LatencyTest(views.APIView):
     permission_classes = [IsAuthenticated, IsSuperUser]
 
     @staticmethod
-    def get(request, hume_uuid: str):
+    def get(request):
         """
-        Start a latency test for the given HUME.
+        Start a latency test for the given HOME.
         """
-        producer.latency_test(hume_uuid)
+        producer.latency_test(request.query_params["humes"])
+
         return Response(status=status.HTTP_200_OK)

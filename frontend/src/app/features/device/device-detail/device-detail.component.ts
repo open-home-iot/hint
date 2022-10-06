@@ -11,7 +11,6 @@ import {
   HumeEvent, NO_HUME_UUID,
   STATEFUL_ACTION
 } from '../../event/event.service';
-import {HANDLE_ERROR} from '../../../core/utility';
 
 
 @Component({
