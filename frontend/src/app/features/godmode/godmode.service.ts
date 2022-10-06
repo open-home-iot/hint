@@ -3,7 +3,6 @@ import {Home} from '../home/home.service';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {PaginatedResponse} from '../../core/model';
 import {Hume} from '../hume/hume.service';
-import {error} from 'protractor';
 
 const HOMES_URL = window.location.origin + '/api/godmode/homes';
 const TEST_URL = window.location.origin + '/api/godmode/latency-test';
@@ -62,9 +61,9 @@ export class GodmodeService {
 
   private buildParams(humes: Hume[]): HttpParams {
     let humesString = humes[0].uuid;
-    for (let hume of humes.slice(1, humes.length-1)) {
-      humesString += ',' + hume.uuid;
+    for (const HUME of humes.slice(1, humes.length-1)) {
+      humesString += ',' + HUME.uuid;
     }
-    return new HttpParams().set("humes", humesString);
+    return new HttpParams().set('humes', humesString);
   }
 }

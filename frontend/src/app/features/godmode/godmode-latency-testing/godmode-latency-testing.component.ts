@@ -24,8 +24,8 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
   selectedHome: Home;
   selectedHumes: Hume[] = [];
 
-  testing: boolean = false;
-  hintHumeLatency: number = 0;
+  testing = false;
+  hintHumeLatency = 0;
 
   private subscriptions: number[] = [];
 
@@ -69,22 +69,22 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
 
   private updateHumes(humes: Hume[]): void {
     this.selectedHumes.length = 0;
-    for (let hume of humes) {
-      this.selectedHumes.push(hume);
-      this.eventService.monitorHume(hume.uuid);
+    for (const HUME of humes) {
+      this.selectedHumes.push(HUME);
+      this.eventService.monitorHume(HUME.uuid);
     }
   }
 
   private subscribe(): void {
-    for (let hume of this.selectedHumes) {
+    for (const HUME of this.selectedHumes) {
         this.subscriptions.push(this.eventService.subscribe(
-          hume.uuid, NO_DEVICE_UUID, LATENCY_TEST, this.onHumeEvent.bind(this)
+          HUME.uuid, NO_DEVICE_UUID, LATENCY_TEST, this.onHumeEvent.bind(this)
         ));
       }
   }
 
   private unsubscribe(): void {
-    while (this.subscriptions.length != 0) {
+    while (this.subscriptions.length !== 0) {
       this.eventService.unsubscribe(this.subscriptions.pop());
     }
   }
@@ -99,9 +99,9 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
     /*
     The event contains sent/received timings in the content-field.
      */
-    let content: Content = event.content;
-    this.hintHumeLatency = content.hint_hume_received / 1000000 -
-      content.hint_hume_sent / 1000000;
+    const CONTENT: Content = event.content;
+    this.hintHumeLatency = CONTENT.hint_hume_received / 1000000 -
+      CONTENT.hint_hume_sent / 1000000;
 
     setTimeout(() => {
       // Still testing, send another test signal after a small delay.

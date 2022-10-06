@@ -49,15 +49,15 @@ export class GodmodeHomeSelectionComponent implements OnInit {
   private handleResponse(response: PaginatedHomes) {
     this.next = response.next;
     this.previous = response.previous;
-    if (response.count != 0) {
+    if (response.count !== 0) {
       this.updateHomes(response.results);
     }
   }
 
   private updateHomes(homes: Home[]) {
     this.homes.length = 0;
-    for (let home of homes) {
-      this.homes.push(home);
+    for (const HOME of homes) {
+      this.homes.push(HOME);
     }
   }
 }

@@ -34,7 +34,7 @@ export class EventService {
 
   private subscriptionMap = new Map<number, Subscription>();
   private idGenerator = idGenerator();
-  private monitoredHumes: Set<string> = new Set<string>;
+  private monitoredHumes: Set<string> = new Set<string>();
 
   constructor(private webSocketService: WebSocketService) {
     this.webSocketService.registerCallback(this.onEvent.bind(this));
