@@ -73,7 +73,6 @@ TEMPLATES = [
     },
 ]
 
-
 # Channels settings
 
 # With channels enabled, we are now running an ASGI application.

@@ -8,93 +8,61 @@ on:
       - master
 
 jobs:
-  build:
-
+  # All typescript-related stuff goes here
+  typescript:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-
-    #
-    # Set up Python and NodeJS
-    #
-
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.9
-
+    - uses: actions/checkout@v3
     - name: Set up NodeJS
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '16'
+        cache: 'npm'
+        cache-dependency-path: 'frontend/package-log.json'
+    - name: Install the Angular CLI
+      run: |
+        npm install -g @angular/cli
+    - name: Install dependencies
+      run: |
+        cd frontend && npm install
+    - name: Lint with ESLint
+      run: |
+        cd frontend && ng lint
+    - name: Build Angular project
+      run: |
+        cd frontend && ng build
 
-    #
-    # Install Python and Typescript dependencies
-    #
-
-    - name: Install Python dependencies
+  # All Python-related stuff goes here
+  python:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install flake8
         pip install coverage
-
-    - name: Install the Angular CLI
-      run: |
-        npm install -g @angular/cli
-
-    - name: Install Typescript dependencies
-      run: |
-        cd frontend && npm install
-
-    #
-    # Set up environmental settings
-    #
-
     - name: Set PYTHONPATH
       run: |
         export PYTHONPATH=$PWD
         echo $PYTHONPATH
-
     - name: Generate local.py
       run: |
         echo "from .base import *  # noqa" > backend/settings/local.py
         echo "BUILD = True" >> backend/settings/local.py
-
-    #
-    # Lint backend and frontend
-    #
-
     - name: Lint Python code with flake8
       run: |
         flake8 `find backend ! -path "*migrations*" -name "*.py"`
-
-    - name: Lint Typescript code with ESLint
-      run: |
-        cd frontend && ng lint
-
-    #
-    # Build
-    #
-
     - name: Check Django project
       run: |
         ./manage.py check
-
-    - name: Build Angular project
-      run: |
-        cd frontend && ng build
-
-    #
-    # Run tests
-    #
-
     - name: Run backend Django test cases
       run: |
         echo $PWD
         python manage.py test
-
-    #- name: Run frontend Angular test cases
-    #  run: |
-    #    cd frontend && ng test
