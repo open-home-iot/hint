@@ -3,6 +3,7 @@ import os
 import signal
 import functools
 import json
+import sys
 import time
 
 import pika
@@ -24,6 +25,9 @@ from rabbitmq_client import (
 
 from backend.broker import producer as producer_module
 from backend.broker import HumeMessage
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 def incoming_message(message: bytes, ack: Callable = None, **kwargs):
@@ -61,7 +65,6 @@ def incoming_message(message: bytes, ack: Callable = None, **kwargs):
 
 class BrokerConfig(AppConfig):
     name = 'backend.broker'
-    has_started = False
 
     def ready(self):
         """
@@ -70,30 +73,15 @@ class BrokerConfig(AppConfig):
         https://docs.djangoproject.com/en/3.1/ref/applications/
         """
         # Development specific, due to Django code reload ...
-        # DEBUG indicates development, RUN_MAIN indicates it's not the
-        # reloader reaching this block.
-        if settings.DEBUG and not os.environ.get("RUN_MAIN"):
+        # DEV_MODE indicates we're using runserver (it's set when you run
+        # commands via manage.py).
+        # RUN_MAIN indicates it's not the reloader reaching this block.
+        if (bool(os.environ.get("DEV_MODE")) and
+                not bool(os.environ.get("RUN_MAIN"))):
+            LOGGER.info("DEV_MODE environment variable is set, requiring the "
+                        "'RUN_MAIN' variable to also be set in order to start"
+                        "RabbitMQ connections.")
             return
-
-        if BrokerConfig.has_started:
-            return
-        BrokerConfig.has_started = True
-
-        # Set up and start the RabbitMQ client
-        rmq_client_log_level = logging.INFO
-        logger = logging.getLogger("rabbitmq_client")
-        logger.setLevel(rmq_client_log_level)
-
-        # Create handler to actually print something
-        stream_handler = logging.StreamHandler()
-        logger.addHandler(stream_handler)
-
-        formatter = logging.Formatter(fmt="{asctime} {levelname:^8} "
-                                      "{name} - {message}",
-                                      style="{",
-                                      datefmt="%d/%m/%Y %H:%M:%S")
-        stream_handler.setFormatter(formatter)
-        stream_handler.setLevel(rmq_client_log_level)
 
         credentials = pika.PlainCredentials(settings.HUME_BROKER_USERNAME,
                                             settings.HUME_BROKER_PASSWORD)
@@ -131,6 +119,7 @@ class BrokerConfig(AppConfig):
             """
             consumer.stop()
             producer.stop()
+            sys.exit()
 
         stop_callback = functools.partial(stop_func,
                                           consumer=consumer,

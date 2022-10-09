@@ -1,4 +1,5 @@
 import json
+import logging
 
 from uuid import UUID
 
@@ -6,9 +7,9 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
 
-from backend.hume.models import Hume
+
+LOGGER = logging.getLogger(__name__)
 
 
 class HumeConsumer(WebsocketConsumer):
@@ -27,6 +28,9 @@ class HumeConsumer(WebsocketConsumer):
         user = self.scope["user"]
 
         self.accept()
+
+        # Avoids app config trouble.
+        from django.contrib.auth.models import AnonymousUser
         if isinstance(user, AnonymousUser):
             self.disconnect()
             return
@@ -69,7 +73,7 @@ class HumeConsumer(WebsocketConsumer):
         """
         Adds the input hume_uuid to the consumers list of monitored UUIDs.
         """
-        print("subscribing to websocket hume events:", hume_uuid)
+        LOGGER.debug(f"subscribing to websocket hume events: '{hume_uuid[:4]}'")
 
         # Verify no garbage is received, must be a valid v4 UUID.
         try:
@@ -80,6 +84,7 @@ class HumeConsumer(WebsocketConsumer):
         # IMPORTANT
         # Verify the consumer user owns the hub in question, do NOT allow
         # information leaks through the websocket consumer!
+        from backend.hume.models import Hume
         if Hume.objects.filter(uuid=hume_uuid,
                                home__users__id=self.scope["user"].id).exists():
             self.hume_uuids.add(hume_uuid)

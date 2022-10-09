@@ -5,6 +5,11 @@ import sys
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+
+    # For use in apps that need to know whether we're in development mode or
+    # not, for example the Broker application, which gets loaded twice and
+    # should only start consumer/producer instances once.
+    os.environ.setdefault("DEV_MODE", "true")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:

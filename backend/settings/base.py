@@ -15,6 +15,7 @@ SECRET_KEY = '$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 BUILD = False
 
 ALLOWED_HOSTS = ['*']
@@ -169,3 +170,42 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "backend/static"),
 ]
+
+
+# Logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname:^8} {name} - {message}',
+            'datefmt': '%d/%m/%Y %H:%M:%S',
+            'style': '{'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'rabbitmq_client': {
+            'level': 'INFO',
+        },
+        'pika': {
+            'propagate': False,
+        },
+        'daphne': {
+            'level': 'INFO',
+        },
+        'aioredis': {
+            'level': 'INFO',
+        }
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
