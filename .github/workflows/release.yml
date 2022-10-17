@@ -1,12 +1,14 @@
 name: Release OCI image
 
 on:
+  workflow_dispatch:
   release:
-    types: [created]
+    types:
+      - created
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME_PREFIX: ${{ github.repository }}
 
 jobs:
   build-and-push-image:
