@@ -7,6 +7,23 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 
+# OPEN HOME SPECIFIC
+
+HUME_BROKER_USERNAME = "guest"
+HUME_BROKER_PASSWORD = "guest"
+
+HUME_BROKER_HOST = "127.0.0.1"
+HUME_BROKER_PORT = 5672
+
+MASTER_COMMAND_QUEUE_NAME = "hint_master"
+
+
+# Version information
+
+COMMIT_ID = "cid"
+SEMVER = "semver"
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -15,10 +32,10 @@ SECRET_KEY = '$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 BUILD = False
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
 
 # Application definition
 
@@ -165,7 +182,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_ROOT = f"{BASE_DIR}/backend/static/collectedstatic"
+STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "backend/static"),
@@ -191,6 +209,12 @@ LOGGING = {
         },
     },
     'loggers': {
+        'asyncio': {
+            'propagate': False,
+        },
+        'django': {
+            'level': 'INFO',
+        },
         'rabbitmq_client': {
             'level': 'INFO',
         },

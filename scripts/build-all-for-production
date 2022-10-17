@@ -1,0 +1,40 @@
+#!/bin/zsh
+
+# BIG NOTE! This script CAN be used to locally build a production-version of HINT, but its main
+# purpose is to TEST how to build HINT into production-ready packages in an idempotent way.
+
+# Testing what commands are needed to build everything for production. MUST BE IDEMPOTENT!
+if [ "$#" -ne 1 ]; then
+  echo "Provide the ABSOLUTE path to the HINT project root."
+  exit 1
+fi
+HINT_PROJECT_ROOT="$1"
+echo "Project root: $HINT_PROJECT_ROOT"
+# Workdir is now the hint project root.
+cd "$HINT_PROJECT_ROOT" || exit 1
+
+# 1. Build Angular application
+# 2. Clear old collected static
+# 3. Collect static
+# 4. Build ingress/fileserver container image
+# 5. Build backend container image
+
+#
+# LETS GOOOOOO
+#
+
+# 1. Build Angular application
+cd frontend && ng build --configuration production --output-path="$HINT_PROJECT_ROOT/backend/static/ang"
+cd "$HINT_PROJECT_ROOT" || exit 1
+
+# 2. Clear old collected static
+rm -rf "$HINT_PROJECT_ROOT/backend/static/collectedstatic"
+
+# 3. Collect static
+./manage.py collectstatic
+
+# 4. Build ingress/fileserver container image
+docker build . -f docker/ingress.Dockerfile --tag hint-ingress
+
+# 5. Build backend container image
+docker build . -f docker/backend.Dockerfile --tag hint-backend

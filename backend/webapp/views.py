@@ -11,17 +11,15 @@ class AppView(TemplateView):
     template_name = "index.html"
 
 
-COMMIT_ID = subprocess.check_output(
-    ["git", "rev-parse", "--short", "HEAD"]
-).decode() if not settings.BUILD else "cid"
-TAG = subprocess.check_output(
-    ["git", "describe", "--tags"]
-).decode() if not settings.BUILD else "tag"
-
-
 def revision(request):
     """
     Return the revision of HINT currently in use.
     """
-    return JsonResponse({"commit_id": COMMIT_ID, "tag": TAG},
+    commit_id = subprocess.check_output(
+        ["git", "rev-parse", "--short", "HEAD"]
+    ).decode() if settings.DEBUG and not settings.BUILD else settings.COMMIT_ID
+    tag = subprocess.check_output(
+        ["git", "describe", "--tags"]
+    ).decode() if settings.DEBUG and not settings.BUILD else settings.SEMVER
+    return JsonResponse({"commit_id": commit_id, "tag": tag},
                         status=status.HTTP_200_OK)

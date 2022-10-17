@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HANDLE_ERROR} from '../utility';
 
-const WS_BASE_URL = window.location.origin;
+const WS_BASE_URL = window.location.origin + '/websocket';
 
 const EVENT_WS_CLOSE_REOPEN_MS = 3000;
 

@@ -73,7 +73,7 @@ class HumeConsumer(WebsocketConsumer):
         """
         Adds the input hume_uuid to the consumers list of monitored UUIDs.
         """
-        LOGGER.debug(f"subscribing to websocket hume events: '{hume_uuid[:4]}'")
+        LOGGER.debug(f"subscribing to WS hume events: '{hume_uuid[:4]}'")
 
         # Verify no garbage is received, must be a valid v4 UUID.
         try:

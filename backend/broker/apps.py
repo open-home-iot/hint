@@ -86,7 +86,7 @@ class BrokerConfig(AppConfig):
         credentials = pika.PlainCredentials(settings.HUME_BROKER_USERNAME,
                                             settings.HUME_BROKER_PASSWORD)
         connection_params = pika.ConnectionParameters(
-            host=settings.HUME_BROKER_IP,
+            host=settings.HUME_BROKER_HOST,
             port=settings.HUME_BROKER_PORT,
             virtual_host='/',
             credentials=credentials

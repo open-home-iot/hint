@@ -1,0 +1,46 @@
+# This compose file composes HINT and all of its dependencies. Including:
+#
+#  1. The HINT backend, handling both the frontend and HUME APIs. Run by daphne.
+#  2. A backing Postgres store for the backend.
+#  3. Redis for Django channels.
+#  4. A static file server for all things frontend, served by Nginx.
+#  5. RabbitMQ for HINT<->HUME communication.
+#  6. An Nginx instance to act as a reverse proxy for backend requests.
+version: '3.8'
+
+services:
+  backend:
+    image: hint-backend:latest
+    env_file:
+      - .backend.env
+    expose:
+      - 32000
+    depends_on:
+      - rabbitmq
+      - redis
+      - postgres
+
+  postgres:
+    image: postgres:15.0
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=hint
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.0.5
+  rabbitmq:
+    image: rabbitmq:3.11.1-management
+
+  ingress:
+    image: hint-ingress:latest
+    ports:
+      - '8080:80'
+    depends_on:
+      - backend
+
+volumes:
+  postgres_volume:

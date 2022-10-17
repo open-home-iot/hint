@@ -1,3 +1,5 @@
+import logging
+
 from django.urls import path, include
 
 from django.contrib import admin
@@ -33,6 +35,9 @@ from backend.user.views import UserSignup, login_user, logout_user, UserSelf
 from backend.webapp.views import AppView, revision
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def api_path_not_found(_request, url=None):
     """
     Returns a base 404 message and status for all API calls that lead nowhere.
@@ -41,7 +46,7 @@ def api_path_not_found(_request, url=None):
     :param url: URL that had no match
     :return:
     """
-    print(f"API URL: {url} does not exist!")
+    LOGGER.error(f"API URL: {url} does not exist!")
     return JsonResponse({"error": "Resource not found."},
                         status=status.HTTP_404_NOT_FOUND)
 

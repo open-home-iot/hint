@@ -1,0 +1,9 @@
+#!/bin/bash
+# NOTE! This scripts is ONLY meant to be run in the backend container, and
+# won't work outside of there.
+
+./manage.py migrate
+# createinitialuser creates a single superuser instance, but only if NO OTHER
+# users exist, so it's safe to call on subsequent deployments.
+./manage.py createinitialuser
+daphne backend.asgi:application -b 0.0.0.0 -p 32000

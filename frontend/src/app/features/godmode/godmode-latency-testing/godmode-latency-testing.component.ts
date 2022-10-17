@@ -62,8 +62,13 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
     If testing is started, stop it.
       - Unsubscribe from hume events.
      */
+    if (this.selectedHumes.length < 1) {
+      HANDLE_ERROR('can\'t latency test something that doesn\'t exist, ' +
+        'you dingus.');
+      return;
+    }
 
-    if (this.selectedHumes.length > 0 && !this.testing) {
+    if (!this.testing) {
       this.testing = true;
       this.subscribe();
       this.latencyTest();
