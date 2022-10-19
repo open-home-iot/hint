@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1
+# NB!
+# LEAVE LABELLING TO THE RELEASE WORKFLOW!
 
 FROM docker.io/python:3.10.8-slim-buster
 
 RUN apt-get update && apt-get install gcc libffi-dev libpq-dev -y && apt-get clean
-
-LABEL org.opencontainers.image.source="https://github.com/open-home-iot/hint"
 
 WORKDIR /app
 
