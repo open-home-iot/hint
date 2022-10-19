@@ -24,5 +24,9 @@ jobs:
     - name: output stuff
       run: echo $PWD
 
+    # Needed because of imports.
+    - name: Create a local settings file
+      run: touch backend/settings/local.py
+
     - name: Collect static files
       run: ./manage.py collectstatic --noinput
