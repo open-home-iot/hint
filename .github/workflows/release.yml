@@ -56,7 +56,7 @@ jobs:
         run: touch backend/settings/local.py
 
       - name: Collect static files
-        run: ./manage.py collectstatic
+        run: ./manage.py collectstatic --noinput
 
       - name: Log in to GitHub packages
         uses: docker/login-action@v2
