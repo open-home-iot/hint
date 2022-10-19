@@ -29,4 +29,10 @@ jobs:
       run: touch backend/settings/local.py
 
     - name: Collect static files
-      run: ./manage.py collectstatic --noinput
+      run: python manage.py help
+
+    - name: Collect static files
+      run: python manage.py collectstatic --help
+
+    - name: Collect static files
+      run: python manage.py collectstatic --noinput
