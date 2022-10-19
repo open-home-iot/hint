@@ -29,10 +29,11 @@ jobs:
 
     - name: Build Angular project
       run: |
-        cd frontend && ng build --configuration production --output-path="$PWD/backend/static/ang"
-        ls -l backend/static/ang
-        ls -l backend/static
-        ls -l backend/
+        cd frontend && ng build --configuration production --output-path="${{ env.GITHUB_WORKSPACE }}/backend/static/ang"
+
+    - name: List build dir
+      run: |
+        ls -l ${{ env.GITHUB_WORKSPACE }}/backend/static/ang
 
     - name: Set up Python
       uses: actions/setup-python@v4
