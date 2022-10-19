@@ -1,5 +1,8 @@
 name: Tinkering
 
+on:
+  workflow_dispatch:
+
 jobs:
   tinker:
     runs-on: ubuntu-latest
