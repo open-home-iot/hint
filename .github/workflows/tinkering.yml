@@ -1,0 +1,5 @@
+name: Tinkering
+
+jobs:
+  tinker:
+    runs-on: ubuntu-latest
