@@ -29,18 +29,16 @@ jobs:
 
     - name: List env vars
       run: |
-        echo $GITHUB_WORKSPACE
-        ls -l $GITHUB_WORKSPACE
         echo $GITHUB_WORKSPACE/backend
         ls -l $GITHUB_WORKSPACE/backend
 
-#    - name: Build Angular project
-#      run: |
-#        cd frontend && ng build --configuration production --output-path="${{ env.GITHUB_WORKSPACE }}/backend/static/ang"
-#
-#    - name: List build dir
-#      run: |
-#        ls -l ${{ env.GITHUB_WORKSPACE }}/backend/static/ang
+    - name: Build Angular project
+      run: |
+        cd frontend && ng build --configuration production --output-path="$GITHUB_WORKSPACE/backend/static/ang"
+
+    - name: List build dir
+      run: |
+        ls -l $GITHUB_WORKSPACE/backend/static/ang
 #
 #    - name: Set up Python
 #      uses: actions/setup-python@v4
