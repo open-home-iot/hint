@@ -6,10 +6,10 @@ on:
       - created
 
 env:
-   REGISTRY: ghcr.io
-   USERNAME: ${{ github.actor }}
-   PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-   IMAGE_NAME: ${{ github.repository }}
+  REGISTRY: ghcr.io
+  USERNAME: ${{ github.actor }}
+  PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+  IMAGE_NAME_PREFIX: ${{ github.repository }}
 
 jobs:
   docker:
@@ -28,19 +28,36 @@ jobs:
           username: ${{ env.USERNAME }}
           password: ${{ env.PASSWORD }}
 
-      - name: Docker meta
-        id: meta
+      - name: Ingress docker meta
+        id: ingress-meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-ingress
           tags: |
             type=pep440,pattern={{raw}}
 
-      - name: Build and push
+      - name: Backend docker meta
+        id: backend-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-backend
+          tags: |
+            type=pep440,pattern={{raw}}
+
+      - name: Build and push ingress
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: docker/some.Dockerfile
+          file: docker/ingress.Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.ingress-meta.outputs.tags }}
+          labels: ${{ steps.ingress-meta.outputs.labels }}
+
+      - name: Build and push backend
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: docker/backend.Dockerfile
+          push: true
+          tags: ${{ steps.backend-meta.outputs.tags }}
+          labels: ${{ steps.backend-meta.outputs.labels }}
