@@ -9,16 +9,36 @@
 version: '3.8'
 
 services:
+
   backend:
-    image: hint-backend:latest
-    env_file:
-      - .backend.env
+    image: ghcr.io/open-home-iot/hint-backend:latest
+    environment:
+      - BROKER_USER=hint
+      - BROKER_PASS=hintpw123
+      - BROKER_VHOST=hub
+      - BROKER_HOST=rabbitmq
+      - BROKER_PORT=5672
+      - SECRET_KEY=3jk12hklöe41j2hrkl21jhrilkh12kl12rh###2klrjh12rkl12hjr1kl2jrh12klj12hrkl12hio12ury1i2fh12kdasdas
+      - PG_USER=admin
+      - PG_PASS=admin
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DJANGO_SETTINGS_MODULE=backend.settings.prod
     expose:
       - 32000
     depends_on:
       - rabbitmq
       - redis
       - postgres
+
+  ingress:
+    image: ghcr.io/open-home-iot/hint-ingress:latest
+    ports:
+      - '8080:80'
+    depends_on:
+      - backend
 
   postgres:
     image: postgres:15.0
@@ -32,15 +52,12 @@ services:
 
   redis:
     image: redis:7.0.5
-  rabbitmq:
-    image: rabbitmq:3.11.1-management
 
-  ingress:
-    image: hint-ingress:latest
-    ports:
-      - '8080:80'
-    depends_on:
-      - backend
+  rabbitmq:
+    image: ghcr.io/open-home-iot/rabbitmq:3.11.1-management
+    volumes:
+      - rabbitmq_volume:/var/lib/rabbitmq
 
 volumes:
   postgres_volume:
+  rabbitmq_volume:

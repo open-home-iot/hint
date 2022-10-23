@@ -9,9 +9,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 # OPEN HOME SPECIFIC
 
-HUME_BROKER_USERNAME = "guest"
-HUME_BROKER_PASSWORD = "guest"
+HUME_BROKER_USERNAME = "hint"
+HUME_BROKER_PASSWORD = "hintpw123"
 
+HUME_BROKER_VHOST = "hub"
 HUME_BROKER_HOST = "127.0.0.1"
 HUME_BROKER_PORT = 5672
 

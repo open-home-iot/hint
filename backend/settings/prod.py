@@ -1,4 +1,4 @@
-import os
+import os  # noqa
 
 from .base import *  # noqa
 
@@ -9,6 +9,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 HUME_BROKER_USERNAME = os.environ["BROKER_USER"]
 HUME_BROKER_PASSWORD = os.environ["BROKER_PASS"]
 
+HUME_BROKER_VHOST = int(os.environ["BROKER_VHOST"])
 HUME_BROKER_HOST = os.environ["BROKER_HOST"]
 HUME_BROKER_PORT = int(os.environ["BROKER_PORT"])
 
