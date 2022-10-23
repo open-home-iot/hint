@@ -1,4 +1,4 @@
-name: Build RabbitMQ
+name: Release RabbitMQ
 
 on:
   workflow_dispatch:

@@ -52,6 +52,9 @@ services:
     image: local/hint-rabbitmq:latest
     volumes:
       - rabbitmq_volume:/var/lib/rabbitmq
+      - type: bind
+        source: ../rabbitmq/definitions.json
+        target: /etc/rabbitmq/definitions.json
 
 volumes:
   postgres_volume:

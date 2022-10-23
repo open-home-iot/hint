@@ -1,7 +1,11 @@
 #!/bin/zsh
 
 # BIG NOTE! This script CAN be used to locally build a production-version of HINT, but its main
-# purpose is to TEST how to build HINT into production-ready packages in an idempotent way.
+# purpose is to TEST how to build HINT into production-ready packages in an idempotent way. It
+# provides an overview of what is built and in what order, to replicate in CI jobs.
+
+# Build all images locally using this script, then run a local cluster using the "local" compose
+# file in the docker directory.
 
 # Testing what commands are needed to build everything for production. MUST BE IDEMPOTENT!
 if [ "$#" -ne 1 ]; then
