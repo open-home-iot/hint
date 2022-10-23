@@ -1,3 +1,6 @@
+# NB!
+# LEAVE LABELLING TO THE ACTION WORKFLOW!
+
 FROM rabbitmq:3.11.1-management
 
 COPY rabbitmq/definitions.json /etc/rabbitmq/definitions.json
