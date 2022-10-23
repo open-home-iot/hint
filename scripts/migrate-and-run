@@ -2,8 +2,21 @@
 # NOTE! This scripts is ONLY meant to be run in the backend container, and
 # won't work outside of there.
 
-./manage.py migrate
+echo "Applying database migrations"
+while ! ./manage.py migrate
+do
+  echo "Retrying migration in 2 seconds..."
+  sleep 2
+done
+
+echo "Creating initial user"
 # createinitialuser creates a single superuser instance, but only if NO OTHER
 # users exist, so it's safe to call on subsequent deployments.
-./manage.py createinitialuser
+while ! ./manage.py createinitialuser
+do
+  echo "Retrying user creation in 2 seconds..."
+  sleep 2
+done
+
+echo "Running daphne"
 daphne backend.asgi:application -b 0.0.0.0 -p 32000

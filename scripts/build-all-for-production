@@ -18,6 +18,7 @@ cd "$HINT_PROJECT_ROOT" || exit 1
 # 3. Collect static
 # 4. Build ingress/fileserver container image
 # 5. Build backend container image
+# 6. Build rabbitmq image
 
 #
 # LETS GOOOOOO
@@ -34,7 +35,10 @@ rm -rf "$HINT_PROJECT_ROOT/backend/static/collectedstatic"
 ./manage.py collectstatic
 
 # 4. Build ingress/fileserver container image
-docker build . -f docker/ingress.Dockerfile --tag hint-ingress
+docker build . -f docker/ingress.Dockerfile --tag local/hint-ingress:latest
 
 # 5. Build backend container image
-docker build . -f docker/backend.Dockerfile --tag hint-backend
+docker build . -f docker/backend.Dockerfile --tag local/hint-backend:latest
+
+# 6. Build rabbitmq image
+docker build . -f docker/rabbitmq.Dockerfile --tag local/hint-rabbitmq:latest

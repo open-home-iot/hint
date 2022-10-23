@@ -1,17 +1,12 @@
-# This compose file composes HINT and all of its dependencies. Including:
-#
-#  1. The HINT backend, handling both the frontend and HUME APIs. Run by daphne.
-#  2. A backing Postgres store for the backend.
-#  3. Redis for Django channels.
-#  4. A static file server for all things frontend, served by Nginx.
-#  5. RabbitMQ for HINT<->HUME communication.
-#  6. An Nginx instance to act as a reverse proxy for backend requests.
+# This compose file is intended for local tests to verify any changes to the
+# docker images locally and manually. Useful for deploying a local test cluster
+# to try things out in and to check on configuration changes.
 version: '3.8'
 
 services:
 
   backend:
-    image: ghcr.io/open-home-iot/hint-backend:latest
+    image: local/hint-backend:latest
     environment:
       - BROKER_USER=hint
       - BROKER_PASS=hintpw123
@@ -34,7 +29,7 @@ services:
       - postgres
 
   ingress:
-    image: ghcr.io/open-home-iot/hint-ingress:latest
+    image: local/hint-ingress:latest
     ports:
       - '8080:80'
     depends_on:
@@ -54,7 +49,7 @@ services:
     image: redis:7.0.5
 
   rabbitmq:
-    image: ghcr.io/open-home-iot/hint-rabbitmq:latest
+    image: local/hint-rabbitmq:latest
     volumes:
       - rabbitmq_volume:/var/lib/rabbitmq
 
