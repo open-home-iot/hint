@@ -11,6 +11,7 @@ version: '3.8'
 services:
 
   backend:
+    # Change to a different image to run a local build.
     image: ghcr.io/open-home-iot/hint-backend:latest
     environment:
       - BROKER_USER=hint
@@ -34,6 +35,7 @@ services:
       - postgres
 
   ingress:
+    # Change to a different image to run a local build.
     image: ghcr.io/open-home-iot/hint-ingress:latest
     ports:
       - '8080:80'
@@ -52,15 +54,19 @@ services:
 
   redis:
     image: redis:7.0.5
+    volumes:
+      - redis_volume:/data
 
   rabbitmq:
+    # Change to a different image to run a local build.
     image: ghcr.io/open-home-iot/hint-rabbitmq:latest
     volumes:
       - rabbitmq_volume:/var/lib/rabbitmq
-      - type: bind
-        source: ../rabbitmq/definitions.json
-        target: /etc/rabbitmq/definitions.json
+#      - type: bind
+#        source: ../rabbitmq/definitions.json
+#        target: /etc/rabbitmq/definitions.json
 
 volumes:
   postgres_volume:
   rabbitmq_volume:
+  redis_volume:
