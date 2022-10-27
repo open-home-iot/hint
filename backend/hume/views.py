@@ -22,7 +22,9 @@ from backend.user.permissions import IsHume
 class Humes(views.APIView):
     """Allows Humes to instantiate themselves with HINT."""
 
-    permission_classes = []  # Implies no CSRF check.
+    # Implies no CSRF check.
+    permission_classes = []
+    authentication_classes = []
 
     @staticmethod
     def post(request):
