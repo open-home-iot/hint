@@ -38,7 +38,7 @@ services:
     # Change to a different image to run a local build.
     image: ghcr.io/open-home-iot/hint-ingress:latest
     ports:
-      - '8080:80'
+      - '80:80'
     depends_on:
       - backend
 
@@ -54,12 +54,17 @@ services:
 
   redis:
     image: redis:7.0.5
+    # Good for local tests when sharing Redis between HUME and HINT.
+#    ports:
+#      - '6379:6379'
     volumes:
       - redis_volume:/data
 
   rabbitmq:
     # Change to a different image to run a local build.
     image: ghcr.io/open-home-iot/hint-rabbitmq:latest
+    ports:
+      - '5672:5672'
     volumes:
       - rabbitmq_volume:/var/lib/rabbitmq
 #      - type: bind

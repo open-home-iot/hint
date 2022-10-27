@@ -21,16 +21,6 @@
 </head>
 
 <body>
-    <!--VERY IMPORTANT TO KEEP!-->
-    <!--
-    This is another Django template tag which is important since it makes sure that the CSRF cookie is set for
-    frontend users. CSRF is a security feature, and on each outgoing HTTP request frontend makes to the backend, this
-    cookie is to be included in the X-CSRFToken HTTP request header. Read more about CSRF here:
-    https://docs.djangoproject.com/en/2.2/ref/csrf/
-    -->
-    {% csrf_token %}
-    <!--VERY IMPORTANT TO KEEP!-->
-
     <!--
     The below code is static and should never be touched. It makes sure that the Angular application gets injected here
     by the <app-root> tag, which can be found in the frontend/ project under frontend/src/app/app.component.ts. The
