@@ -36,7 +36,9 @@ BUILD = False
 
 # There currently isn't a need to check the host header since 1 value is only ever possible.
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "http://*,https://*").split(",")
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    "CSRF_TRUSTED_ORIGINS", "http://*,https://*"
+).split(",")
 
 
 # Application definition
