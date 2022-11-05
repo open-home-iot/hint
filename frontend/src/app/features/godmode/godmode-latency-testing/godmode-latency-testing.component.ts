@@ -135,10 +135,10 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
 
   private logTimingStatsToConsole(event: HumeEvent) {
     const CONTENT: Content = event.content;
-    console.log("Timing stats for HUME", event.uuid);
+    console.log('Timing stats for HUME', event.uuid);
     console.log(
-      "Sent     - " + CONTENT.hint_hume_sent + "\n" +
-      "Received - " + CONTENT.hint_hume_received + "\n" +
-      "Returned - " + CONTENT.hint_hume_returned)
+      'Sent     - ' + CONTENT.hint_hume_sent + '\n' +
+      'Received - ' + CONTENT.hint_hume_received + '\n' +
+      'Returned - ' + CONTENT.hint_hume_returned);
   }
 }

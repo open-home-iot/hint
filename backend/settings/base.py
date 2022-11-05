@@ -30,7 +30,9 @@ SEMVER = "semver"
 # Security
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q")
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -107,7 +109,8 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(os.environ.get("REDIS_HOST", "127.0.0.1"), int(os.environ.get("REDIS_PORT", 6379)))],
+            "hosts": [(os.environ.get("REDIS_HOST", "127.0.0.1"),
+                       int(os.environ.get("REDIS_PORT", 6379)))],
             # Seconds until a channel is removed from a group
             "group_expiry": 600,
         },
