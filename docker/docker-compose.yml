@@ -12,21 +12,23 @@ services:
 
   backend:
     # Change to a different image to run a local build.
-    image: ghcr.io/open-home-iot/hint-backend:latest
+    image: local/hint-backend:latest
     environment:
-      - BROKER_USER=hint
-      - BROKER_PASS=hintpw123
+      - HINT_BROKER_USER=hint
+      - HINT_BROKER_PASS=hintpw123
+      - HUME_BROKER_PASS=hub
+      - HUME_BROKER_PASS=hubpw123
       - BROKER_VHOST=hub
       - BROKER_HOST=rabbitmq
       - BROKER_PORT=5672
       - SECRET_KEY=3jk12hklöe41j2hrkl21jhrilkh12kl12rh###2klrjh12rkl12hjr1kl2jrh12klj12hrkl12hio12ury1i2fh12kdasdas
-      - PG_USER=admin
-      - PG_PASS=admin
-      - PG_HOST=postgres
-      - PG_PORT=5432
+      - POSTGRES_USER=admin
+      - POSTGRES_PASS=admin
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - DJANGO_SETTINGS_MODULE=backend.settings.prod
+      - DJANGO_SETTINGS_MODULE=backend.settings
     expose:
       - 32000
     depends_on:
@@ -36,11 +38,15 @@ services:
 
   ingress:
     # Change to a different image to run a local build.
-    image: ghcr.io/open-home-iot/hint-ingress:latest
+    image: local/hint-ingress:latest
     ports:
       - '80:80'
     depends_on:
       - backend
+#    volumes:
+#      - type: bind
+#        source: /etc/nginx/nginx.conf
+#        target: /etc/nginx/nginx.conf
 
   postgres:
     image: postgres:15.0
@@ -55,21 +61,27 @@ services:
   redis:
     image: redis:7.0.5
     # Good for local tests when sharing Redis between HUME and HINT.
-#    ports:
-#      - '6379:6379'
+    ports:
+      - '6379:6379'
     volumes:
       - redis_volume:/data
 
   rabbitmq:
     # Change to a different image to run a local build.
-    image: ghcr.io/open-home-iot/hint-rabbitmq:latest
+    image: local/hint-rabbitmq:latest
     ports:
       - '5672:5672'
     volumes:
       - rabbitmq_volume:/var/lib/rabbitmq
 #      - type: bind
-#        source: ../rabbitmq/definitions.json
+#        source: /etc/rabbitmq/definitions.json
 #        target: /etc/rabbitmq/definitions.json
+#      - type: bind
+#        source: /etc/rabbitmq/rabbitmq.conf
+#        target: /etc/rabbitmq/rabbitmq.conf
+#      - type: bind
+#        source: /etc/rabbitmq/enabled_plugins
+#        target: /etc/rabbitmq/enabled_plugins
 
 volumes:
   postgres_volume:

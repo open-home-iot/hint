@@ -20,6 +20,7 @@ interface HumeStats {
   roundTrip: number;
 }
 
+/* eslint-disable no-console */
 @Component({
   selector: 'app-godmode-latency-testing',
   templateUrl: './godmode-latency-testing.component.html',
@@ -78,6 +79,7 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
     }
   }
 
+  // TODO: unmonitor!
   private updateHumes(humes: Hume[]): void {
     this.selectedHumes.length = 0;
     for (const HUME of humes) {
@@ -113,6 +115,9 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
      */
     const CONTENT: Content = event.content;
     const STATS = this.humeStats.get(event.uuid);
+
+    this.logTimingStatsToConsole(event);
+
     STATS.oneWay = CONTENT.hint_hume_received / 1000000 -
       CONTENT.hint_hume_sent / 1000000;
     STATS.roundTrip = CONTENT.hint_hume_returned / 1000000 -
@@ -126,5 +131,14 @@ export class GodmodeLatencyTestingComponent implements OnInit, OnDestroy {
           .catch(error => HANDLE_ERROR(error));
       }
     }, 500);
+  }
+
+  private logTimingStatsToConsole(event: HumeEvent) {
+    const CONTENT: Content = event.content;
+    console.log("Timing stats for HUME", event.uuid);
+    console.log(
+      "Sent     - " + CONTENT.hint_hume_sent + "\n" +
+      "Received - " + CONTENT.hint_hume_received + "\n" +
+      "Returned - " + CONTENT.hint_hume_returned)
   }
 }

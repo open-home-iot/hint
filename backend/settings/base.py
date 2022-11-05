@@ -9,12 +9,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 # OPEN HOME SPECIFIC
 
-HUME_BROKER_USERNAME = "hint"
-HUME_BROKER_PASSWORD = "hintpw123"
+HINT_BROKER_USERNAME = os.environ.get("HINT_BROKER_USER", "hint")
+HINT_BROKER_PASSWORD = os.environ.get("HINT_BROKER_PASS", "hintpw123")
+HUME_BROKER_USERNAME = os.environ.get("HUME_BROKER_USER", "hub")
+HUME_BROKER_PASSWORD = os.environ.get("HUME_BROKER_PASS", "hubpw123")
 
-HUME_BROKER_VHOST = "hub"
-HUME_BROKER_HOST = "127.0.0.1"
-HUME_BROKER_PORT = 5672
+BROKER_VHOST = os.environ.get("BROKER_VHOST", "hub")
+BROKER_HOST = os.environ.get("BROKER_HOST", "127.0.0.1")
+BROKER_PORT = int(os.environ.get("BROKER_PORT", 5672))
 
 MASTER_COMMAND_QUEUE_NAME = "hint_master"
 
@@ -28,7 +30,7 @@ SEMVER = "semver"
 # Security
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q'
+SECRET_KEY = os.environ.get("SECRET_KEY", "$7&9-c0=r=*1=!bew*^1rfm)$eu-mrx=vn(7al+5)tk!bsks#q")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -105,7 +107,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [(os.environ.get("REDIS_HOST", "127.0.0.1"), int(os.environ.get("REDIS_PORT", 6379)))],
             # Seconds until a channel is removed from a group
             "group_expiry": 600,
         },
@@ -116,12 +118,21 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+DATABASES = dict()
+if bool(os.environ.get("DB_POSTGRES", False)):
+    DATABASES["default"] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'hint',
+        'USER': os.environ["POSTGRES_USER"],
+        'PASSWORD': os.environ["POSTGRES_PASS"],
+        'HOST': os.environ["POSTGRES_HOST"],
+        'PORT': os.environ["POSTGRES_PORT"]
+    }
+else:
+    DATABASES["default"] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'hint.sqlite3',
     }
-}
 
 
 # Models

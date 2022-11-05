@@ -83,12 +83,12 @@ class BrokerConfig(AppConfig):
                         "RabbitMQ connections.")
             return
 
-        credentials = pika.PlainCredentials(settings.HUME_BROKER_USERNAME,
-                                            settings.HUME_BROKER_PASSWORD)
+        credentials = pika.PlainCredentials(settings.HINT_BROKER_USERNAME,
+                                            settings.HINT_BROKER_PASSWORD)
         connection_params = pika.ConnectionParameters(
-            host=settings.HUME_BROKER_HOST,
-            port=settings.HUME_BROKER_PORT,
-            virtual_host=settings.HUME_BROKER_VHOST,
+            host=settings.BROKER_HOST,
+            port=settings.BROKER_PORT,
+            virtual_host=settings.BROKER_VHOST,
             credentials=credentials
         )
 

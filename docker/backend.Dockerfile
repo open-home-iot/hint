@@ -20,6 +20,7 @@ RUN pip3 install beautifulsoup4
 RUN python replace_angular_file_names.py backend/static/collectedstatic/ang backend/templates/index.html
 RUN mv backend/templates/built_index.html backend/templates/index.html
 RUN pip3 uninstall -y beautifulsoup4
+RUN echo "from .base import *\nDEBUG = False" > backend/settings/local.py
 
 # Remove files that aren't needed anymore and that will just serve to bloat
 # the image.
